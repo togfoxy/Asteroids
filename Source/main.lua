@@ -142,6 +142,21 @@ local function drawStarbase()
     -- love.graphics.print("STARBASE SAFE HAVEN", drawx, drawy)
 	love.graphics.printf("STARBASE SAFE HAVEN", drawx - 750, drawy - 25, 1000, "left", 0, 7, 7)		--! test this on other resolutions
 
+
+	-- draw the safezone
+	local x1, y1, x2, y2		-- intentionally declared again to clear the old value
+	x1 = 0
+	y1 = (PHYSICS_HEIGHT - PHYSICS_SAFEZONE) * BOX2D_SCALE
+	x2 = PHYSICS_WIDTH * BOX2D_SCALE
+	y2 = y1
+	-- love.graphics.setColor)
+	love.graphics.line(x1,y1,x2,y2)
+	
+	
+	
+	
+	
+	
 end
 
 function love.keyreleased( key, scancode )
@@ -201,8 +216,8 @@ end
 
 function love.mousemoved( x, y, dx, dy, istouch )
 	if love.mouse.isDown(3) then
-		TRANSLATEX = TRANSLATEX - dx
-		TRANSLATEY = TRANSLATEY - dy
+		TRANSLATEX = TRANSLATEX - (dx * 3)
+		TRANSLATEY = TRANSLATEY - (dy * 3)
 	end
 end
 
@@ -230,6 +245,8 @@ function love.load()
 	fun.loadImages()
 	fun.loadFonts()
 	establishPhysicsWorld()
+	
+	fun.createAsteroid()
 
 	local x1, y1 = fun.getPhysEntityXY(PLAYER.UID)
 	cam = Camera.new(x1, y1, 1)
@@ -256,6 +273,8 @@ function love.draw()
 
 	-- love.graphics.setColor(1,1,1,1)
 	-- love.graphics.circle("fill", PHYSICS_WIDTH / 2 * BOX2D_SCALE, ((PHYSICS_HEIGHT) - 35) * BOX2D_SCALE, 10)
+	
+	love.graphics.line(asteroidpoints)
 
 
 	cam:detach()

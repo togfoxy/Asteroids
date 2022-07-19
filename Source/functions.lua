@@ -63,4 +63,59 @@ function functions.getEntitySize(entity)
    return totalsize
 end
 
+function functions.createAsteroid()
+	-- creates one asteroid in a random location
+	
+	-- determine physics x/y of origin/object
+	local x0 = love.math.random(100, PHYSICS_WIDTH - 100)
+	local y0 = love.math.random(100, PHYSICS_HEIGHT - PHYSICS_SAFEZONE - 100)
+	
+	-- determine number of segments
+	local numsegments = love.math.random(4,8)
+	local x = {}
+	local y = {}
+	
+	-- determine x/y for each point
+	asteroidpoints = {}
+	
+	-- first point is random heading and distance from origin
+	local bearing = love.math.random(0,359)
+	local distance = love.math.random(5,20)		-- physics metres
+	x[1], y[1] = cf.AddVectorToPoint(x0,y0,0,distance)			--! see if this zero can be more random
+	
+	table.insert(asteroidpoints, x[1] * BOX2D_SCALE)
+	table.insert(asteroidpoints, y[1] * BOX2D_SCALE)
+	
+	-- print(x[1],y[1])
+	
+	-- keep adding vectors in a clockwise direction
+	local bestangle = 360 / numsegments		-- use this number to form a perfect polygon
+	local segmentheading = 0				-- first point is pointing north.
+	for i = 2, (numsegments) do
+		-- local distance = love.math.random(1,5)		-- physics metres
+		segmentheading = cf.adjustHeading(segmentheading, bestangle)
+		x[i],y[i] = cf.AddVectorToPoint(x[i-1], y[i-1], segmentheading, distance)
+		
+		table.insert(asteroidpoints, x[i] * BOX2D_SCALE)
+		table.insert(asteroidpoints, y[i] * BOX2D_SCALE)
+		
+		-- print(x[i],y[i])
+	end
+
+	table.insert(asteroidpoints, x[1] * BOX2D_SCALE)
+	table.insert(asteroidpoints, y[1] * BOX2D_SCALE)
+	
+	
+	
+	
+	-- create physical object
+	-- draw asteroid (elsewhere)
+	
+	
+	
+	
+
+
+end
+
 return functions
