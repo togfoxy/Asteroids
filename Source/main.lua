@@ -159,6 +159,22 @@ local function drawStarbase()
 	
 end
 
+local function drawAsteroids()
+
+	for k, obj in pairs(PHYSICS_ASTEROIDS) do
+		local body = obj.body
+		for _, fixture in pairs(body:getFixtures()) do
+			local shape = fixture:getShape()
+			local points = {body:getWorldPoints(shape:getPoints())}
+			for i = 1, #points do
+				points[i] = points[i] * BOX2D_SCALE
+			end		
+			love.graphics.setColor(1,0,1,1)
+			love.graphics.polygon("fill", points)
+		end
+	end
+end
+
 function love.keyreleased( key, scancode )
 	if key == "escape" then
 		cf.RemoveScreen(SCREEN_STACK)
@@ -246,7 +262,9 @@ function love.load()
 	fun.loadFonts()
 	establishPhysicsWorld()
 	
-	fun.createAsteroid()
+	for i = 1, NUMBER_OF_ASTEROIDS do
+		fun.createAsteroid()
+	end
 
 	local x1, y1 = fun.getPhysEntityXY(PLAYER.UID)
 	cam = Camera.new(x1, y1, 1)
@@ -268,13 +286,14 @@ function love.draw()
 	ECSWORLD:emit("draw")
 
 	drawStarbase()
+	drawAsteroids()
 
 	-- cf.printAllPhysicsObjects(PHYSICSWORLD, BOX2D_SCALE)
 
 	-- love.graphics.setColor(1,1,1,1)
 	-- love.graphics.circle("fill", PHYSICS_WIDTH / 2 * BOX2D_SCALE, ((PHYSICS_HEIGHT) - 35) * BOX2D_SCALE, 10)
 	
-	love.graphics.line(asteroidpoints)
+	-- love.graphics.line(asteroidpoints)
 
 
 	cam:detach()

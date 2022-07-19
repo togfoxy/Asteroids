@@ -76,45 +76,45 @@ function functions.createAsteroid()
 	local y = {}
 	
 	-- determine x/y for each point
-	asteroidpoints = {}
+	local asteroidpoints = {}
 	
 	-- first point is random heading and distance from origin
 	local bearing = love.math.random(0,359)
 	local distance = love.math.random(5,20)		-- physics metres
-	x[1], y[1] = cf.AddVectorToPoint(x0,y0,0,distance)			--! see if this zero can be more random
+	x[1], y[1] = cf.AddVectorToPoint(x0, y0, 0, distance)
 	
-	table.insert(asteroidpoints, x[1] * BOX2D_SCALE)
-	table.insert(asteroidpoints, y[1] * BOX2D_SCALE)
-	
-	-- print(x[1],y[1])
+	-- need to get x/y relative to body origin/position
+	table.insert(asteroidpoints, x[1] - x0)
+	table.insert(asteroidpoints, y[1] - y0)
 	
 	-- keep adding vectors in a clockwise direction
 	local bestangle = 360 / numsegments		-- use this number to form a perfect polygon
 	local segmentheading = 0				-- first point is pointing north.
 	for i = 2, (numsegments) do
-		-- local distance = love.math.random(1,5)		-- physics metres
-		segmentheading = cf.adjustHeading(segmentheading, bestangle)
+		local angleAdjustment = love.math.random(0, 10)		-- get a random angleAdjustment
+		local angle = cf.adjustHeading(bestangle, angleAdjustment)
+		
+		segmentheading = cf.adjustHeading(segmentheading, angle)
 		x[i],y[i] = cf.AddVectorToPoint(x[i-1], y[i-1], segmentheading, distance)
 		
-		table.insert(asteroidpoints, x[i] * BOX2D_SCALE)
-		table.insert(asteroidpoints, y[i] * BOX2D_SCALE)
-		
-		-- print(x[i],y[i])
+		table.insert(asteroidpoints, x[i] - x0)
+		table.insert(asteroidpoints, y[i] - y0)
 	end
 
-	table.insert(asteroidpoints, x[1] * BOX2D_SCALE)
-	table.insert(asteroidpoints, y[1] * BOX2D_SCALE)
-	
-	
-	
 	
 	-- create physical object
-	-- draw asteroid (elsewhere)
-	
-	
-	
-	
+	local asteroid = {}
+    asteroid.body = love.physics.newBody(PHYSICSWORLD, x0, y0, "dynamic")
+	asteroid.body:setLinearDamping(0)
+	-- asteroid.body:setMass(500)		-- kg		-- made redundant by newFixture
+	-- asteroid.shape = love.physics.newRectangleShape(shipsize, shipsize)		-- will draw a rectangle around the body x/y. No need to offset it
+	asteroid.shape = love.physics.newPolygonShape(asteroidpoints)
+	asteroid.fixture = love.physics.newFixture(asteroid.body, asteroid.shape, PHYSICS_DENSITY)		-- the 1 is the density
+	asteroid.fixture:setRestitution(0.1)		-- between 0 and 1
+	asteroid.fixture:setSensor(false)
+	-- asteroid.fixture:setUserData(cf.Getuuid())		-- 
 
+    table.insert(PHYSICS_ASTEROIDS, asteroid)
 
 end
 

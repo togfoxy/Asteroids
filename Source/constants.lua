@@ -20,6 +20,7 @@ function constants.load()
     ECSWORLD = {}
     ECS_ENTITIES = {}
     PHYSICS_ENTITIES = {}
+	PHYSICS_ASTEROIDS = {}
 
     PLAYER = {}
     PLAYER.UID = 0              -- store this globally for easy recall
@@ -35,6 +36,8 @@ function constants.load()
     PHYSICS_DENSITY = 4    -- how many kg's each mass weighs
 
     PHYSICS_TURNRATE = 15       -- how fast can objects turn
+	
+	NUMBER_OF_ASTEROIDS = 25
 
 end
 
