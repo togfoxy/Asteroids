@@ -10,7 +10,7 @@ function ecsUpdate.init()
             local x1 = physEntity.body:getX()
             local y1 = physEntity.body:getY()
             if entity:has("fuelTank") and love.keyboard.isDown("kp8") then
-                if entity.fuelTank.capacity > 0 then
+                if entity.fuelTank.capacity > 0 and entity.engine.currentHP > 0 then
 
                     local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
                     facing = cf.convRadToCompass(facing)
@@ -37,7 +37,7 @@ function ecsUpdate.init()
     function systemLeftThruster:update(dt)
         for _, entity in ipairs(self.pool) do
             if entity:has("fuelTank") and love.keyboard.isDown("kp6") then
-                if entity.fuelTank.capacity > 0 then
+                if entity.fuelTank.capacity > 0 and entity.leftThruster.currentHP > 0 then
                     local physEntity = fun.getPhysEntity(entity.uid.value)
 
                     local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
@@ -73,7 +73,7 @@ function ecsUpdate.init()
     function systemRightThruster:update(dt)
         for _, entity in ipairs(self.pool) do
             if entity:has("fuelTank") and love.keyboard.isDown("kp4") then
-                if entity.fuelTank.capacity > 0 then
+                if entity.fuelTank.capacity > 0 and entity.rightThruster.currentHP > 0 then
                     local physEntity = fun.getPhysEntity(entity.uid.value)
 
                     local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
@@ -110,7 +110,7 @@ function ecsUpdate.init()
     function systemReverseThruster:update(dt)
         for _, entity in ipairs(self.pool) do
             if entity:has("fuelTank") and love.keyboard.isDown("kp2") then
-                if entity.fuelTank.capacity > 0 then
+                if entity.fuelTank.capacity > 0 and entity.reverseThruster.currentHP > 0 then
                     local physEntity = fun.getPhysEntity(entity.uid.value)
 
                     local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
@@ -128,7 +128,6 @@ function ecsUpdate.init()
                     physEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
                     SOUND.engine = true
                     DRAW.reverseFlame = true
-
                 end
             end
         end

@@ -8,6 +8,7 @@ function constants.load()
 
     PHYSICS_WIDTH = 1000	-- metres
     PHYSICS_HEIGHT = 1000	-- metres
+	PHYSICS_SAFEZONE = 100	-- this is 1oo metres on/near the spacedock
     BOX2D_SCALE = 5
 
     ZOOMFACTOR = 0.9
@@ -19,6 +20,7 @@ function constants.load()
     ECSWORLD = {}
     ECS_ENTITIES = {}
     PHYSICS_ENTITIES = {}
+	PHYSICS_ASTEROIDS = {}
 
     PLAYER = {}
     PLAYER.UID = 0              -- store this globally for easy recall
@@ -30,10 +32,11 @@ function constants.load()
     IMAGES = {}
     FONT = {}
 
-    STARTING_SIZE = 3        -- the size of the chassis or base ship
     PHYSICS_DENSITY = 4    -- how many kg's each mass weighs
 
     PHYSICS_TURNRATE = 15       -- how fast can objects turn
+	
+	NUMBER_OF_ASTEROIDS = 65
 
 end
 

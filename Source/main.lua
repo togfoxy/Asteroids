@@ -24,40 +24,61 @@ ecsUpdate = require 'ecsUpdate'
 
 local function establishWorldBorders()
 	-- bottom border
-	PHYSICSBORDER1 = {}
+	local PHYSICSBORDER1 = {}
     PHYSICSBORDER1.body = love.physics.newBody(PHYSICSWORLD, 0 + (PHYSICS_WIDTH / 2), PHYSICS_HEIGHT, "static") -- x, y.  The shape comes next
     PHYSICSBORDER1.shape = love.physics.newRectangleShape(PHYSICS_WIDTH, 5) --make a rectangle with a width and a height
     PHYSICSBORDER1.fixture = love.physics.newFixture(PHYSICSBORDER1.body, PHYSICSBORDER1.shape) --attach shape to body
-	PHYSICSBORDER1.fixture:setUserData("BORDERBOTTOM")
+	PHYSICSBORDER1.fixture:setRestitution( 1 )
+	local temptable = {}
+	temptable.uid = cf.Getuuid()
+	temptable.objectType = "Border"	
+	PHYSICSBORDER1.fixture:setUserData(temptable)
 	-- top border
-	PHYSICSBORDER2 = {}
+	local PHYSICSBORDER2 = {}
     PHYSICSBORDER2.body = love.physics.newBody(PHYSICSWORLD, 0 + (PHYSICS_WIDTH / 2), 0, "static") --remember, the shape (the rectangle we create next) anchors to the body from its center, so we have to move it to (650/2, 650-50/2)
     PHYSICSBORDER2.shape = love.physics.newRectangleShape(PHYSICS_WIDTH, 5) --make a rectangle with a width of 650 and a height of 50
     PHYSICSBORDER2.fixture = love.physics.newFixture(PHYSICSBORDER2.body, PHYSICSBORDER2.shape) --attach shape to body
-	PHYSICSBORDER2.fixture:setUserData("BORDERTOP")
+	PHYSICSBORDER2.fixture:setRestitution( 1 )
+	local temptable = {}
+	temptable.uid = cf.Getuuid()
+	temptable.objectType = "Border"	
+	PHYSICSBORDER2.fixture:setUserData(temptable)
 	-- left border
-	PHYSICSBORDER3 = {}
+	local PHYSICSBORDER3 = {}
     PHYSICSBORDER3.body = love.physics.newBody(PHYSICSWORLD, 0, 0 + (PHYSICS_HEIGHT / 2), "static") --remember, the shape (the rectangle we create next) anchors to the body from its center, so we have to move it to (650/2, 650-50/2)
     PHYSICSBORDER3.shape = love.physics.newRectangleShape(5, PHYSICS_HEIGHT) --make a rectangle with a width of 650 and a height of 50
     PHYSICSBORDER3.fixture = love.physics.newFixture(PHYSICSBORDER3.body, PHYSICSBORDER3.shape) --attach shape to body
-	PHYSICSBORDER3.fixture:setUserData("BORDERLEFT")
+	PHYSICSBORDER3.fixture:setRestitution( 1 )
+	local temptable = {}
+	temptable.uid = cf.Getuuid()
+	temptable.objectType = "Border"	
+	PHYSICSBORDER3.fixture:setUserData(temptable)
 	-- right border
-	PHYSICSBORDER4 = {}
+	local PHYSICSBORDER4 = {}
     PHYSICSBORDER4.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH, 0 + (PHYSICS_HEIGHT / 2), "static") --remember, the shape (the rectangle we create next) anchors to the body from its center, so we have to move it to (650/2, 650-50/2)
     PHYSICSBORDER4.shape = love.physics.newRectangleShape(5, PHYSICS_HEIGHT) --make a rectangle with a width of 650 and a height of 50
     PHYSICSBORDER4.fixture = love.physics.newFixture(PHYSICSBORDER4.body, PHYSICSBORDER4.shape) --attach shape to body
-	PHYSICSBORDER4.fixture:setUserData("BORDERRIGHT")
+	PHYSICSBORDER4.fixture:setRestitution( 1 )
+	local temptable = {}
+	temptable.uid = cf.Getuuid()
+	temptable.objectType = "Border"	
+	PHYSICSBORDER4.fixture:setUserData(temptable)
+	
+	table.insert(PHYSICS_ENTITIES, PHYSICSBORDER1)
+	table.insert(PHYSICS_ENTITIES, PHYSICSBORDER2)
+	table.insert(PHYSICS_ENTITIES, PHYSICSBORDER3)
+	table.insert(PHYSICS_ENTITIES, PHYSICSBORDER4)
 end
 
 local function establishPhysicsWorld()
 	love.physics.setMeter(1)
 	PHYSICSWORLD = love.physics.newWorld(0,0,false)
-	PHYSICSWORLD:setCallbacks(beginContact,_,_,_)
+	PHYSICSWORLD:setCallbacks(beginContact,_,_,postSolve)
 
 	establishWorldBorders()
 
 	-- add starbase
-	STARBASE = {}
+	local STARBASE = {}
 	STARBASE.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 35, "static")
 	-- physicsEntity.body:setLinearDamping(0)
 	STARBASE.body:setMass(5000)
@@ -67,12 +88,18 @@ local function establishPhysicsWorld()
 	STARBASE.fixture = love.physics.newFixture(STARBASE.body, STARBASE.shape) --attach shape to body
 	STARBASE.fixture:setRestitution(0)		-- between 0 and 1
 	STARBASE.fixture:setSensor(false)
-	STARBASE.fixture:setUserData("STARBASE")
+	local temptable = {}
+	temptable.uid = cf.Getuuid()
+	temptable.objectType = "Starbase"	
+	STARBASE.fixture:setUserData(temptable)
+	
+	table.insert(PHYSICS_ENTITIES, STARBASE)
 
 	-- add player
 	local entity = concord.entity(ECSWORLD)
     :give("drawable")
     :give("uid")
+	:give("chassis")
 	:give("engine")
 	:give("leftThruster")
 	:give("rightThruster")
@@ -92,7 +119,12 @@ local function establishPhysicsWorld()
 	physicsEntity.fixture = love.physics.newFixture(physicsEntity.body, physicsEntity.shape, PHYSICS_DENSITY)		-- the 1 is the density
 	physicsEntity.fixture:setRestitution(0.1)		-- between 0 and 1
 	physicsEntity.fixture:setSensor(false)
-	physicsEntity.fixture:setUserData(entity.uid.value)		-- links the physics object to the ECS entity
+	
+	local temptable = {}
+	temptable.uid = entity.uid.value
+	temptable.objectType = "Player"
+	
+	physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
 
     table.insert(PHYSICS_ENTITIES, physicsEntity)
 
@@ -102,46 +134,140 @@ end
 local function drawStarbase()
 	love.graphics.setColor(100/256,87/256,188/256,1)
 	local x1, y1, x2, y2, x3, y3, x4, y4
-	for _, fixture in pairs(STARBASE.body:getFixtures()) do
-		local shape = fixture:getShape()
-		if shape:typeOf("CircleShape") then
-			local drawx, drawy = body:getWorldPoints(shape:getPoint())
-			drawx = drawx * BOX2D_SCALE
-			drawy = drawy * BOX2D_SCALE
-			local radius = shape:getRadius()
-			radius = radius * BOX2D_SCALE
-			love.graphics.setColor(1, 0, 0, 1)
-			love.graphics.circle("line", drawx, drawy, radius)
-			love.graphics.setColor(1, 1, 1, 1)
-			love.graphics.print("r:" .. cf.round(radius,2), drawx + 7, drawy - 3)
-		elseif shape:typeOf("PolygonShape") then     -- currently only works on four points (square and rectangle)
-			x1, y1, x2, y2, x3, y3, x4, y4 = STARBASE.body:getWorldPoints(shape:getPoints())
-			x1 = x1 * BOX2D_SCALE
-			y1 = y1 * BOX2D_SCALE
-			x2 = x2 * BOX2D_SCALE
-			y2 = y2 * BOX2D_SCALE
-			x3 = x3 * BOX2D_SCALE
-			y3 = y3 * BOX2D_SCALE
-			x4 = x4 * BOX2D_SCALE
-			y4 = y4 * BOX2D_SCALE
-			-- love.graphics.setColor(1, 0, 0, 1)
-			love.graphics.polygon("line", x1, y1, x2, y2, x3, y3, x4, y4)
-		else
-			love.graphics.line(body:getWorldPoints(shape:getPoints()))
-			error("This physics object needs to be scaled before drawing")
+	
+	local drawx, drawy
+	
+	for i = 1, (#PHYSICS_ENTITIES) do
+		local udtable = PHYSICS_ENTITIES[i].fixture:getUserData()
+		if udtable.objectType == "Starbase" then
+			-- have located the starbase physics object
+			drawx, drawy = PHYSICS_ENTITIES[i].body:getPosition()
+			
+			for _, fixture in pairs(PHYSICS_ENTITIES[i].body:getFixtures()) do
+				local shape = fixture:getShape()
+				if shape:typeOf("CircleShape") then
+					local drawx, drawy = body:getWorldPoints(shape:getPoint())
+					drawx = drawx * BOX2D_SCALE
+					drawy = drawy * BOX2D_SCALE
+					local radius = shape:getRadius()
+					radius = radius * BOX2D_SCALE
+					love.graphics.setColor(1, 0, 0, 1)
+					love.graphics.circle("line", drawx, drawy, radius)
+					love.graphics.setColor(1, 1, 1, 1)
+					love.graphics.print("r:" .. cf.round(radius,2), drawx + 7, drawy - 3)
+				elseif shape:typeOf("PolygonShape") then     -- currently only works on four points (square and rectangle)
+					x1, y1, x2, y2, x3, y3, x4, y4 = PHYSICS_ENTITIES[i].body:getWorldPoints(shape:getPoints())
+					x1 = x1 * BOX2D_SCALE
+					y1 = y1 * BOX2D_SCALE
+					x2 = x2 * BOX2D_SCALE
+					y2 = y2 * BOX2D_SCALE
+					x3 = x3 * BOX2D_SCALE
+					y3 = y3 * BOX2D_SCALE
+					x4 = x4 * BOX2D_SCALE
+					y4 = y4 * BOX2D_SCALE
+					-- love.graphics.setColor(1, 0, 0, 1)
+					love.graphics.polygon("line", x1, y1, x2, y2, x3, y3, x4, y4)
+				else
+					love.graphics.line(body:getWorldPoints(shape:getPoints()))
+					error("This physics object needs to be scaled before drawing")
+				end
+			end
 		end
 	end
 
 	-- get starbase x/y
-	local drawx, drawy = STARBASE.body:getX(), STARBASE.body:getY()
 	drawx = drawx * BOX2D_SCALE
 	drawy = drawy * BOX2D_SCALE
 
 	love.graphics.setFont(FONT[enum.fontHeavyMetalLarge])
     love.graphics.setColor(1,1,1,1)
-    -- love.graphics.print("STARBASE SAFE HAVEN", drawx, drawy)
 	love.graphics.printf("STARBASE SAFE HAVEN", drawx - 750, drawy - 25, 1000, "left", 0, 7, 7)		--! test this on other resolutions
 
+	-- draw the safezone
+	local x1, y1, x2, y2		-- intentionally declared again to clear the old value
+	x1 = 0
+	y1 = (PHYSICS_HEIGHT - PHYSICS_SAFEZONE) * BOX2D_SCALE
+	x2 = PHYSICS_WIDTH * BOX2D_SCALE
+	y2 = y1
+	love.graphics.line(x1,y1,x2,y2)
+end
+
+local function drawAsteroids()
+
+	for k, obj in pairs(PHYSICS_ENTITIES) do
+		local udtable = obj.fixture:getUserData()
+		if udtable.objectType == "Asteroid" then
+			local body = obj.body
+			local mass = cf.round(body:getMass())
+			local x0, y0 = body:getPosition()
+			for _, fixture in pairs(body:getFixtures()) do
+				local shape = fixture:getShape()
+				local points = {body:getWorldPoints(shape:getPoints())}
+				for i = 1, #points do
+					points[i] = points[i] * BOX2D_SCALE
+				end		
+				love.graphics.setColor(139/255,139/255,139/255,1)
+				love.graphics.polygon("line", points)
+				
+				-- print the mass for debug reasons
+				love.graphics.setColor(1,1,1,1)
+				love.graphics.print(mass, x0 * BOX2D_SCALE,y0 * BOX2D_SCALE)
+				
+			end
+		end
+	end
+end
+
+function beginContact(a, b, coll)
+
+end
+
+function postSolve(a, b, coll, normalimpulse, tangentimpulse)
+	
+	-- a is the first fixture
+	-- b is the second fixture
+	-- coll is a contact objects
+
+	local entity1, entity2
+	local udtable1 = a:getUserData()
+	local udtable2 = b:getUserData()
+
+	local uid1 = udtable1.uid
+	local uid2 = udtable2.uid
+
+	if udtable1.objectType == "Border" or udtable2.objectType == "Border" then
+		-- collision is with border. Do nothing.
+	elseif udtable1.objectType == "Starbase" or udtable2.objectType == "Starbase" then
+		--! do something
+	else
+		physicsEntity1 = fun.getPhysEntity(uid1)
+		physicsEntity2 = fun.getPhysEntity(uid2)
+		assert(physicsEntity1 ~= nil)
+		assert(physicsEntity2 ~= nil)
+		
+		local mass1 = physicsEntity1.body:getMass( )
+		local mass2 = physicsEntity2.body:getMass( )
+		local totalmass = mass1 + mass2
+		local rndnum = love.math.random(1, totalmass)
+		if rndnum <= mass1 then
+			-- damage object1
+			if udtable1.objectType == "Player" then
+				local entity = fun.getEntity(uid1)
+				local component = fun.getRandomComponent(entity)
+				
+				print(component.label)
+				
+				component.currentHP = component.currentHP - normalimpulse
+				if component.currentHP <= 0 then
+					component.currentHP = 0
+				end
+			end
+		else
+			-- damage object2
+			if udtable2.objectType == "Player" then
+			end
+		end
+	end
 end
 
 function love.keyreleased( key, scancode )
@@ -201,8 +327,8 @@ end
 
 function love.mousemoved( x, y, dx, dy, istouch )
 	if love.mouse.isDown(3) then
-		TRANSLATEX = TRANSLATEX - dx
-		TRANSLATEY = TRANSLATEY - dy
+		TRANSLATEX = TRANSLATEX - (dx * 3)
+		TRANSLATEY = TRANSLATEY - (dy * 3)
 	end
 end
 
@@ -230,6 +356,10 @@ function love.load()
 	fun.loadImages()
 	fun.loadFonts()
 	establishPhysicsWorld()
+	
+	for i = 1, NUMBER_OF_ASTEROIDS do
+		fun.createAsteroid()
+	end
 
 	local x1, y1 = fun.getPhysEntityXY(PLAYER.UID)
 	cam = Camera.new(x1, y1, 1)
@@ -239,23 +369,27 @@ function love.load()
     ZOOMFACTOR = 0.4
 end
 
-
 function love.draw()
 
     res.start()
 	cam:attach()
 
-	love.graphics.setColor(1,1,1,1)			--! remove this at some point
-	love.graphics.circle("fill", 0, 0, 10)
-
+	love.graphics.setColor(1,1,1,1)
+	love.graphics.draw(IMAGES[enum.imagesBackgroundStatic], 0, 0, 0, 5.24, 10)		
 	ECSWORLD:emit("draw")
+	
+	-- background
+	
 
 	drawStarbase()
+	drawAsteroids()
 
 	-- cf.printAllPhysicsObjects(PHYSICSWORLD, BOX2D_SCALE)
 
 	-- love.graphics.setColor(1,1,1,1)
 	-- love.graphics.circle("fill", PHYSICS_WIDTH / 2 * BOX2D_SCALE, ((PHYSICS_HEIGHT) - 35) * BOX2D_SCALE, 10)
+	
+	-- love.graphics.line(asteroidpoints)
 
 
 	cam:detach()
@@ -276,7 +410,7 @@ function love.update(dt)
 		AUDIO[enum.audioEngine]:stop()
 	end
 
-	cam:setPos(TRANSLATEX,	TRANSLATEY)
+	cam:setPos(TRANSLATEX, TRANSLATEY)
 	cam:setZoom(ZOOMFACTOR)
 
 	res.update()

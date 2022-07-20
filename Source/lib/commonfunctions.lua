@@ -284,18 +284,11 @@ function printAllPhysicsObjects(world, BOX2D_SCALE)
 				love.graphics.setColor(1, 1, 1, 1)
 				love.graphics.print("r:" .. cf.round(radius,2), drawx + 7, drawy - 3)
 			elseif shape:typeOf("PolygonShape") then
-				local x1, y1, x2, y2, x3, y3, x4, y4 = body:getWorldPoints(shape:getPoints())
-				x1 = x1 * BOX2D_SCALE
-				y1 = y1 * BOX2D_SCALE
-				x2 = x2 * BOX2D_SCALE
-				y2 = y2 * BOX2D_SCALE
-				x3 = x3 * BOX2D_SCALE
-				y3 = y3 * BOX2D_SCALE
-				x4 = x4 * BOX2D_SCALE
-				y4 = y4 * BOX2D_SCALE
-
-				love.graphics.setColor(1, 0, 0, 1)
-				love.graphics.polygon("fill", x1, y1, x2, y2, x3, y3, x4, y4)
+				local points = {body:getWorldPoints(shape:getPoints())}
+				for i = 1, #points do
+					points[i] = points[i] * BOX2D_SCALE
+				end				
+				love.graphics.polygon("fill", points)
 			else
 				love.graphics.line(body:getWorldPoints(shape:getPoints()))
 				error("This physics object needs to be scaled before drawing")
