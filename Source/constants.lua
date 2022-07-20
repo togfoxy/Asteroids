@@ -35,9 +35,10 @@ function constants.load()
     PHYSICS_DENSITY = 4    -- how many kg's each mass weighs
 
     PHYSICS_TURNRATE = 15       -- how fast can objects turn
-	
+
 	NUMBER_OF_ASTEROIDS = 65
 
+    FUEL_CONSUMPTION_RATE = 400      -- low numbers = burns more fuel. High numbers = burns less fuel
 end
 
 

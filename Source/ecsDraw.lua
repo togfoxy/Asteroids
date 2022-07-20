@@ -19,12 +19,12 @@ function ecsDraw.init()
 				local x1, y1 = cf.AddVectorToPoint(x0,y0,facing,10)
 				love.graphics.setColor(1, 1, 1, 1)
 				love.graphics.line(x0 * BOX2D_SCALE,y0 * BOX2D_SCALE,x1 * BOX2D_SCALE,y1 * BOX2D_SCALE)
-				
+
                 if entity.uid.value == PLAYER.UID then
                     love.graphics.setColor(0, 1, 0, 1)
                 else
                     love.graphics.setColor(1, 1, 1, 1)
-                end				
+                end
 
                 for _, fixture in pairs(physEntity.body:getFixtures()) do
         			local shape = fixture:getShape()
@@ -40,16 +40,6 @@ function ecsDraw.init()
         				y3 = y3 * BOX2D_SCALE
         				x4 = x4 * BOX2D_SCALE
         				y4 = y4 * BOX2D_SCALE
-                        -- x5 = x5 * BOX2D_SCALE
-        				-- y5 = y5 * BOX2D_SCALE
-        				-- x6 = x6 * BOX2D_SCALE
-        				-- y6 = y6 * BOX2D_SCALE
-        				-- x7 = x7 * BOX2D_SCALE
-        				-- y7 = y7 * BOX2D_SCALE
-        				-- x8 = x8 * BOX2D_SCALE
-        				-- y8 = y8 * BOX2D_SCALE
-
-        				-- love.graphics.setColor(1, 0, 0, 1)
         				love.graphics.polygon("fill", x1, y1, x2, y2, x3, y3, x4, y4)
         			else
         				love.graphics.line(body:getWorldPoints(shape:getPoints()))
