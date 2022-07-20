@@ -7,7 +7,7 @@ function cmp.init()
     end)
 
     concord.component("drawable")   -- will be drawn during love.draw()
-	
+
 	concord.component("chassis", function(c)
 		c.label = "Chassis"
         c.size = 3
@@ -26,10 +26,10 @@ function cmp.init()
     concord.component("fuelTank", function(c)
 		c.label = "Fuel tank"
         c.size = 3
-        c.capacity = 1000000     -- how much thrust it contains
+        c.capacity = 1000000   -- how much thrust it contains
         c.maxCapacity = c.capacity
 		c.maxHP = 10000
-		c.currentHP = c.maxHP		
+		c.currentHP = c.maxHP
     end)
 
 
@@ -38,7 +38,7 @@ function cmp.init()
         c.size = 1
         c.strength = 2500      -- thrust
 		c.maxHP = 10000
-		c.currentHP = c.maxHP		
+		c.currentHP = c.maxHP
     end)
 
     concord.component("rightThruster", function(c)

@@ -31,7 +31,7 @@ local function establishWorldBorders()
 	PHYSICSBORDER1.fixture:setRestitution( 1 )
 	local temptable = {}
 	temptable.uid = cf.Getuuid()
-	temptable.objectType = "Border"	
+	temptable.objectType = "Border"
 	PHYSICSBORDER1.fixture:setUserData(temptable)
 	-- top border
 	local PHYSICSBORDER2 = {}
@@ -41,7 +41,7 @@ local function establishWorldBorders()
 	PHYSICSBORDER2.fixture:setRestitution( 1 )
 	local temptable = {}
 	temptable.uid = cf.Getuuid()
-	temptable.objectType = "Border"	
+	temptable.objectType = "Border"
 	PHYSICSBORDER2.fixture:setUserData(temptable)
 	-- left border
 	local PHYSICSBORDER3 = {}
@@ -51,7 +51,7 @@ local function establishWorldBorders()
 	PHYSICSBORDER3.fixture:setRestitution( 1 )
 	local temptable = {}
 	temptable.uid = cf.Getuuid()
-	temptable.objectType = "Border"	
+	temptable.objectType = "Border"
 	PHYSICSBORDER3.fixture:setUserData(temptable)
 	-- right border
 	local PHYSICSBORDER4 = {}
@@ -61,9 +61,9 @@ local function establishWorldBorders()
 	PHYSICSBORDER4.fixture:setRestitution( 1 )
 	local temptable = {}
 	temptable.uid = cf.Getuuid()
-	temptable.objectType = "Border"	
+	temptable.objectType = "Border"
 	PHYSICSBORDER4.fixture:setUserData(temptable)
-	
+
 	table.insert(PHYSICS_ENTITIES, PHYSICSBORDER1)
 	table.insert(PHYSICS_ENTITIES, PHYSICSBORDER2)
 	table.insert(PHYSICS_ENTITIES, PHYSICSBORDER3)
@@ -90,9 +90,9 @@ local function establishPhysicsWorld()
 	STARBASE.fixture:setSensor(false)
 	local temptable = {}
 	temptable.uid = cf.Getuuid()
-	temptable.objectType = "Starbase"	
+	temptable.objectType = "Starbase"
 	STARBASE.fixture:setUserData(temptable)
-	
+
 	table.insert(PHYSICS_ENTITIES, STARBASE)
 
 	-- add player
@@ -119,11 +119,11 @@ local function establishPhysicsWorld()
 	physicsEntity.fixture = love.physics.newFixture(physicsEntity.body, physicsEntity.shape, PHYSICS_DENSITY)		-- the 1 is the density
 	physicsEntity.fixture:setRestitution(0.1)		-- between 0 and 1
 	physicsEntity.fixture:setSensor(false)
-	
+
 	local temptable = {}
 	temptable.uid = entity.uid.value
 	temptable.objectType = "Player"
-	
+
 	physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
 
     table.insert(PHYSICS_ENTITIES, physicsEntity)
@@ -134,15 +134,15 @@ end
 local function drawStarbase()
 	love.graphics.setColor(100/256,87/256,188/256,1)
 	local x1, y1, x2, y2, x3, y3, x4, y4
-	
+
 	local drawx, drawy
-	
+
 	for i = 1, (#PHYSICS_ENTITIES) do
 		local udtable = PHYSICS_ENTITIES[i].fixture:getUserData()
 		if udtable.objectType == "Starbase" then
 			-- have located the starbase physics object
 			drawx, drawy = PHYSICS_ENTITIES[i].body:getPosition()
-			
+
 			for _, fixture in pairs(PHYSICS_ENTITIES[i].body:getFixtures()) do
 				local shape = fixture:getShape()
 				if shape:typeOf("CircleShape") then
@@ -205,14 +205,14 @@ local function drawAsteroids()
 				local points = {body:getWorldPoints(shape:getPoints())}
 				for i = 1, #points do
 					points[i] = points[i] * BOX2D_SCALE
-				end		
+				end
 				love.graphics.setColor(139/255,139/255,139/255,1)
 				love.graphics.polygon("line", points)
-				
+
 				-- print the mass for debug reasons
 				love.graphics.setColor(1,1,1,1)
 				love.graphics.print(mass, x0 * BOX2D_SCALE,y0 * BOX2D_SCALE)
-				
+
 			end
 		end
 	end
@@ -223,7 +223,7 @@ function beginContact(a, b, coll)
 end
 
 function postSolve(a, b, coll, normalimpulse, tangentimpulse)
-	
+
 	-- a is the first fixture
 	-- b is the second fixture
 	-- coll is a contact objects
@@ -244,7 +244,7 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 		physicsEntity2 = fun.getPhysEntity(uid2)
 		assert(physicsEntity1 ~= nil)
 		assert(physicsEntity2 ~= nil)
-		
+
 		local mass1 = physicsEntity1.body:getMass( )
 		local mass2 = physicsEntity2.body:getMass( )
 		local totalmass = mass1 + mass2
@@ -254,9 +254,9 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 			if udtable1.objectType == "Player" then
 				local entity = fun.getEntity(uid1)
 				local component = fun.getRandomComponent(entity)
-				
+
 				print(component.label)
-				
+
 				component.currentHP = component.currentHP - normalimpulse
 				if component.currentHP <= 0 then
 					component.currentHP = 0
@@ -265,6 +265,15 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 		else
 			-- damage object2
 			if udtable2.objectType == "Player" then
+				local entity = fun.getEntity(uid2)
+				local component = fun.getRandomComponent(entity)
+
+				print(component.label)
+
+				component.currentHP = component.currentHP - normalimpulse
+				if component.currentHP <= 0 then
+					component.currentHP = 0
+				end
 			end
 		end
 	end
@@ -356,7 +365,7 @@ function love.load()
 	fun.loadImages()
 	fun.loadFonts()
 	establishPhysicsWorld()
-	
+
 	for i = 1, NUMBER_OF_ASTEROIDS do
 		fun.createAsteroid()
 	end
@@ -375,11 +384,11 @@ function love.draw()
 	cam:attach()
 
 	love.graphics.setColor(1,1,1,1)
-	love.graphics.draw(IMAGES[enum.imagesBackgroundStatic], 0, 0, 0, 5.24, 10)		
+	love.graphics.draw(IMAGES[enum.imagesBackgroundStatic], 0, 0, 0, 5.24, 10)
 	ECSWORLD:emit("draw")
-	
+
 	-- background
-	
+
 
 	drawStarbase()
 	drawAsteroids()
@@ -388,7 +397,7 @@ function love.draw()
 
 	-- love.graphics.setColor(1,1,1,1)
 	-- love.graphics.circle("fill", PHYSICS_WIDTH / 2 * BOX2D_SCALE, ((PHYSICS_HEIGHT) - 35) * BOX2D_SCALE, 10)
-	
+
 	-- love.graphics.line(asteroidpoints)
 
 
@@ -408,6 +417,16 @@ function love.update(dt)
 		AUDIO[enum.audioEngine]:play()
 	else
 		AUDIO[enum.audioEngine]:stop()
+	end
+	if SOUND.lowFuel then
+		AUDIO[enum.audioLowFuel]:play()
+	else
+		AUDIO[enum.audioLowFuel]:stop()
+	end
+	if SOUND.warning then
+		AUDIO[enum.audioWarning]:play()
+	else
+		AUDIO[enum.audioWarning]:stop()
 	end
 
 	cam:setPos(TRANSLATEX, TRANSLATEY)
