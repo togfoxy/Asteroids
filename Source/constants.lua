@@ -32,7 +32,6 @@ function constants.load()
     IMAGES = {}
     FONT = {}
 
-    STARTING_SIZE = 3        -- the size of the chassis or base ship
     PHYSICS_DENSITY = 4    -- how many kg's each mass weighs
 
     PHYSICS_TURNRATE = 15       -- how fast can objects turn

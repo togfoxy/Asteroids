@@ -73,7 +73,7 @@ end
 local function establishPhysicsWorld()
 	love.physics.setMeter(1)
 	PHYSICSWORLD = love.physics.newWorld(0,0,false)
-	PHYSICSWORLD:setCallbacks(beginContact,_,_,_)
+	PHYSICSWORLD:setCallbacks(beginContact,_,_,postSolve)
 
 	establishWorldBorders()
 
@@ -99,6 +99,7 @@ local function establishPhysicsWorld()
 	local entity = concord.entity(ECSWORLD)
     :give("drawable")
     :give("uid")
+	:give("chassis")
 	:give("engine")
 	:give("leftThruster")
 	:give("rightThruster")
@@ -218,12 +219,15 @@ local function drawAsteroids()
 end
 
 function beginContact(a, b, coll)
+
+end
+
+function postSolve(a, b, coll, normalimpulse, tangentimpulse)
+	
 	-- a is the first fixture
 	-- b is the second fixture
 	-- coll is a contact objects
 
-	print("crash!")
-	
 	local entity1, entity2
 	local udtable1 = a:getUserData()
 	local udtable2 = b:getUserData()
@@ -231,24 +235,39 @@ function beginContact(a, b, coll)
 	local uid1 = udtable1.uid
 	local uid2 = udtable2.uid
 
-
-
 	if udtable1.objectType == "Border" or udtable2.objectType == "Border" then
 		-- collision is with border. Do nothing.
 	elseif udtable1.objectType == "Starbase" or udtable2.objectType == "Starbase" then
-	
+		--! do something
 	else
-
-print(uid1, uid2)
-print(udtable1.objectType, udtable2.objectType)
-	
 		physicsEntity1 = fun.getPhysEntity(uid1)
 		physicsEntity2 = fun.getPhysEntity(uid2)
 		assert(physicsEntity1 ~= nil)
 		assert(physicsEntity2 ~= nil)
-
+		
+		local mass1 = physicsEntity1.body:getMass( )
+		local mass2 = physicsEntity2.body:getMass( )
+		local totalmass = mass1 + mass2
+		local rndnum = love.math.random(1, totalmass)
+		if rndnum <= mass1 then
+			-- damage object1
+			if udtable1.objectType == "Player" then
+				local entity = fun.getEntity(uid1)
+				local component = fun.getRandomComponent(entity)
+				
+				print(component.label)
+				
+				component.currentHP = component.currentHP - normalimpulse
+				if component.currentHP <= 0 then
+					component.currentHP = 0
+				end
+			end
+		else
+			-- damage object2
+			if udtable2.objectType == "Player" then
+			end
+		end
 	end
-
 end
 
 function love.keyreleased( key, scancode )
