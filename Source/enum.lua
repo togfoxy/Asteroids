@@ -2,6 +2,7 @@ module(...,package.seeall)
 
 
 imagesEngineFlame = 1
+imagesBackgroundStatic = 2
 
 audioEngine = 1
 

@@ -1,8 +1,11 @@
 functions = {}
 
 function functions.loadImages()
-	-- terrain tiles
+
 	IMAGES[enum.imagesEngineFlame] = love.graphics.newImage("assets/images/flame.png")
+	
+	-- background
+	IMAGES[enum.imagesBackgroundStatic] = love.graphics.newImage("assets/images/bg_space_seamless_2.png")
 
 end
 
@@ -21,7 +24,8 @@ function functions.getPhysEntity(uid)
     -- can then access body, fixture, shape etc.
     assert(uid ~= nil)
     for i = 1, #PHYSICS_ENTITIES do
-        if PHYSICS_ENTITIES[i].fixture:getUserData() == uid then
+		local udtable = PHYSICS_ENTITIES[i].fixture:getUserData()
+		if udtable.uid == uid then
             return PHYSICS_ENTITIES[i]
         end
     end
@@ -31,6 +35,7 @@ end
 function functions.getPhysEntityXY(uid)
     -- returns a body x/y from an ECS UID
     assert(uid ~= nil)
+	
     local physEntity = fun.getPhysEntity(uid)
     if physEntity ~= nil then
         return physEntity.body:getX(), physEntity.body:getY()
@@ -112,9 +117,12 @@ function functions.createAsteroid()
 	asteroid.fixture = love.physics.newFixture(asteroid.body, asteroid.shape, PHYSICS_DENSITY)		-- the 1 is the density
 	asteroid.fixture:setRestitution(0.1)		-- between 0 and 1
 	asteroid.fixture:setSensor(false)
-	-- asteroid.fixture:setUserData(cf.Getuuid())		-- 
+	local temptable = {}
+	temptable.uid = cf.Getuuid()
+	temptable.objectType = "Asteroid"
+	asteroid.fixture:setUserData(temptable)		-- 
 
-    table.insert(PHYSICS_ASTEROIDS, asteroid)
+    table.insert(PHYSICS_ENTITIES, asteroid)
 
 end
 

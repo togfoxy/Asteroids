@@ -11,25 +11,25 @@ function ecsDraw.init()
         for _, entity in ipairs(self.pool) do
             local physEntity = fun.getPhysEntity(entity.uid.value)
             if physEntity ~= nil then
+
+				-- draw the 'front'
+				local x0, y0 = physEntity.body:getPosition()
+				local facing = physEntity.body:getAngle()       -- radians
+				facing = cf.convRadToCompass(facing)
+				local x1, y1 = cf.AddVectorToPoint(x0,y0,facing,10)
+				love.graphics.setColor(1, 1, 1, 1)
+				love.graphics.line(x0 * BOX2D_SCALE,y0 * BOX2D_SCALE,x1 * BOX2D_SCALE,y1 * BOX2D_SCALE)
+				
                 if entity.uid.value == PLAYER.UID then
                     love.graphics.setColor(0, 1, 0, 1)
                 else
                     love.graphics.setColor(1, 1, 1, 1)
-                end
+                end				
 
                 for _, fixture in pairs(physEntity.body:getFixtures()) do
         			local shape = fixture:getShape()
 
         			if shape:typeOf("CircleShape") then
-        				local drawx, drawy = body:getWorldPoints(shape:getPoint())
-        				drawx = drawx * BOX2D_SCALE
-        				drawy = drawy * BOX2D_SCALE
-        				local radius = shape:getRadius()
-        				radius = radius * BOX2D_SCALE
-        				love.graphics.setColor(1, 0, 0, 1)
-        				love.graphics.circle("line", drawx, drawy, radius)
-        				love.graphics.setColor(1, 1, 1, 1)
-        				love.graphics.print("r:" .. cf.round(radius,2), drawx + 7, drawy - 3)
         			elseif shape:typeOf("PolygonShape") then     -- currently only works on four points (square and rectangle)
         				local x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6, x7, y7, x8, y8 = physEntity.body:getWorldPoints(shape:getPoints())
         				x1 = x1 * BOX2D_SCALE
@@ -62,7 +62,7 @@ function ecsDraw.init()
                 y1 = y1 * BOX2D_SCALE
                 local facing = physEntity.body:getAngle()       -- radians
 
-                if DRAW.engineFlame then
+                if DRAW.engineFlame then		--! these are globals but probably shouldn't be
                     love.graphics.setColor(1,1,1,1)
                     love.graphics.draw(IMAGES[enum.imagesEngineFlame], x1, y1, facing, 10, 10, 2, -3)        --  r, sx, sy, ox, oy, kx, ky)
                 end

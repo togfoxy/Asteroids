@@ -37,7 +37,7 @@ function constants.load()
 
     PHYSICS_TURNRATE = 15       -- how fast can objects turn
 	
-	NUMBER_OF_ASTEROIDS = 25
+	NUMBER_OF_ASTEROIDS = 65
 
 end
 
