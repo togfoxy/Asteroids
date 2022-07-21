@@ -262,6 +262,7 @@ function ecsUpdate.init()
                         if entity.battery.capacity >= 0 then
                             activateMiningLaser(dt)
                             entity.battery.capacity = entity.battery.capacity - dt
+                            if  entity.battery.capacity <= 0 then  entity.battery.capacity = 0 end
                         end
                     end
                 end

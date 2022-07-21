@@ -1,7 +1,8 @@
 ecsDraw = {}
 
 local function drawDamageIndicator(str, x1, y1)
-    -- screen coordinates
+    -- input string and screen coordinates
+    -- doesn't use entity etc
 
     -- print the text
     drawx = x1 + 150
@@ -16,6 +17,23 @@ local function drawDamageIndicator(str, x1, y1)
     x4, y4 = cf.AddVectorToPoint(x3,y3,90,35)
 
     love.graphics.line(x2,y2,x3,y3,x4,y4)
+end
+
+local function drawLowIndicator(str, x1, y1)
+    -- print the text
+    drawx = x1 - 200
+    drawy = y1 - 115
+    love.graphics.setFont(FONT[enum.fontDefault])
+    love.graphics.setColor(1,1,0,1)
+    love.graphics.print(str, drawx, drawy)
+
+    -- draw a cool line
+    x2, y2 = cf.AddVectorToPoint(x1,y1,315,75)
+    x3, y3 = cf.AddVectorToPoint(x2,y2,315,75)
+    x4, y4 = cf.AddVectorToPoint(x3,y3,270,35)
+
+    love.graphics.line(x2,y2,x3,y3,x4,y4)
+
 end
 
 function ecsDraw.init()
@@ -96,9 +114,16 @@ function ecsDraw.init()
 
                 -- draw destroyed markers
                 local dmgStr = ""
-                local dmgStr = fun.getDestroyedComponentString(entity)
+                dmgStr = fun.getDestroyedComponentString(entity)
                 if dmgStr ~= "" then
                     drawDamageIndicator(dmgStr, x1, y1)     -- screen coodinates of entity
+                end
+
+                -- draw empty batteries etc
+                local lowStr = ""
+                lowStr = fun.getLowComponentString(entity)
+                if lowStr ~= "" then
+                    drawLowIndicator(lowStr, x1, y1)
                 end
 
                 -- draw mining laser

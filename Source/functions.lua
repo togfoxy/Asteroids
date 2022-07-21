@@ -166,6 +166,16 @@ function functions.getDestroyedComponentString(entity)
 				result = result .. component.label .. "\n"
 			end
 		end
+    end
+	return result
+end
+
+function functions.getLowComponentString(entity)
+	-- cycle through components looking for empty tanks and batteries
+	-- returns a string
+	local result = ""		-- string
+	local allComponents = entity:getComponents()
+	for _, component in pairs(allComponents) do
 		if component.capacity ~= nil then
 			if component.capacity <= 0 then
 				result = result .. component.label .. "\n"

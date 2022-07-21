@@ -69,7 +69,7 @@ function cmp.init()
     concord.component("battery", function(c)
         c.label = "Battery"
         c.size = 1
-        c.capacity = 90   -- how much dt it holds (seconds)
+        c.capacity = 9   -- how much dt it holds (seconds)
         c.maxCapacity = c.capacity
         c.maxHP = 10000
         c.currentHP = c.maxHP
