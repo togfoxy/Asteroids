@@ -150,4 +150,20 @@ function functions.getRandomComponent(entity)
    error("Program flow should not have reached here")
 end
 
+function functions.getDestroyedComponentString(entity)
+	-- cycle through all components looking for destroyed ones
+	-- returns a sting
+
+	local result = ""		-- string
+	local allComponents = entity:getComponents()
+	for _, component in pairs(allComponents) do
+		if component.currentHP ~= nil then
+			if component.currentHP <= 0 then
+				result = result .. component.label .. "\n"
+			end
+		end
+    end
+	return result
+end
+
 return functions

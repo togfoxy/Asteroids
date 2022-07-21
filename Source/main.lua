@@ -108,6 +108,10 @@ local function establishPhysicsWorld()
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
 
+	-- debug
+	-- entity.reverseThruster.currentHP = 0
+
+
 	local shipsize = fun.getEntitySize(entity)
 
 	local physicsEntity = {}

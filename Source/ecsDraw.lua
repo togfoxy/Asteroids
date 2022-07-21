@@ -1,5 +1,26 @@
 ecsDraw = {}
 
+local function drawDamageIndicator(str, x1, y1)
+    -- screen coordinates
+
+    -- print the text
+    drawx = x1 + 150
+    drawy = y1 - 115
+    love.graphics.setFont(FONT[enum.fontDefault])
+    love.graphics.setColor(1,0,0,1)
+    love.graphics.print(str, drawx, drawy)
+
+    -- draw a cool line
+    x2, y2 = cf.AddVectorToPoint(x1,y1,45,75)
+    x3, y3 = cf.AddVectorToPoint(x2,y2,45,75)
+    x4, y4 = cf.AddVectorToPoint(x3,y3,90,35)
+
+    love.graphics.line(x2,y2,x3,y3,x4,y4)
+
+
+
+end
+
 function ecsDraw.init()
 
     systemDraw = concord.system({
@@ -47,6 +68,7 @@ function ecsDraw.init()
         			end
         		end
 
+                -- draw the different flames
                 local x1, y1 = fun.getPhysEntityXY(entity.uid.value)
                 x1 = x1 * BOX2D_SCALE
                 y1 = y1 * BOX2D_SCALE
@@ -69,6 +91,12 @@ function ecsDraw.init()
                     love.graphics.draw(IMAGES[enum.imagesEngineFlame], x1, y1, facing + 3.14, 5, 5, 3, -6)        --  r, sx, sy, ox, oy, kx, ky)
                 end
 
+                -- draw damamge markers
+                local dmgStr = ""
+                local dmgStr = fun.getDestroyedComponentString(entity)
+                if dmgStr ~= "" then
+                    drawDamageIndicator(dmgStr, x1, y1)     -- screen coodinates of entity
+                end
             end
         end
     end
