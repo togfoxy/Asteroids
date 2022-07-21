@@ -56,6 +56,16 @@ function cmp.init()
 		c.maxHP = 10000
 		c.currentHP = c.maxHP
     end)
+
+    concord.component("miningLaser", function(c)
+		c.label = "Mining laser"
+        c.size = 1
+        c.miningRate = 50       -- how much mass per dt/click/whatever
+        c.miningRange = 100     -- the reach of the laser
+		c.maxHP = 10000
+		c.currentHP = c.maxHP
+    end)
+
 end
 
 return cmp

@@ -13,7 +13,7 @@ function functions.loadAudio()
     AUDIO[enum.audioEngine] = love.audio.newSource("assets/audio/engine.ogg", "static")
 	AUDIO[enum.audioLowFuel] = love.audio.newSource("assets/audio/lowFuel.ogg", "static")
 	AUDIO[enum.audioWarning] = love.audio.newSource("assets/audio/507906__m-cel__warning-sound.ogg", "static")
-
+	AUDIO[enum.audioMiningLaser] = love.audio.newSource("assets/audio/223472__parabolix__underground-machine-heart-loop.mp3", "static")
 end
 
 function functions.loadFonts()
@@ -124,6 +124,8 @@ function functions.createAsteroid()
 	temptable.uid = cf.Getuuid()
 	temptable.objectType = "Asteroid"
 	asteroid.fixture:setUserData(temptable)		--
+	asteroid.originalMass = asteroid.body:getMass()
+	asteroid.currentMass = asteroid.originalMass
 
     table.insert(PHYSICS_ENTITIES, asteroid)
 
@@ -148,6 +150,42 @@ function functions.getRandomComponent(entity)
    end
 
    error("Program flow should not have reached here")
+end
+
+function functions.getDestroyedComponentString(entity)
+	-- cycle through all components looking for destroyed ones
+	-- returns a sting
+
+	local result = ""		-- string
+	local allComponents = entity:getComponents()
+	for _, component in pairs(allComponents) do
+		if component.currentHP ~= nil then
+			if component.currentHP <= 0 then
+				result = result .. component.label .. "\n"
+			end
+		end
+    end
+	return result
+end
+
+function functions.killPhysicsEntity(entity)
+    -- unit test
+    local physicsOrigsize = #PHYSICS_ENTITIES
+    --
+
+	--!ensure this is only done to asteroids. Perhaps change name of function
+
+    -- destroy the body then remove empty body from the array
+    for i = 1, #PHYSICS_ENTITIES do		-- needs to be a for i loop so we can do a table remove
+        if PHYSICS_ENTITIES[i] == entity then
+            PHYSICS_ENTITIES[i].body:destroy()
+            table.remove(PHYSICS_ENTITIES, i)
+            break
+        end
+    end
+
+    -- unit test
+    assert(#PHYSICS_ENTITIES < physicsOrigsize)
 end
 
 return functions

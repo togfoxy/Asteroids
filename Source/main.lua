@@ -22,6 +22,45 @@ ecs = require 'ecsFunctions'
 ecsDraw = require 'ecsDraw'
 ecsUpdate = require 'ecsUpdate'
 
+local function establishPlayerVessel()
+	-- add player
+	local entity = concord.entity(ECSWORLD)
+    :give("drawable")
+    :give("uid")
+	:give("chassis")
+	:give("engine")
+	:give("leftThruster")
+	:give("rightThruster")
+	:give("reverseThruster")
+	:give("fuelTank")
+	:give("miningLaser")
+    table.insert(ECS_ENTITIES, entity)
+	PLAYER.UID = entity.uid.value 		-- store this for easy recall
+	-- debug
+	-- entity.reverseThruster.currentHP = 0
+	local shipsize = fun.getEntitySize(entity)
+
+	local physicsEntity = {}
+    physicsEntity.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 75, "dynamic")
+	physicsEntity.body:setLinearDamping(0)
+	-- physicsEntity.body:setMass(500)		-- kg		-- made redundant by newFixture
+	physicsEntity.shape = love.physics.newRectangleShape(shipsize, shipsize)		-- will draw a rectangle around the body x/y. No need to offset it
+	-- physicsEntity.shape = love.physics.newPolygonShape(PLAYER.POINTS)
+	physicsEntity.fixture = love.physics.newFixture(physicsEntity.body, physicsEntity.shape, PHYSICS_DENSITY)		-- the 1 is the density
+	physicsEntity.fixture:setRestitution(0.1)		-- between 0 and 1
+	physicsEntity.fixture:setSensor(false)
+
+	local temptable = {}
+	temptable.uid = entity.uid.value
+	temptable.objectType = "Player"
+
+	physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
+
+    table.insert(PHYSICS_ENTITIES, physicsEntity)
+
+	print("Ship mass is " .. physicsEntity.body:getMass())
+end
+
 local function establishWorldBorders()
 	-- bottom border
 	local PHYSICSBORDER1 = {}
@@ -78,57 +117,24 @@ local function establishPhysicsWorld()
 	establishWorldBorders()
 
 	-- add starbase
-	local STARBASE = {}
-	STARBASE.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 35, "static")
+	local starbase = {}
+	starbase.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 35, "static")
 	-- physicsEntity.body:setLinearDamping(0)
-	STARBASE.body:setMass(5000)
+	starbase.body:setMass(5000)
 
-	STARBASE.shape = love.physics.newPolygonShape(-250,-25,250,-25,250,25,-250,25)
+	starbase.shape = love.physics.newPolygonShape(-250,-25,250,-25,250,25,-250,25)
 
-	STARBASE.fixture = love.physics.newFixture(STARBASE.body, STARBASE.shape) --attach shape to body
-	STARBASE.fixture:setRestitution(0)		-- between 0 and 1
-	STARBASE.fixture:setSensor(false)
+	starbase.fixture = love.physics.newFixture(starbase.body, starbase.shape) --attach shape to body
+	starbase.fixture:setRestitution(0)		-- between 0 and 1
+	starbase.fixture:setSensor(false)
 	local temptable = {}
 	temptable.uid = cf.Getuuid()
 	temptable.objectType = "Starbase"
-	STARBASE.fixture:setUserData(temptable)
+	starbase.fixture:setUserData(temptable)
 
-	table.insert(PHYSICS_ENTITIES, STARBASE)
+	table.insert(PHYSICS_ENTITIES, starbase)
 
-	-- add player
-	local entity = concord.entity(ECSWORLD)
-    :give("drawable")
-    :give("uid")
-	:give("chassis")
-	:give("engine")
-	:give("leftThruster")
-	:give("rightThruster")
-	:give("reverseThruster")
-	:give("fuelTank")
-    table.insert(ECS_ENTITIES, entity)
-	PLAYER.UID = entity.uid.value 		-- store this for easy recall
-
-	local shipsize = fun.getEntitySize(entity)
-
-	local physicsEntity = {}
-    physicsEntity.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 75, "dynamic")
-	physicsEntity.body:setLinearDamping(0)
-	-- physicsEntity.body:setMass(500)		-- kg		-- made redundant by newFixture
-	physicsEntity.shape = love.physics.newRectangleShape(shipsize, shipsize)		-- will draw a rectangle around the body x/y. No need to offset it
-	-- physicsEntity.shape = love.physics.newPolygonShape(PLAYER.POINTS)
-	physicsEntity.fixture = love.physics.newFixture(physicsEntity.body, physicsEntity.shape, PHYSICS_DENSITY)		-- the 1 is the density
-	physicsEntity.fixture:setRestitution(0.1)		-- between 0 and 1
-	physicsEntity.fixture:setSensor(false)
-
-	local temptable = {}
-	temptable.uid = entity.uid.value
-	temptable.objectType = "Player"
-
-	physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
-
-    table.insert(PHYSICS_ENTITIES, physicsEntity)
-
-	print("Ship mass is " .. physicsEntity.body:getMass())
+	establishPlayerVessel()
 end
 
 local function drawStarbase()
@@ -206,13 +212,62 @@ local function drawAsteroids()
 				for i = 1, #points do
 					points[i] = points[i] * BOX2D_SCALE
 				end
-				love.graphics.setColor(139/255,139/255,139/255,1)
+
+				if udtable.isSelected then
+					love.graphics.setColor(0, 1, 1, 1)
+				else
+					love.graphics.setColor(139/255,139/255,139/255,1)
+				end
 				love.graphics.polygon("line", points)
 
 				-- print the mass for debug reasons
 				love.graphics.setColor(1,1,1,1)
-				love.graphics.print(mass, x0 * BOX2D_SCALE,y0 * BOX2D_SCALE)
+				love.graphics.print(cf.round(obj.currentMass), (x0 * BOX2D_SCALE) + 15, (y0 * BOX2D_SCALE) - 15)
 
+			end
+		end
+	end
+end
+
+local function processMouseClick(button, dt)
+
+	x, y = love.mouse.getPosition( )
+	local wx,wy = cam:toWorld(x, y)		-- converts screen x/y to world x/y
+	local bx = wx / BOX2D_SCALE			-- converts world x/y to BOX2D x/y
+	local by = wy / BOX2D_SCALE
+
+	local playerEntity = fun.getEntity(PLAYER.UID)
+	local playerPE = fun.getPhysEntity(PLAYER.UID)
+
+	-- get distance between player and mouse click
+	local x0,y0 = playerPE.body:getPosition()
+	local distance = cf.GetDistance(x0, y0, bx, by)
+	-- print(x0, y0, bx, by)
+	-- print("dist = " .. distance)
+
+	if playerEntity:has("miningLaser") then
+		if playerEntity.miningLaser.currentHP >=0 then
+			if distance <= playerEntity.miningLaser.miningRange then
+				for _, asteroid in pairs(PHYSICSWORLD:getBodies()) do		-- this is bodies - not entities
+					for _, fixture in pairs(asteroid:getFixtures()) do
+						local temptable = fixture:getUserData()
+						if temptable.objectType == "Asteroid" then			-- make this an enum
+							local hit = fixture:testPoint(bx, by)
+							if hit then
+								local physicsEntity = fun.getPhysEntity(temptable.uid)
+								physicsEntity.currentMass = physicsEntity.currentMass - (playerEntity.miningLaser.miningRate * dt)
+								-- print(cf.round(asteroid.currentMass))
+								DRAW.miningLaser = true
+								DRAW.miningLaserX = bx
+								DRAW.miningLaserY = by
+								SOUND.miningLaser = true
+								if physicsEntity.currentMass <= 0 then
+									fun.killPhysicsEntity(physicsEntity)
+								end
+							end
+						end
+					end
+				end
 			end
 		end
 	end
@@ -327,9 +382,6 @@ function love.mousepressed( x, y, button, istouch, presses )
 	local wx,wy = cam:toWorld(x, y)	-- converts screen x/y to world x/y
 
 	if button == 1 then
-		-- convert mouse point to the physics coordinates
-		local x1 = wx
-		local y1 = wy
 
 	end
 end
@@ -413,6 +465,10 @@ function love.update(dt)
 	ECSWORLD:emit("update", dt)
 	PHYSICSWORLD:update(dt) --this puts the world into motion
 
+	if love.mouse.isDown(1) then
+		processMouseClick(1, dt)
+	end
+
 	if SOUND.engine then
 		AUDIO[enum.audioEngine]:play()
 	else
@@ -428,6 +484,13 @@ function love.update(dt)
 	else
 		AUDIO[enum.audioWarning]:stop()
 	end
+	if SOUND.miningLaser then
+		AUDIO[enum.audioMiningLaser]:play()
+	else
+		AUDIO[enum.audioMiningLaser]:stop()
+	end
+
+	--! check for dead chassis
 
 	cam:setPos(TRANSLATEX, TRANSLATEY)
 	cam:setZoom(ZOOMFACTOR)
