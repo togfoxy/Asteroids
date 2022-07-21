@@ -43,7 +43,8 @@ local function establishPlayerVessel()
 	-- debug
 	-- entity.reverseThruster.currentHP = 0
 	local shipsize = fun.getEntitySize(entity)
-	-- shipsize = 10
+	--DEBUG_VESSEL_SIZE = 10
+	--shipsize = DEBUG_VESSEL_SIZE
 
 	local physicsEntity = {}
     physicsEntity.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 75, "dynamic")
