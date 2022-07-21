@@ -78,22 +78,22 @@ local function establishPhysicsWorld()
 	establishWorldBorders()
 
 	-- add starbase
-	local STARBASE = {}
-	STARBASE.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 35, "static")
+	local starbase = {}
+	starbase.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 35, "static")
 	-- physicsEntity.body:setLinearDamping(0)
-	STARBASE.body:setMass(5000)
+	starbase.body:setMass(5000)
 
-	STARBASE.shape = love.physics.newPolygonShape(-250,-25,250,-25,250,25,-250,25)
+	starbase.shape = love.physics.newPolygonShape(-250,-25,250,-25,250,25,-250,25)
 
-	STARBASE.fixture = love.physics.newFixture(STARBASE.body, STARBASE.shape) --attach shape to body
-	STARBASE.fixture:setRestitution(0)		-- between 0 and 1
-	STARBASE.fixture:setSensor(false)
+	starbase.fixture = love.physics.newFixture(starbase.body, starbase.shape) --attach shape to body
+	starbase.fixture:setRestitution(0)		-- between 0 and 1
+	starbase.fixture:setSensor(false)
 	local temptable = {}
 	temptable.uid = cf.Getuuid()
 	temptable.objectType = "Starbase"
-	STARBASE.fixture:setUserData(temptable)
+	starbase.fixture:setUserData(temptable)
 
-	table.insert(PHYSICS_ENTITIES, STARBASE)
+	table.insert(PHYSICS_ENTITIES, starbase)
 
 	-- add player
 	local entity = concord.entity(ECSWORLD)
@@ -210,7 +210,12 @@ local function drawAsteroids()
 				for i = 1, #points do
 					points[i] = points[i] * BOX2D_SCALE
 				end
-				love.graphics.setColor(139/255,139/255,139/255,1)
+
+				if udtable.isSelected then
+					love.graphics.setColor(0, 1, 1, 1)
+				else
+					love.graphics.setColor(139/255,139/255,139/255,1)
+				end
 				love.graphics.polygon("line", points)
 
 				-- print the mass for debug reasons
@@ -331,10 +336,19 @@ function love.mousepressed( x, y, button, istouch, presses )
 	local wx,wy = cam:toWorld(x, y)	-- converts screen x/y to world x/y
 
 	if button == 1 then
-		-- convert mouse point to the physics coordinates
-		local x1 = wx
-		local y1 = wy
+		for _, body in pairs(PHYSICSWORLD:getBodies()) do
+			for _, fixture in pairs(body:getFixtures()) do
 
+				local hit = fixture:testPoint( wx / BOX2D_SCALE, wy / BOX2D_SCALE )
+
+				if hit then
+					print("Hit")
+					local temptable = fixture:getUserData()
+					temptable.isSelected = true
+					fixture:setUserData(temptable)
+				end
+			end
+		end
 	end
 end
 

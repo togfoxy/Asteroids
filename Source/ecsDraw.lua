@@ -16,9 +16,6 @@ local function drawDamageIndicator(str, x1, y1)
     x4, y4 = cf.AddVectorToPoint(x3,y3,90,35)
 
     love.graphics.line(x2,y2,x3,y3,x4,y4)
-
-
-
 end
 
 function ecsDraw.init()
