@@ -34,11 +34,17 @@ local function establishPlayerVessel()
 	:give("reverseThruster")
 	:give("fuelTank")
 	:give("miningLaser")
+	:give("battery")
+	:give("oxyGenerator")
+	:give("oxyTank")
+	:give("solarPanel")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
 	-- debug
 	-- entity.reverseThruster.currentHP = 0
 	local shipsize = fun.getEntitySize(entity)
+	--DEBUG_VESSEL_SIZE = 10
+	--shipsize = DEBUG_VESSEL_SIZE
 
 	local physicsEntity = {}
     physicsEntity.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 75, "dynamic")
@@ -59,6 +65,7 @@ local function establishPlayerVessel()
     table.insert(PHYSICS_ENTITIES, physicsEntity)
 
 	print("Ship mass is " .. physicsEntity.body:getMass())
+	print("Ship size is " .. shipsize)
 end
 
 local function establishWorldBorders()
@@ -229,52 +236,7 @@ local function drawAsteroids()
 	end
 end
 
-local function processMouseClick(button, dt)
-
-	x, y = love.mouse.getPosition( )
-	local wx,wy = cam:toWorld(x, y)		-- converts screen x/y to world x/y
-	local bx = wx / BOX2D_SCALE			-- converts world x/y to BOX2D x/y
-	local by = wy / BOX2D_SCALE
-
-	local playerEntity = fun.getEntity(PLAYER.UID)
-	local playerPE = fun.getPhysEntity(PLAYER.UID)
-
-	-- get distance between player and mouse click
-	local x0,y0 = playerPE.body:getPosition()
-	local distance = cf.GetDistance(x0, y0, bx, by)
-	-- print(x0, y0, bx, by)
-	-- print("dist = " .. distance)
-
-	if playerEntity:has("miningLaser") then
-		if playerEntity.miningLaser.currentHP >=0 then
-			if distance <= playerEntity.miningLaser.miningRange then
-				for _, asteroid in pairs(PHYSICSWORLD:getBodies()) do		-- this is bodies - not entities
-					for _, fixture in pairs(asteroid:getFixtures()) do
-						local temptable = fixture:getUserData()
-						if temptable.objectType == "Asteroid" then			-- make this an enum
-							local hit = fixture:testPoint(bx, by)
-							if hit then
-								local physicsEntity = fun.getPhysEntity(temptable.uid)
-								physicsEntity.currentMass = physicsEntity.currentMass - (playerEntity.miningLaser.miningRate * dt)
-								-- print(cf.round(asteroid.currentMass))
-								DRAW.miningLaser = true
-								DRAW.miningLaserX = bx
-								DRAW.miningLaserY = by
-								SOUND.miningLaser = true
-								if physicsEntity.currentMass <= 0 then
-									fun.killPhysicsEntity(physicsEntity)
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-	end
-end
-
 function beginContact(a, b, coll)
-
 end
 
 function postSolve(a, b, coll, normalimpulse, tangentimpulse)
@@ -465,10 +427,6 @@ function love.update(dt)
 	ECSWORLD:emit("update", dt)
 	PHYSICSWORLD:update(dt) --this puts the world into motion
 
-	if love.mouse.isDown(1) then
-		processMouseClick(1, dt)
-	end
-
 	if SOUND.engine then
 		AUDIO[enum.audioEngine]:play()
 	else
@@ -489,8 +447,14 @@ function love.update(dt)
 	else
 		AUDIO[enum.audioMiningLaser]:stop()
 	end
+	if SOUND.rockExplosion then
+		AUDIO[enum.audioRockExplosion]:play()
+	else
+		--AUDIO[enum.audioRockExplosion]:play()
+	end
 
 	--! check for dead chassis
+	--! check for dead or empty o2 tank
 
 	cam:setPos(TRANSLATEX, TRANSLATEY)
 	cam:setZoom(ZOOMFACTOR)

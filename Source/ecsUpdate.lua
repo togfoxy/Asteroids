@@ -1,6 +1,45 @@
 ecsUpdate = {}
 
+local function activateMiningLaser(dt)
 
+	x, y = love.mouse.getPosition( )
+	local wx,wy = cam:toWorld(x, y)		-- converts screen x/y to world x/y
+	local bx = wx / BOX2D_SCALE			-- converts world x/y to BOX2D x/y
+	local by = wy / BOX2D_SCALE
+
+	local playerEntity = fun.getEntity(PLAYER.UID)
+	local playerPE = fun.getPhysEntity(PLAYER.UID)
+
+	-- get distance between player and mouse click
+	local x0,y0 = playerPE.body:getPosition()
+	local distance = cf.GetDistance(x0, y0, bx, by)
+	-- print(x0, y0, bx, by)
+	-- print("dist = " .. distance)
+
+	if distance <= playerEntity.miningLaser.miningRange then
+		for _, asteroid in pairs(PHYSICSWORLD:getBodies()) do		-- this is bodies - not entities
+			for _, fixture in pairs(asteroid:getFixtures()) do
+				local temptable = fixture:getUserData()
+				if temptable.objectType == "Asteroid" then			-- make this an enum
+					local hit = fixture:testPoint(bx, by)
+					if hit then
+						local physicsEntity = fun.getPhysEntity(temptable.uid)
+						physicsEntity.currentMass = physicsEntity.currentMass - (playerEntity.miningLaser.miningRate * dt)
+						-- print(cf.round(asteroid.currentMass))
+						DRAW.miningLaser = true
+						DRAW.miningLaserX = bx
+						DRAW.miningLaserY = by
+						SOUND.miningLaser = true
+						if physicsEntity.currentMass <= 0 then
+							fun.killPhysicsEntity(physicsEntity)
+							SOUND.rockExplosion = true
+						end
+					end
+				end
+			end
+		end
+	end
+end
 
 function ecsUpdate.init()
     systemEngine = concord.system({
@@ -211,6 +250,67 @@ function ecsUpdate.init()
         end
     end
     ECSWORLD:addSystems(systemReverseThruster)
+
+    systemMiningLaser = concord.system({
+        pool = {"miningLaser"}
+    })
+    function systemMiningLaser:update(dt)
+        if love.mouse.isDown(1) then
+            for _, entity in ipairs(self.pool) do
+                if entity.miningLaser.currentHP >=0 then
+                    if entity:has("battery") then
+                        if entity.battery.capacity > 0 then
+                            activateMiningLaser(dt)
+                            entity.battery.capacity = entity.battery.capacity - dt
+                            if  entity.battery.capacity <= 0 then  entity.battery.capacity = 0 end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    ECSWORLD:addSystems(systemMiningLaser)
+
+    systemOxyGen = concord.system({
+        pool = {"oxyGenerator"}
+    })
+    function systemOxyGen:update(dt)
+        for _, entity in ipairs(self.pool) do
+            if entity:has("battery") then
+                if entity.oxyGenerator.currentHP > 0 then
+                    entity.battery.capacity = entity.battery.capacity - dt
+                    if  entity.battery.capacity <= 0 then  entity.battery.capacity = 0 end
+                end
+            end
+
+            if not entity:has("battery") or entity.battery.capacity <= 0 or entity.oxyGenerator.currentHP <= 0 then
+                -- drain O2 tank
+                if entity:has("oxyTank") then
+                    entity.oxyTank.capacity = entity.oxyTank.capacity - dt
+                    if entity.oxyTank.capacity <= 0 then entity.oxyTank.capacity = 0 end
+                end
+            end
+        end
+    end
+    ECSWORLD:addSystems(systemOxyGen)
+
+    systemSolarPanel = concord.system({
+        pool = {"solarPanel"}
+    })
+    function systemSolarPanel:update(dt)
+        for _, entity in ipairs(self.pool) do
+            if entity.solarPanel.currentHP > 0 then
+                -- charge batter
+                if entity:has("battery") then
+                    if entity.battery.currentHP > 0 then
+                        entity.battery.capacity = entity.battery.capacity + (dt * entity.solarPanel.rechargeRate)
+                        if entity.battery.capacity > entity.battery.maxCapacity then entity.battery.capacity = entity.battery.maxCapacity end
+                    end
+                end
+            end
+        end
+    end
+    ECSWORLD:addSystems(systemSolarPanel)
 end
 
 return ecsUpdate

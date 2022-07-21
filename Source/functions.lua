@@ -3,6 +3,7 @@ functions = {}
 function functions.loadImages()
 
 	IMAGES[enum.imagesEngineFlame] = love.graphics.newImage("assets/images/flame.png")
+	IMAGES[enum.imagesVessel] = love.graphics.newImage("assets/images/ship1.png")
 
 	-- background
 	IMAGES[enum.imagesBackgroundStatic] = love.graphics.newImage("assets/images/bg_space_seamless_2.png")
@@ -14,6 +15,7 @@ function functions.loadAudio()
 	AUDIO[enum.audioLowFuel] = love.audio.newSource("assets/audio/lowFuel.ogg", "static")
 	AUDIO[enum.audioWarning] = love.audio.newSource("assets/audio/507906__m-cel__warning-sound.ogg", "static")
 	AUDIO[enum.audioMiningLaser] = love.audio.newSource("assets/audio/223472__parabolix__underground-machine-heart-loop.mp3", "static")
+	AUDIO[enum.audioRockExplosion] = love.audio.newSource("assets/audio/cannon_hit.ogg", "static")
 end
 
 function functions.loadFonts()
@@ -161,6 +163,21 @@ function functions.getDestroyedComponentString(entity)
 	for _, component in pairs(allComponents) do
 		if component.currentHP ~= nil then
 			if component.currentHP <= 0 then
+				result = result .. component.label .. "\n"
+			end
+		end
+    end
+	return result
+end
+
+function functions.getLowComponentString(entity)
+	-- cycle through components looking for empty tanks and batteries
+	-- returns a string
+	local result = ""		-- string
+	local allComponents = entity:getComponents()
+	for _, component in pairs(allComponents) do
+		if component.capacity ~= nil then
+			if component.capacity <= 0 then
 				result = result .. component.label .. "\n"
 			end
 		end
