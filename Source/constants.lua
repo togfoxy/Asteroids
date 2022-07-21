@@ -39,6 +39,8 @@ function constants.load()
 	NUMBER_OF_ASTEROIDS = 65
 
     FUEL_CONSUMPTION_RATE = 400      -- low numbers = burns more fuel. High numbers = burns less fuel
+
+    DEAD_ALPHA = 0                  -- used to fade to black when dead
 end
 
 

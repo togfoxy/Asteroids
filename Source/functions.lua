@@ -7,7 +7,7 @@ function functions.loadImages()
 
 	-- background
 	IMAGES[enum.imagesBackgroundStatic] = love.graphics.newImage("assets/images/bg_space_seamless_2.png")
-
+	IMAGES[enum.imagesDead] = love.graphics.newImage("assets/images/dead.jpg")
 end
 
 function functions.loadAudio()
@@ -43,7 +43,8 @@ function functions.getPhysEntityXY(uid)
 
     local physEntity = fun.getPhysEntity(uid)
     if physEntity ~= nil then
-        return physEntity.body:getX(), physEntity.body:getY()
+        -- return physEntity.body:getX(), physEntity.body:getY()
+		return physEntity.body:getPosition()
     else
         return nil
     end
@@ -205,4 +206,18 @@ function functions.killPhysicsEntity(entity)
     assert(#PHYSICS_ENTITIES < physicsOrigsize)
 end
 
+function functions.checkIfDead(dt)
+	-- returns nothing (is a sub that returns nothing)
+	local entity = fun.getEntity(PLAYER.UID)
+	if entity.chassis.currentHP <= 0 then
+		DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
+
+		if DEAD_ALPHA >= 1 then
+			cf.SwapScreen("Dead", SCREEN_STACK)
+		end
+
+
+		--! do other 'dead' clean ups here
+	end
+end
 return functions

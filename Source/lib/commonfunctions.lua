@@ -192,7 +192,7 @@ function RemoveScreen(screenStack)
 	end
 end
 
-function CurrentScreenName(screenStack)
+function currentScreenName(screenStack)
 	-- returns the current active screen
 	-- input: the screen stack array
 	-- output: string
@@ -287,7 +287,7 @@ function printAllPhysicsObjects(world, BOX2D_SCALE)
 				local points = {body:getWorldPoints(shape:getPoints())}
 				for i = 1, #points do
 					points[i] = points[i] * BOX2D_SCALE
-				end				
+				end
 				love.graphics.polygon("fill", points)
 			else
 				love.graphics.line(body:getWorldPoints(shape:getPoints()))

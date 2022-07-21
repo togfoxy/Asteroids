@@ -3,6 +3,7 @@ module(...,package.seeall)
 imagesEngineFlame = 1
 imagesBackgroundStatic = 2
 imagesVessel = 3
+imagesDead = 4
 
 audioEngine = 1
 audioLowFuel = 2
