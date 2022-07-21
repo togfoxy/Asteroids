@@ -340,12 +340,20 @@ function love.mousepressed( x, y, button, istouch, presses )
 			for _, fixture in pairs(body:getFixtures()) do
 
 				local hit = fixture:testPoint( wx / BOX2D_SCALE, wy / BOX2D_SCALE )
-
 				if hit then
-					print("Hit")
 					local temptable = fixture:getUserData()
-					temptable.isSelected = true
-					fixture:setUserData(temptable)
+					-- temptable.isSelected = true
+					-- fixture:setUserData(temptable)
+
+					local physicsEntity = fun.getPhysEntity(temptable.uid)
+
+					physicsEntity.currentMass = physicsEntity.currentMass - 50
+					-- print(physicsEntity.currentMass)
+
+					if physicsEntity.currentMass <= 0 then
+						fun.killPhysicsEntity(physicsEntity)
+					end
+
 				end
 			end
 		end

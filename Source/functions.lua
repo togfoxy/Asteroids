@@ -124,6 +124,8 @@ function functions.createAsteroid()
 	temptable.uid = cf.Getuuid()
 	temptable.objectType = "Asteroid"
 	asteroid.fixture:setUserData(temptable)		--
+	asteroid.originalMass = asteroid.body:getMass()
+	asteroid.currentMass = asteroid.originalMass
 
     table.insert(PHYSICS_ENTITIES, asteroid)
 
@@ -164,6 +166,26 @@ function functions.getDestroyedComponentString(entity)
 		end
     end
 	return result
+end
+
+function functions.killPhysicsEntity(entity)
+    -- unit test
+    local physicsOrigsize = #PHYSICS_ENTITIES
+    --
+
+	--!ensure this is only done to asteroids. Perhaps change name of function
+
+    -- destroy the body then remove empty body from the array
+    for i = 1, #PHYSICS_ENTITIES do		-- needs to be a for i loop so we can do a table remove
+        if PHYSICS_ENTITIES[i] == entity then
+            PHYSICS_ENTITIES[i].body:destroy()
+            table.remove(PHYSICS_ENTITIES, i)
+            break
+        end
+    end
+
+    -- unit test
+    assert(#PHYSICS_ENTITIES < physicsOrigsize)
 end
 
 return functions
