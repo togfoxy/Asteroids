@@ -3,6 +3,7 @@ functions = {}
 function functions.loadImages()
 
 	IMAGES[enum.imagesEngineFlame] = love.graphics.newImage("assets/images/flame.png")
+	IMAGES[enum.imagesVessel] = love.graphics.newImage("assets/images/ship1.png")
 
 	-- background
 	IMAGES[enum.imagesBackgroundStatic] = love.graphics.newImage("assets/images/bg_space_seamless_2.png")

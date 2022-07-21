@@ -39,6 +39,11 @@ local function establishPlayerVessel()
 	-- debug
 	-- entity.reverseThruster.currentHP = 0
 	local shipsize = fun.getEntitySize(entity)
+	shipsize = 10
+
+	-- image is size 7 wide and size 10 high
+
+
 
 	local physicsEntity = {}
     physicsEntity.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 75, "dynamic")
@@ -59,6 +64,7 @@ local function establishPlayerVessel()
     table.insert(PHYSICS_ENTITIES, physicsEntity)
 
 	print("Ship mass is " .. physicsEntity.body:getMass())
+	print("Ship size is " .. shipsize)
 end
 
 local function establishWorldBorders()
