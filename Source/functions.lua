@@ -16,6 +16,8 @@ function functions.loadAudio()
 	AUDIO[enum.audioWarning] = love.audio.newSource("assets/audio/507906__m-cel__warning-sound.ogg", "static")
 	AUDIO[enum.audioMiningLaser] = love.audio.newSource("assets/audio/223472__parabolix__underground-machine-heart-loop.mp3", "static")
 	AUDIO[enum.audioRockExplosion] = love.audio.newSource("assets/audio/cannon_hit.ogg", "static")
+
+	AUDIO[enum.audioRockExplosion]:love.audio.setVolume(0.5)
 end
 
 function functions.loadFonts()

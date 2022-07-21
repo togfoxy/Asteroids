@@ -87,7 +87,7 @@ function cmp.init()
     concord.component("oxyTank", function(c)
         c.label = "O2 tank"
         c.size = 1
-        c.capacity = 10   -- how much dt it holds (seconds)
+        c.capacity = 420   -- how much dt it holds (seconds)
         c.maxCapacity = c.capacity
         c.maxHP = 1000
         c.currentHP = c.maxHP
@@ -98,6 +98,15 @@ function cmp.init()
         c.size = 1
         c.rechargeRate = 1
         c.maxHP = 1000
+        c.currentHP = c.maxHP
+    end)
+
+    concord.component("cargoHold", function(c)
+        c.label = "Cargo hold"
+        c.size = 2
+        c.maxAmount = 5000          -- idk
+        c.currentAmount = 0         -- current amount stored
+        c.maxHP = 2000
         c.currentHP = c.maxHP
     end)
 

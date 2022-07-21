@@ -38,10 +38,11 @@ local function establishPlayerVessel()
 	:give("oxyGenerator")
 	:give("oxyTank")
 	:give("solarPanel")
+	:give("cargoHold")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
 	-- debug
-	entity.chassis.currentHP = 0
+	-- entity.chassis.currentHP = 0
 	local shipsize = fun.getEntitySize(entity)
 	--DEBUG_VESSEL_SIZE = 10
 	--shipsize = DEBUG_VESSEL_SIZE
@@ -464,7 +465,9 @@ function love.update(dt)
 
 		-- check for dead chassis
 		fun.checkIfDead(dt)
+
 		--! check for dead or empty o2 tank
+		
 
 		cam:setPos(TRANSLATEX, TRANSLATEY)
 		cam:setZoom(ZOOMFACTOR)
