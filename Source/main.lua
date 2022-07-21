@@ -222,7 +222,7 @@ local function drawAsteroids()
 
 				-- print the mass for debug reasons
 				love.graphics.setColor(1,1,1,1)
-				love.graphics.print(mass, x0 * BOX2D_SCALE,y0 * BOX2D_SCALE)
+				love.graphics.print(cf.round(obj.currentMass), (x0 * BOX2D_SCALE) + 15, (y0 * BOX2D_SCALE) - 15)
 
 			end
 		end
@@ -260,6 +260,7 @@ local function processMouseClick(button, dt)
 								DRAW.miningLaser = true
 								DRAW.miningLaserX = bx
 								DRAW.miningLaserY = by
+								SOUND.miningLaser = true
 								if physicsEntity.currentMass <= 0 then
 									fun.killPhysicsEntity(physicsEntity)
 								end
@@ -482,6 +483,11 @@ function love.update(dt)
 		AUDIO[enum.audioWarning]:play()
 	else
 		AUDIO[enum.audioWarning]:stop()
+	end
+	if SOUND.miningLaser then
+		AUDIO[enum.audioMiningLaser]:play()
+	else
+		AUDIO[enum.audioMiningLaser]:stop()
 	end
 
 	--! check for dead chassis

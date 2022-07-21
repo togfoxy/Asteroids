@@ -13,7 +13,7 @@ function functions.loadAudio()
     AUDIO[enum.audioEngine] = love.audio.newSource("assets/audio/engine.ogg", "static")
 	AUDIO[enum.audioLowFuel] = love.audio.newSource("assets/audio/lowFuel.ogg", "static")
 	AUDIO[enum.audioWarning] = love.audio.newSource("assets/audio/507906__m-cel__warning-sound.ogg", "static")
-
+	AUDIO[enum.audioMiningLaser] = love.audio.newSource("assets/audio/223472__parabolix__underground-machine-heart-loop.mp3", "static")
 end
 
 function functions.loadFonts()
