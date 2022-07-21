@@ -22,6 +22,45 @@ ecs = require 'ecsFunctions'
 ecsDraw = require 'ecsDraw'
 ecsUpdate = require 'ecsUpdate'
 
+local function establishPlayerVessel()
+	-- add player
+	local entity = concord.entity(ECSWORLD)
+    :give("drawable")
+    :give("uid")
+	:give("chassis")
+	:give("engine")
+	:give("leftThruster")
+	:give("rightThruster")
+	:give("reverseThruster")
+	:give("fuelTank")
+	:give("miningLaser")
+    table.insert(ECS_ENTITIES, entity)
+	PLAYER.UID = entity.uid.value 		-- store this for easy recall
+	-- debug
+	-- entity.reverseThruster.currentHP = 0
+	local shipsize = fun.getEntitySize(entity)
+
+	local physicsEntity = {}
+    physicsEntity.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 75, "dynamic")
+	physicsEntity.body:setLinearDamping(0)
+	-- physicsEntity.body:setMass(500)		-- kg		-- made redundant by newFixture
+	physicsEntity.shape = love.physics.newRectangleShape(shipsize, shipsize)		-- will draw a rectangle around the body x/y. No need to offset it
+	-- physicsEntity.shape = love.physics.newPolygonShape(PLAYER.POINTS)
+	physicsEntity.fixture = love.physics.newFixture(physicsEntity.body, physicsEntity.shape, PHYSICS_DENSITY)		-- the 1 is the density
+	physicsEntity.fixture:setRestitution(0.1)		-- between 0 and 1
+	physicsEntity.fixture:setSensor(false)
+
+	local temptable = {}
+	temptable.uid = entity.uid.value
+	temptable.objectType = "Player"
+
+	physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
+
+    table.insert(PHYSICS_ENTITIES, physicsEntity)
+
+	print("Ship mass is " .. physicsEntity.body:getMass())
+end
+
 local function establishWorldBorders()
 	-- bottom border
 	local PHYSICSBORDER1 = {}
@@ -95,44 +134,7 @@ local function establishPhysicsWorld()
 
 	table.insert(PHYSICS_ENTITIES, starbase)
 
-	-- add player
-	local entity = concord.entity(ECSWORLD)
-    :give("drawable")
-    :give("uid")
-	:give("chassis")
-	:give("engine")
-	:give("leftThruster")
-	:give("rightThruster")
-	:give("reverseThruster")
-	:give("fuelTank")
-    table.insert(ECS_ENTITIES, entity)
-	PLAYER.UID = entity.uid.value 		-- store this for easy recall
-
-	-- debug
-	-- entity.reverseThruster.currentHP = 0
-
-
-	local shipsize = fun.getEntitySize(entity)
-
-	local physicsEntity = {}
-    physicsEntity.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 75, "dynamic")
-	physicsEntity.body:setLinearDamping(0)
-	-- physicsEntity.body:setMass(500)		-- kg		-- made redundant by newFixture
-	physicsEntity.shape = love.physics.newRectangleShape(shipsize, shipsize)		-- will draw a rectangle around the body x/y. No need to offset it
-	-- physicsEntity.shape = love.physics.newPolygonShape(PLAYER.POINTS)
-	physicsEntity.fixture = love.physics.newFixture(physicsEntity.body, physicsEntity.shape, PHYSICS_DENSITY)		-- the 1 is the density
-	physicsEntity.fixture:setRestitution(0.1)		-- between 0 and 1
-	physicsEntity.fixture:setSensor(false)
-
-	local temptable = {}
-	temptable.uid = entity.uid.value
-	temptable.objectType = "Player"
-
-	physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
-
-    table.insert(PHYSICS_ENTITIES, physicsEntity)
-
-	print("Ship mass is " .. physicsEntity.body:getMass())
+	establishPlayerVessel()
 end
 
 local function drawStarbase()
@@ -222,6 +224,49 @@ local function drawAsteroids()
 				love.graphics.setColor(1,1,1,1)
 				love.graphics.print(mass, x0 * BOX2D_SCALE,y0 * BOX2D_SCALE)
 
+			end
+		end
+	end
+end
+
+local function processMouseClick(button, dt)
+
+	x, y = love.mouse.getPosition( )
+	local wx,wy = cam:toWorld(x, y)		-- converts screen x/y to world x/y
+	local bx = wx / BOX2D_SCALE			-- converts world x/y to BOX2D x/y
+	local by = wy / BOX2D_SCALE
+
+	local playerEntity = fun.getEntity(PLAYER.UID)
+	local playerPE = fun.getPhysEntity(PLAYER.UID)
+
+	-- get distance between player and mouse click
+	local x0,y0 = playerPE.body:getPosition()
+	local distance = cf.GetDistance(x0, y0, bx, by)
+	-- print(x0, y0, bx, by)
+	-- print("dist = " .. distance)
+
+	if playerEntity:has("miningLaser") then
+		if playerEntity.miningLaser.currentHP >=0 then
+			if distance <= playerEntity.miningLaser.miningRange then
+				for _, asteroid in pairs(PHYSICSWORLD:getBodies()) do		-- this is bodies - not entities
+					for _, fixture in pairs(asteroid:getFixtures()) do
+						local temptable = fixture:getUserData()
+						if temptable.objectType == "Asteroid" then			-- make this an enum
+							local hit = fixture:testPoint(bx, by)
+							if hit then
+								local physicsEntity = fun.getPhysEntity(temptable.uid)
+								physicsEntity.currentMass = physicsEntity.currentMass - (playerEntity.miningLaser.miningRate * dt)
+								-- print(cf.round(asteroid.currentMass))
+								DRAW.miningLaser = true
+								DRAW.miningLaserX = bx
+								DRAW.miningLaserY = by
+								if physicsEntity.currentMass <= 0 then
+									fun.killPhysicsEntity(physicsEntity)
+								end
+							end
+						end
+					end
+				end
 			end
 		end
 	end
@@ -336,27 +381,7 @@ function love.mousepressed( x, y, button, istouch, presses )
 	local wx,wy = cam:toWorld(x, y)	-- converts screen x/y to world x/y
 
 	if button == 1 then
-		for _, body in pairs(PHYSICSWORLD:getBodies()) do
-			for _, fixture in pairs(body:getFixtures()) do
 
-				local hit = fixture:testPoint( wx / BOX2D_SCALE, wy / BOX2D_SCALE )
-				if hit then
-					local temptable = fixture:getUserData()
-					-- temptable.isSelected = true
-					-- fixture:setUserData(temptable)
-
-					local physicsEntity = fun.getPhysEntity(temptable.uid)
-
-					physicsEntity.currentMass = physicsEntity.currentMass - 50
-					-- print(physicsEntity.currentMass)
-
-					if physicsEntity.currentMass <= 0 then
-						fun.killPhysicsEntity(physicsEntity)
-					end
-
-				end
-			end
-		end
 	end
 end
 
@@ -439,6 +464,10 @@ function love.update(dt)
 	ECSWORLD:emit("update", dt)
 	PHYSICSWORLD:update(dt) --this puts the world into motion
 
+	if love.mouse.isDown(1) then
+		processMouseClick(1, dt)
+	end
+
 	if SOUND.engine then
 		AUDIO[enum.audioEngine]:play()
 	else
@@ -454,6 +483,8 @@ function love.update(dt)
 	else
 		AUDIO[enum.audioWarning]:stop()
 	end
+
+	--! check for dead chassis
 
 	cam:setPos(TRANSLATEX, TRANSLATEY)
 	cam:setZoom(ZOOMFACTOR)

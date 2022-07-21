@@ -94,6 +94,14 @@ function ecsDraw.init()
                 if dmgStr ~= "" then
                     drawDamageIndicator(dmgStr, x1, y1)     -- screen coodinates of entity
                 end
+
+                -- draw mining laser
+                if DRAW.miningLaser then
+                    local x2 = DRAW.miningLaserX * BOX2D_SCALE
+                    local y2 = DRAW.miningLaserY * BOX2D_SCALE
+                    love.graphics.setColor(146/255, 89/255, 14/255, 1)
+                    love.graphics.line(x1, y1, x2, y2)
+                end
             end
         end
     end
