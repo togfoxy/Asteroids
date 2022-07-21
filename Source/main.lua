@@ -34,16 +34,13 @@ local function establishPlayerVessel()
 	:give("reverseThruster")
 	:give("fuelTank")
 	:give("miningLaser")
+	:give("battery")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
 	-- debug
 	-- entity.reverseThruster.currentHP = 0
 	local shipsize = fun.getEntitySize(entity)
-	shipsize = 10
-
-	-- image is size 7 wide and size 10 high
-
-
+	-- shipsize = 10
 
 	local physicsEntity = {}
     physicsEntity.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 75, "dynamic")
@@ -230,51 +227,6 @@ local function drawAsteroids()
 				love.graphics.setColor(1,1,1,1)
 				love.graphics.print(cf.round(obj.currentMass), (x0 * BOX2D_SCALE) + 15, (y0 * BOX2D_SCALE) - 15)
 
-			end
-		end
-	end
-end
-
-local function processMouseClick(button, dt)
-
-	x, y = love.mouse.getPosition( )
-	local wx,wy = cam:toWorld(x, y)		-- converts screen x/y to world x/y
-	local bx = wx / BOX2D_SCALE			-- converts world x/y to BOX2D x/y
-	local by = wy / BOX2D_SCALE
-
-	local playerEntity = fun.getEntity(PLAYER.UID)
-	local playerPE = fun.getPhysEntity(PLAYER.UID)
-
-	-- get distance between player and mouse click
-	local x0,y0 = playerPE.body:getPosition()
-	local distance = cf.GetDistance(x0, y0, bx, by)
-	-- print(x0, y0, bx, by)
-	-- print("dist = " .. distance)
-
-	if playerEntity:has("miningLaser") then
-		if playerEntity.miningLaser.currentHP >=0 then
-			if distance <= playerEntity.miningLaser.miningRange then
-				for _, asteroid in pairs(PHYSICSWORLD:getBodies()) do		-- this is bodies - not entities
-					for _, fixture in pairs(asteroid:getFixtures()) do
-						local temptable = fixture:getUserData()
-						if temptable.objectType == "Asteroid" then			-- make this an enum
-							local hit = fixture:testPoint(bx, by)
-							if hit then
-								local physicsEntity = fun.getPhysEntity(temptable.uid)
-								physicsEntity.currentMass = physicsEntity.currentMass - (playerEntity.miningLaser.miningRate * dt)
-								-- print(cf.round(asteroid.currentMass))
-								DRAW.miningLaser = true
-								DRAW.miningLaserX = bx
-								DRAW.miningLaserY = by
-								SOUND.miningLaser = true
-								if physicsEntity.currentMass <= 0 then
-									fun.killPhysicsEntity(physicsEntity)
-									SOUND.rockExplosion = true
-								end
-							end
-						end
-					end
-				end
 			end
 		end
 	end
@@ -470,10 +422,6 @@ function love.update(dt)
 
 	ECSWORLD:emit("update", dt)
 	PHYSICSWORLD:update(dt) --this puts the world into motion
-
-	if love.mouse.isDown(1) then
-		processMouseClick(1, dt)
-	end
 
 	if SOUND.engine then
 		AUDIO[enum.audioEngine]:play()

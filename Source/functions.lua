@@ -166,6 +166,11 @@ function functions.getDestroyedComponentString(entity)
 				result = result .. component.label .. "\n"
 			end
 		end
+		if component.capacity ~= nil then
+			if component.capacity <= 0 then
+				result = result .. component.label .. "\n"
+			end
+		end
     end
 	return result
 end
