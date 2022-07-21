@@ -8,6 +8,7 @@ audioEngine = 1
 audioLowFuel = 2
 audioWarning = 3
 audioMiningLaser = 4
+audioRockExplosion = 5
 
 fontDefault = 1
 fontHeavyMetalLarge = 2

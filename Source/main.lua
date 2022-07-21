@@ -269,6 +269,7 @@ local function processMouseClick(button, dt)
 								SOUND.miningLaser = true
 								if physicsEntity.currentMass <= 0 then
 									fun.killPhysicsEntity(physicsEntity)
+									SOUND.rockExplosion = true
 								end
 							end
 						end
@@ -280,7 +281,6 @@ local function processMouseClick(button, dt)
 end
 
 function beginContact(a, b, coll)
-
 end
 
 function postSolve(a, b, coll, normalimpulse, tangentimpulse)
@@ -494,6 +494,11 @@ function love.update(dt)
 		AUDIO[enum.audioMiningLaser]:play()
 	else
 		AUDIO[enum.audioMiningLaser]:stop()
+	end
+	if SOUND.rockExplosion then
+		AUDIO[enum.audioRockExplosion]:play()
+	else
+		--AUDIO[enum.audioRockExplosion]:play()
 	end
 
 	--! check for dead chassis
