@@ -75,6 +75,31 @@ function cmp.init()
         c.currentHP = c.maxHP
     end)
 
+    concord.component("oxyGenerator", function(c)
+        c.label = "O2 Generator"
+        c.size = 1
+        c.capacity = 10   -- how much dt it holds (seconds)
+        c.powerNeeds = 1        -- how much power per dt
+        c.maxHP = 10000
+        c.currentHP = c.maxHP
+    end)
+
+    concord.component("oxyTank", function(c)
+        c.label = "O2 tank"
+        c.size = 1
+        c.capacity = 10   -- how much dt it holds (seconds)
+        c.maxCapacity = c.capacity
+        c.maxHP = 10000
+        c.currentHP = c.maxHP
+    end)
+
+    concord.component("solarPanel", function(c)
+        c.label = "Solar panel"
+        c.size = 1
+        c.rechargeRate = 1
+        c.currentHP = c.maxHP
+    end)
+
 end
 
 return cmp

@@ -35,6 +35,9 @@ local function establishPlayerVessel()
 	:give("fuelTank")
 	:give("miningLaser")
 	:give("battery")
+	:give("oxyGenerator")
+	:give("oxyTank")
+	:give("solarPanel")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
 	-- debug
@@ -450,6 +453,7 @@ function love.update(dt)
 	end
 
 	--! check for dead chassis
+	--! check for dead or empty o2 tank
 
 	cam:setPos(TRANSLATEX, TRANSLATEY)
 	cam:setZoom(ZOOMFACTOR)

@@ -259,7 +259,7 @@ function ecsUpdate.init()
             for _, entity in ipairs(self.pool) do
                 if entity.miningLaser.currentHP >=0 then
                     if entity:has("battery") then
-                        if entity.battery.capacity >= 0 then
+                        if entity.battery.capacity > 0 then
                             activateMiningLaser(dt)
                             entity.battery.capacity = entity.battery.capacity - dt
                             if  entity.battery.capacity <= 0 then  entity.battery.capacity = 0 end
@@ -270,6 +270,47 @@ function ecsUpdate.init()
         end
     end
     ECSWORLD:addSystems(systemMiningLaser)
+
+    systemOxyGen = concord.system({
+        pool = {"oxyGenerator"}
+    })
+    function systemOxyGen:update(dt)
+        for _, entity in ipairs(self.pool) do
+            if entity:has("battery") then
+                if entity.oxyGenerator.currentHP > 0 then
+                    entity.battery.capacity = entity.battery.capacity - dt
+                    if  entity.battery.capacity <= 0 then  entity.battery.capacity = 0 end
+                end
+            end
+
+            if not entity:has("battery") or entity.battery.capacity <= 0 or entity.oxyGenerator.currentHP <= 0 then
+                -- drain O2 tank
+                if entity:has("oxyTank") then
+                    entity.oxyTank.capacity = entity.oxyTank.capacity - dt
+                    if entity.oxyTank.capacity <= 0 then entity.oxyTank.capacity = 0 end
+                end
+            end
+        end
+    end
+    ECSWORLD:addSystems(systemOxyGen)
+
+    systemSolarPanel = concord.system({
+        pool = {"solarPanel"}
+    })
+    function systemSolarPanel:update(dt)
+        for _, entity in ipairs(self.pool) do
+            if entity.solarPanel.currentHP > 0 then
+                -- charge batter
+                if entity:has("battery") then
+                    if entity.battery.currentHP > 0 then
+                        entity.battery.capacity = entity.battery.capacity + (dt * entity.solarPanel.rechargeRate)
+                        if entity.battery.capacity > entity.battery.maxCapacity then entity.battery.capacity = entity.battery.maxCapacity end
+                    end
+                end
+            end
+        end
+    end
+    ECSWORLD:addSystems(systemSolarPanel)
 end
 
 return ecsUpdate
