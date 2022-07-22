@@ -11,6 +11,7 @@ imagesBlueBar = 8
 imagesBlueBarEnd = 9
 imagesGreenBar = 10
 imagesGreenBarEnd = 11
+imagesShopPanel = 12
 
 audioEngine = 1
 audioLowFuel = 2
@@ -21,3 +22,7 @@ audioRockExplosion = 5
 fontDefault = 1
 fontHeavyMetalLarge = 2
 fontHeavyMetalSmall = 3
+
+sceneAsteroid = 1
+sceneShop = 2
+sceneDed = 3

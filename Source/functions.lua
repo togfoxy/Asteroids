@@ -14,6 +14,9 @@ function functions.loadImages()
 	IMAGES[enum.imagesGreenBar] = love.graphics.newImage("assets/images/greenbar.png")
 	IMAGES[enum.imagesGreenBarEnd] = love.graphics.newImage("assets/images/greenbarend.png")
 
+	-- shop
+	IMAGES[enum.imagesShopPanel] = love.graphics.newImage("assets/images/shoppanel.png")
+
 	-- background
 	IMAGES[enum.imagesBackgroundStatic] = love.graphics.newImage("assets/images/bg_space_seamless_2.png")
 	IMAGES[enum.imagesDead] = love.graphics.newImage("assets/images/dead.jpg")
@@ -249,7 +252,7 @@ function functions.checkIfDead(dt)
 	-- do other 'dead' clean ups here
 		DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
 		if DEAD_ALPHA >= 1 then
-			cf.SwapScreen("Dead", SCREEN_STACK)
+			cf.SwapScreen(enum.sceneDed, SCREEN_STACK)
 			-- cleanDeadData()		-!
 		end
 	end
