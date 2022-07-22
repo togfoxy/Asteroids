@@ -35,7 +35,7 @@ local function establishPlayerVessel()
 	:give("fuelTank")
 	:give("miningLaser")
 	:give("battery")
-	--:give("oxyGenerator")
+	:give("oxyGenerator")
 	:give("oxyTank")
 	:give("solarPanel")
 	:give("cargoHold")
@@ -429,10 +429,36 @@ function love.draw()
 		end
 		if bars >= 1 then love.graphics.draw(IMAGES[enum.imagesBlueBarEnd],drawx,drawy,0,1,1) end
 
+		-- fuel left (green)
+		local fuel = fun.getFuelBurnTime()
+		if fuel > 100 then fuel = 100 end	-- 100 is an arbitrary 100 to make % easy
+		local bars = math.ceil(fuel / 10)
+		local drawx = 109
+		local drawy = 50
+		for i = 1, bars - 1 do
+			love.graphics.draw(IMAGES[enum.imagesGreenBar],drawx,drawy,0,1,1)
+			drawx = drawx + 7
+			drawy = drawy + 0
+		end
+		if bars >= 1 then love.graphics.draw(IMAGES[enum.imagesGreenBarEnd],drawx,drawy,0,1,1) end
 
-		-- fuel left
-		-- hold space
-
+		-- hold space (gold)
+		local entity = fun.getEntity(PLAYER.UID)
+		if entity:has("cargoHold") then
+			local holdused = entity.cargoHold.currentAmount
+			local holdpercent = cf.round(holdused/entity.cargoHold.maxAmount * 100)
+	print(holdpercent)
+			if holdpercent > 100 then holdpercent = 100 end	-- 100 is an arbitrary 100 to make % easy
+			local bars = math.ceil(holdpercent / 10)
+			local drawx = 109
+			local drawy = 70
+			for i = 1, bars - 1 do
+				love.graphics.draw(IMAGES[enum.imagesOrangeBar],drawx,drawy,0,1,1)
+				drawx = drawx + 7
+				drawy = drawy + 0
+			end
+			if bars >= 1 then love.graphics.draw(IMAGES[enum.imagesOrangeBarEnd],drawx,drawy,0,1,1) end
+		end
 
 		-- draw the dead screen with alpha 0 (unless dead!)
 		love.graphics.setColor(1,1,1,DEAD_ALPHA)

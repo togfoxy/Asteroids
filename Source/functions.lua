@@ -11,7 +11,8 @@ function functions.loadImages()
 	IMAGES[enum.imagesOrangeBarEnd] = love.graphics.newImage("assets/images/orangebarend.png")
 	IMAGES[enum.imagesBlueBar] = love.graphics.newImage("assets/images/bluebar.png")
 	IMAGES[enum.imagesBlueBarEnd] = love.graphics.newImage("assets/images/bluebarend.png")
-
+	IMAGES[enum.imagesGreenBar] = love.graphics.newImage("assets/images/greenbar.png")
+	IMAGES[enum.imagesGreenBarEnd] = love.graphics.newImage("assets/images/greenbarend.png")
 
 	-- background
 	IMAGES[enum.imagesBackgroundStatic] = love.graphics.newImage("assets/images/bg_space_seamless_2.png")
@@ -291,5 +292,21 @@ function functions.getO2left()
 		end
 	end
 	return result
+end
+
+function functions.getFuelBurnTime()
+	-- burn time = fuel / thrust
+	-- returns a number (seconds)
+	local entity = fun.getEntity(PLAYER.UID)
+	if entity:has("engine") then
+		if entity.engine.currentHP > 0 then
+			if entity:has("fuelTank") then
+				if entity.fuelTank.currentHP > 0 then
+					return cf.round(entity.fuelTank.capacity / entity.engine.strength)
+				end
+			end
+		end
+	end
+	return 0
 end
 return functions
