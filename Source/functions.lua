@@ -17,7 +17,7 @@ function functions.loadAudio()
 	AUDIO[enum.audioMiningLaser] = love.audio.newSource("assets/audio/223472__parabolix__underground-machine-heart-loop.mp3", "static")
 	AUDIO[enum.audioRockExplosion] = love.audio.newSource("assets/audio/cannon_hit.ogg", "static")
 
-	AUDIO[enum.audioRockExplosion]:love.audio.setVolume(0.5)
+	AUDIO[enum.audioRockExplosion]:setVolume(0.5)
 end
 
 function functions.loadFonts()
@@ -146,10 +146,12 @@ function functions.getRandomComponent(entity)
 	local allComponents = entity:getComponents()
 	for ComponentClass, Component in pairs(allComponents) do
 		if Component.size ~= nil then
-			if Component.size >= rndnum	then
-				return Component
-			else
-				rndnum = rndnum - Component.size
+			if Component.size > 0 then
+				if Component.size >= rndnum	then
+					return Component
+				else
+					rndnum = rndnum - Component.size
+				end
 			end
 		end
    end
@@ -210,16 +212,61 @@ end
 
 function functions.checkIfDead(dt)
 	-- returns nothing (is a sub that returns nothing)
+	local dead = false
 	local entity = fun.getEntity(PLAYER.UID)
-	if entity.chassis.currentHP <= 0 then
-		DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
+	if entity:has("chassis") then
+		if entity.chassis.currentHP <= 0 then
+			dead = true
+		end
+	else
+		error("Vessel has no chassis!")
+	end
 
+	if entity:has("oxyTank") then
+		if entity.oxyTank.capacity <= 0 or entity.oxyTank.currentHP <= 0 then
+			if entity:has("spaceSuit") then
+				if entity.spaceSuit.O2capacity <= 0 then
+					dead = true
+				end
+			else
+				dead = true
+			end
+		end
+	else
+		error("Vessel has no O2 tank!")
+	end
+
+	if dead then
+	-- do other 'dead' clean ups here
+		DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
+print(DEAD_ALPHA)
 		if DEAD_ALPHA >= 1 then
 			cf.SwapScreen("Dead", SCREEN_STACK)
+			-- cleanDeadData()		-!
 		end
-
-
-		--! do other 'dead' clean ups here
 	end
 end
+
+function functions.deductO2(dt)
+	-- deduct O2 from player vessel
+	local entity = fun.getEntity(PLAYER.UID)
+	if entity:has("oxyTank") then
+		if entity.oxyTank.currentHP > 0 and entity.oxyTank.capacity > 0 then
+			-- deduct from tank
+			entity.oxyTank.capacity = entity.oxyTank.capacity - dt
+			if entity.oxyTank.capacity <= 0 then entity.oxyTank.capacity = 0 end
+			return
+		end
+	end
+	if entity:has("spaceSuit") then
+		if entity.spaceSuit.O2capacity > 0 then
+			-- deduct from suit
+			entity.spaceSuit.O2capacity = entity.spaceSuit.O2capacity - dt
+			if entity.spaceSuit.O2capacity < 0 then entity.spaceSuit.O2capacity = 0 end
+			return
+		end
+	end
+	print("No oxygen. Needs to be ded")
+end
+
 return functions

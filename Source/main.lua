@@ -39,6 +39,7 @@ local function establishPlayerVessel()
 	:give("oxyTank")
 	:give("solarPanel")
 	:give("cargoHold")
+	:give("spaceSuit")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
 	-- debug
@@ -257,6 +258,8 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 		-- collision is with border. Do nothing.
 	elseif udtable1.objectType == "Starbase" or udtable2.objectType == "Starbase" then
 		--! do something
+		local physEntity = fun.getPhysEntity(PLAYER.UID)
+		physEntity.body:setLinearVelocity( 0, 0 )
 	else
 		physicsEntity1 = fun.getPhysEntity(uid1)
 		physicsEntity2 = fun.getPhysEntity(uid2)
@@ -463,11 +466,13 @@ function love.update(dt)
 			--AUDIO[enum.audioRockExplosion]:play()
 		end
 
+		fun.deductO2(dt)
+
 		-- check for dead chassis
 		fun.checkIfDead(dt)
 
 		--! check for dead or empty o2 tank
-		
+
 
 		cam:setPos(TRANSLATEX, TRANSLATEY)
 		cam:setZoom(ZOOMFACTOR)

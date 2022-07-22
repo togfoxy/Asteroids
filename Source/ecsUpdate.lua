@@ -29,7 +29,7 @@ local function activateMiningLaser(dt)
 						-- print(cf.round(asteroid.currentMass))
 						playerEntity.cargoHold.currentAmount = playerEntity.cargoHold.currentAmount + massMoved
 						if playerEntity.cargoHold.currentAmount > playerEntity.cargoHold.maxAmount then playerEntity.cargoHold.currentAmount = playerEntity.cargoHold.maxAmount end
-						
+
 						DRAW.miningLaser = true
 						DRAW.miningLaserX = bx
 						DRAW.miningLaserY = by
@@ -286,23 +286,28 @@ function ecsUpdate.init()
     })
     function systemOxyGen:update(dt)
         for _, entity in ipairs(self.pool) do
-            if entity:has("battery") then
-                if entity.oxyGenerator.currentHP > 0 then
-                    entity.battery.capacity = entity.battery.capacity - dt
-                    if  entity.battery.capacity <= 0 then  entity.battery.capacity = 0 end
-                end
-            end
-
-            if not entity:has("battery") or entity.battery.capacity <= 0 or entity.oxyGenerator.currentHP <= 0 then
-                -- drain O2 tank
-                if entity:has("oxyTank") then
-                    entity.oxyTank.capacity = entity.oxyTank.capacity - dt
-                    if entity.oxyTank.capacity <= 0 then entity.oxyTank.capacity = 0 end
+			if entity.oxyGenerator.currentHP > 0 then
+            	if entity:has("battery") then
+					if entity:has("oxyTank") then
+						entity.oxyTank.capacity = entity.oxyTank.capacity + dt
+						if entity.oxyTank.capacity > entity.oxyTank.maxCapacity then entity.oxyTank.capacity = entity.oxyTank.maxCapacity end
+						entity.battery.capacity = entity.battery.capacity - dt
+                    	if entity.battery.capacity <= 0 then entity.battery.capacity = 0 end
+					end
                 end
             end
         end
     end
     ECSWORLD:addSystems(systemOxyGen)
+
+	systemOxyTank = concord.system({
+		pool = {"oxyTank"}
+	})
+	function systemOxyTank:update(dt)
+		for _, entity in ipairs(self.pool) do
+        end
+	end
+    -- ECSWORLD:addSystems(systemOxyTank)
 
     systemSolarPanel = concord.system({
         pool = {"solarPanel"}
