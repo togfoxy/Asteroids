@@ -24,8 +24,12 @@ local function activateMiningLaser(dt)
 					local hit = fixture:testPoint(bx, by)
 					if hit then
 						local physicsEntity = fun.getPhysEntity(temptable.uid)
-						physicsEntity.currentMass = physicsEntity.currentMass - (playerEntity.miningLaser.miningRate * dt)
+						local massMoved = (playerEntity.miningLaser.miningRate * dt)
+						physicsEntity.currentMass = physicsEntity.currentMass - massMoved
 						-- print(cf.round(asteroid.currentMass))
+						playerEntity.cargoHold.currentAmount = playerEntity.cargoHold.currentAmount + massMoved
+						if playerEntity.cargoHold.currentAmount > playerEntity.cargoHold.maxAmount then playerEntity.cargoHold.currentAmount = playerEntity.cargoHold.maxAmount end
+
 						DRAW.miningLaser = true
 						DRAW.miningLaserX = bx
 						DRAW.miningLaserY = by
@@ -260,9 +264,15 @@ function ecsUpdate.init()
                 if entity.miningLaser.currentHP >=0 then
                     if entity:has("battery") then
                         if entity.battery.capacity > 0 then
-                            activateMiningLaser(dt)
-                            entity.battery.capacity = entity.battery.capacity - dt
-                            if  entity.battery.capacity <= 0 then  entity.battery.capacity = 0 end
+							if entity:has("cargoHold") then
+								if entity.cargoHold.currentAmount < entity.cargoHold.maxAmount then
+									if entity.cargoHold.currentHP > 0 then
+			                            activateMiningLaser(dt)
+			                            entity.battery.capacity = entity.battery.capacity - dt
+			                            if  entity.battery.capacity <= 0 then  entity.battery.capacity = 0 end
+									end
+								end
+							end
                         end
                     end
                 end
@@ -276,23 +286,28 @@ function ecsUpdate.init()
     })
     function systemOxyGen:update(dt)
         for _, entity in ipairs(self.pool) do
-            if entity:has("battery") then
-                if entity.oxyGenerator.currentHP > 0 then
-                    entity.battery.capacity = entity.battery.capacity - dt
-                    if  entity.battery.capacity <= 0 then  entity.battery.capacity = 0 end
-                end
-            end
-
-            if not entity:has("battery") or entity.battery.capacity <= 0 or entity.oxyGenerator.currentHP <= 0 then
-                -- drain O2 tank
-                if entity:has("oxyTank") then
-                    entity.oxyTank.capacity = entity.oxyTank.capacity - dt
-                    if entity.oxyTank.capacity <= 0 then entity.oxyTank.capacity = 0 end
+			if entity.oxyGenerator.currentHP > 0 then
+            	if entity:has("battery") then
+					if entity:has("oxyTank") then
+						entity.oxyTank.capacity = entity.oxyTank.capacity + dt
+						if entity.oxyTank.capacity > entity.oxyTank.maxCapacity then entity.oxyTank.capacity = entity.oxyTank.maxCapacity end
+						entity.battery.capacity = entity.battery.capacity - dt
+                    	if entity.battery.capacity <= 0 then entity.battery.capacity = 0 end
+					end
                 end
             end
         end
     end
     ECSWORLD:addSystems(systemOxyGen)
+
+	systemOxyTank = concord.system({
+		pool = {"oxyTank"}
+	})
+	function systemOxyTank:update(dt)
+		for _, entity in ipairs(self.pool) do
+        end
+	end
+    -- ECSWORLD:addSystems(systemOxyTank)
 
     systemSolarPanel = concord.system({
         pool = {"solarPanel"}

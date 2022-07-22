@@ -35,13 +35,15 @@ local function establishPlayerVessel()
 	:give("fuelTank")
 	:give("miningLaser")
 	:give("battery")
-	:give("oxyGenerator")
+	--:give("oxyGenerator")
 	:give("oxyTank")
 	:give("solarPanel")
+	:give("cargoHold")
+	:give("spaceSuit")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
 	-- debug
-	-- entity.reverseThruster.currentHP = 0
+	-- entity.chassis.currentHP = 0
 	local shipsize = fun.getEntitySize(entity)
 	--DEBUG_VESSEL_SIZE = 10
 	--shipsize = DEBUG_VESSEL_SIZE
@@ -256,6 +258,8 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 		-- collision is with border. Do nothing.
 	elseif udtable1.objectType == "Starbase" or udtable2.objectType == "Starbase" then
 		--! do something
+		local physEntity = fun.getPhysEntity(PLAYER.UID)
+		physEntity.body:setLinearVelocity( 0, 0 )
 	else
 		physicsEntity1 = fun.getPhysEntity(uid1)
 		physicsEntity2 = fun.getPhysEntity(uid2)
@@ -370,7 +374,8 @@ function love.load()
 
 	love.window.setTitle("Asteroids " .. GAME_VERSION)
 	love.keyboard.setKeyRepeat(true)
-	-- cf.AddScreen("MainMenu", SCREEN_STACK)
+
+	cf.AddScreen("Asteroids", SCREEN_STACK)
 
 	-- create the world
     ECSWORLD = concord.world()
@@ -390,74 +395,110 @@ function love.load()
 	TRANSLATEX = (x1 * BOX2D_SCALE)
 	TRANSLATEY = (y1 * BOX2D_SCALE)
     ZOOMFACTOR = 0.4
+
 end
 
 function love.draw()
 
     res.start()
-	cam:attach()
 
-	love.graphics.setColor(1,1,1,1)
-	love.graphics.draw(IMAGES[enum.imagesBackgroundStatic], 0, 0, 0, 5.24, 10)
-	ECSWORLD:emit("draw")
+	if cf.currentScreenName(SCREEN_STACK) == "Asteroids" then
+		cam:attach()
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.draw(IMAGES[enum.imagesBackgroundStatic], 0, 0, 0, 5.24, 10)
+		ECSWORLD:emit("draw")
 
-	-- background
+		-- background
+		drawStarbase()
+		drawAsteroids()
+		-- cf.printAllPhysicsObjects(PHYSICSWORLD, BOX2D_SCALE)
+		cam:detach()
+
+		-- draw the HUD
+		love.graphics.draw(IMAGES[enum.imagesEjectButton],25,25)
+		-- o2 left
+		local o2left = fun.getO2left()
+		if o2left > 100 then o2left = 100 end	-- 100 is an arbitrary 100 to make % easy
+		local bars = math.ceil(o2left / 10)
+		local drawx = 109
+		local drawy = 30
+		for i = 1, bars - 1 do
+			love.graphics.draw(IMAGES[enum.imagesBlueBar],drawx,drawy,0,1,1)
+			drawx = drawx + 7
+			drawy = drawy + 0
+		end
+		if bars >= 1 then love.graphics.draw(IMAGES[enum.imagesBlueBarEnd],drawx,drawy,0,1,1) end
 
 
-	drawStarbase()
-	drawAsteroids()
-
-	-- cf.printAllPhysicsObjects(PHYSICSWORLD, BOX2D_SCALE)
-
-	-- love.graphics.setColor(1,1,1,1)
-	-- love.graphics.circle("fill", PHYSICS_WIDTH / 2 * BOX2D_SCALE, ((PHYSICS_HEIGHT) - 35) * BOX2D_SCALE, 10)
-
-	-- love.graphics.line(asteroidpoints)
+		-- fuel left
+		-- hold space
 
 
-	cam:detach()
+		-- draw the dead screen with alpha 0 (unless dead!)
+		love.graphics.setColor(1,1,1,DEAD_ALPHA)
+		love.graphics.draw(IMAGES[enum.imagesDead], 0, 0)
+
+	elseif cf.currentScreenName(SCREEN_STACK) == "Dead" then
+
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.setFont(FONT[enum.fontDefault])
+		love.graphics.print("You ded", 1000, 500)
+
+		TRANSLATEX = SCREEN_WIDTH / 2
+		TRANSLATEY = SCREEN_HEIGHT / 2
+		ZOOMFACTOR = 0.4
+	end
     res.stop()
 end
 
 function love.update(dt)
 
-	SOUND = {}		-- a global that is updated during update calls and then reset at the start of each dt
-	DRAW = {}
+	if cf.currentScreenName(SCREEN_STACK) == "Asteroids" then
 
-	ECSWORLD:emit("update", dt)
-	PHYSICSWORLD:update(dt) --this puts the world into motion
+		SOUND = {}		-- a global that is updated during update calls and then reset at the start of each dt
+		DRAW = {}
 
-	if SOUND.engine then
-		AUDIO[enum.audioEngine]:play()
-	else
-		AUDIO[enum.audioEngine]:stop()
-	end
-	if SOUND.lowFuel then
-		AUDIO[enum.audioLowFuel]:play()
-	else
-		AUDIO[enum.audioLowFuel]:stop()
-	end
-	if SOUND.warning then
-		AUDIO[enum.audioWarning]:play()
-	else
-		AUDIO[enum.audioWarning]:stop()
-	end
-	if SOUND.miningLaser then
-		AUDIO[enum.audioMiningLaser]:play()
-	else
-		AUDIO[enum.audioMiningLaser]:stop()
-	end
-	if SOUND.rockExplosion then
-		AUDIO[enum.audioRockExplosion]:play()
-	else
-		--AUDIO[enum.audioRockExplosion]:play()
-	end
+		ECSWORLD:emit("update", dt)
+		PHYSICSWORLD:update(dt) --this puts the world into motion
 
-	--! check for dead chassis
-	--! check for dead or empty o2 tank
+		if SOUND.engine then
+			AUDIO[enum.audioEngine]:play()
+		else
+			AUDIO[enum.audioEngine]:stop()
+		end
+		if SOUND.lowFuel then
+			AUDIO[enum.audioLowFuel]:play()
+		else
+			AUDIO[enum.audioLowFuel]:stop()
+		end
+		if SOUND.warning then
+			AUDIO[enum.audioWarning]:play()
+		else
+			AUDIO[enum.audioWarning]:stop()
+		end
+		if SOUND.miningLaser then
+			AUDIO[enum.audioMiningLaser]:play()
+		else
+			AUDIO[enum.audioMiningLaser]:stop()
+		end
+		if SOUND.rockExplosion then
+			AUDIO[enum.audioRockExplosion]:play()
+		else
+			--AUDIO[enum.audioRockExplosion]:play()
+		end
 
-	cam:setPos(TRANSLATEX, TRANSLATEY)
-	cam:setZoom(ZOOMFACTOR)
+		fun.deductO2(dt)
+
+		-- check for dead chassis
+		-- check for dead or empty o2 tank
+		fun.checkIfDead(dt)
+
+
+
+
+		cam:setPos(TRANSLATEX, TRANSLATEY)
+		cam:setZoom(ZOOMFACTOR)
+	end
 
 	res.update()
 end
