@@ -9,6 +9,8 @@ imagesOrangeBar = 6
 imagesOrangeBarEnd = 7
 imagesBlueBar = 8
 imagesBlueBarEnd = 9
+imagesGreenBar = 10
+imagesGreenBarEnd = 11
 
 audioEngine = 1
 audioLowFuel = 2
