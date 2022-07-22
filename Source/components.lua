@@ -87,10 +87,17 @@ function cmp.init()
     concord.component("oxyTank", function(c)
         c.label = "O2 tank"
         c.size = 1
-        c.capacity = 10   -- how much dt it holds (seconds)
+        c.capacity = 100   -- 430   -- how much dt it holds (seconds)
         c.maxCapacity = c.capacity
         c.maxHP = 1000
         c.currentHP = c.maxHP
+    end)
+
+    concord.component("spaceSuit", function(c)
+        c.label = "Space suit"
+        c.size = 0
+        c.O2capacity = 100-- 100   -- how much dt it holds (seconds)
+        c.maxO2Capacity = c.capacity
     end)
 
     concord.component("solarPanel", function(c)
@@ -110,12 +117,6 @@ function cmp.init()
         c.currentHP = c.maxHP
     end)
 
-    concord.component("spaceSuit", function(c)
-        c.label = "Space suit"
-        c.size = 0
-        c.O2capacity = 10   -- how much dt it holds (seconds)
-        c.maxO2Capacity = c.capacity
-    end)
 end
 
 return cmp

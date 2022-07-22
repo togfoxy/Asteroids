@@ -35,7 +35,7 @@ local function establishPlayerVessel()
 	:give("fuelTank")
 	:give("miningLaser")
 	:give("battery")
-	:give("oxyGenerator")
+	--:give("oxyGenerator")
 	:give("oxyTank")
 	:give("solarPanel")
 	:give("cargoHold")
@@ -414,6 +414,27 @@ function love.draw()
 		-- cf.printAllPhysicsObjects(PHYSICSWORLD, BOX2D_SCALE)
 		cam:detach()
 
+		-- draw the HUD
+		love.graphics.draw(IMAGES[enum.imagesEjectButton],25,25)
+		-- o2 left
+		local o2left = fun.getO2left()
+		if o2left > 100 then o2left = 100 end	-- 100 is an arbitrary 100 to make % easy
+		local bars = math.ceil(o2left / 10)
+		local drawx = 109
+		local drawy = 30
+		for i = 1, bars - 1 do
+			love.graphics.draw(IMAGES[enum.imagesBlueBar],drawx,drawy,0,1,1)
+			drawx = drawx + 7
+			drawy = drawy + 0
+		end
+		if bars >= 1 then love.graphics.draw(IMAGES[enum.imagesBlueBarEnd],drawx,drawy,0,1,1) end
+
+
+		-- fuel left
+		-- hold space
+
+
+		-- draw the dead screen with alpha 0 (unless dead!)
 		love.graphics.setColor(1,1,1,DEAD_ALPHA)
 		love.graphics.draw(IMAGES[enum.imagesDead], 0, 0)
 
@@ -469,9 +490,10 @@ function love.update(dt)
 		fun.deductO2(dt)
 
 		-- check for dead chassis
+		-- check for dead or empty o2 tank
 		fun.checkIfDead(dt)
 
-		--! check for dead or empty o2 tank
+
 
 
 		cam:setPos(TRANSLATEX, TRANSLATEY)

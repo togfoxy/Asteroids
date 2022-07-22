@@ -5,6 +5,14 @@ function functions.loadImages()
 	IMAGES[enum.imagesEngineFlame] = love.graphics.newImage("assets/images/flame.png")
 	IMAGES[enum.imagesVessel] = love.graphics.newImage("assets/images/ship1.png")
 
+	-- hud
+	IMAGES[enum.imagesEjectButton] = love.graphics.newImage("assets/images/ejectbutton.png")
+	IMAGES[enum.imagesOrangeBar] = love.graphics.newImage("assets/images/orangebar.png")
+	IMAGES[enum.imagesOrangeBarEnd] = love.graphics.newImage("assets/images/orangebarend.png")
+	IMAGES[enum.imagesBlueBar] = love.graphics.newImage("assets/images/bluebar.png")
+	IMAGES[enum.imagesBlueBarEnd] = love.graphics.newImage("assets/images/bluebarend.png")
+
+
 	-- background
 	IMAGES[enum.imagesBackgroundStatic] = love.graphics.newImage("assets/images/bg_space_seamless_2.png")
 	IMAGES[enum.imagesDead] = love.graphics.newImage("assets/images/dead.jpg")
@@ -239,7 +247,6 @@ function functions.checkIfDead(dt)
 	if dead then
 	-- do other 'dead' clean ups here
 		DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
-print(DEAD_ALPHA)
 		if DEAD_ALPHA >= 1 then
 			cf.SwapScreen("Dead", SCREEN_STACK)
 			-- cleanDeadData()		-!
@@ -269,4 +276,20 @@ function functions.deductO2(dt)
 	print("No oxygen. Needs to be ded")
 end
 
+function functions.getO2left()
+	-- count how many seconds of o2 in tank + suit
+	local result = 0
+	local entity = fun.getEntity(PLAYER.UID)
+	if entity:has("oxyTank") then
+		if entity.oxyTank.currentHP > 0 and entity.oxyTank.capacity > 0 then
+			result = result + entity.oxyTank.capacity
+		end
+	end
+	if entity:has("spaceSuit") then
+		if entity.spaceSuit.O2capacity > 0 then
+			result = result + entity.spaceSuit.O2capacity
+		end
+	end
+	return result
+end
 return functions
