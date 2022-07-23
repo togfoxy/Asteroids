@@ -14,9 +14,13 @@ function functions.loadImages()
 	IMAGES[enum.imagesGreenBar] = love.graphics.newImage("assets/images/greenbar.png")
 	IMAGES[enum.imagesGreenBarEnd] = love.graphics.newImage("assets/images/greenbarend.png")
 
+	-- shop
+	IMAGES[enum.imagesShopPanel] = love.graphics.newImage("assets/images/shoppanel.png")
+
 	-- background
 	IMAGES[enum.imagesBackgroundStatic] = love.graphics.newImage("assets/images/bg_space_seamless_2.png")
 	IMAGES[enum.imagesDead] = love.graphics.newImage("assets/images/dead.jpg")
+	IMAGES[enum.imagesShop] = love.graphics.newImage("assets/images/shop.jpg")
 end
 
 function functions.loadAudio()
@@ -33,6 +37,7 @@ function functions.loadFonts()
     FONT[enum.fontHeavyMetalLarge] = love.graphics.newFont("assets/fonts/Heavy Metal Box.ttf")
     FONT[enum.fontHeavyMetalSmall] = love.graphics.newFont("assets/fonts/Heavy Metal Box.ttf",10)
     FONT[enum.fontDefault] = love.graphics.newFont("assets/fonts/Vera.ttf", 12)
+	FONT[enum.fontTech] = love.graphics.newFont("assets/fonts/CorporateGothicNbpRegular-YJJ2.ttf", 40)
 end
 
 function functions.getPhysEntity(uid)
@@ -219,6 +224,26 @@ function functions.killPhysicsEntity(entity)
     assert(#PHYSICS_ENTITIES < physicsOrigsize)
 end
 
+local function entityHasO2(entity)
+	local hasO2 = false
+
+	if entity:has("oxyGenerator") and entity.oxyGenerator.currentHP > 0 then
+		if entity:has("battery") and entity.battery.capacity > 0 and entity.battery.currentHP > 0 then
+			return true
+		end
+	end
+
+	if entity:has("oxyTank") and entity.oxyTank.capacity > 0 and entity.oxyTank.currentHP > 0 then
+		return true
+	end
+
+	if entity:has("spaceSuit") and entity.spaceSuit.O2capacity > 0 then
+		return true
+	end
+
+	return false
+end
+
 function functions.checkIfDead(dt)
 	-- returns nothing (is a sub that returns nothing)
 	local dead = false
@@ -231,33 +256,32 @@ function functions.checkIfDead(dt)
 		error("Vessel has no chassis!")
 	end
 
-	if entity:has("oxyTank") then
-		if entity.oxyTank.capacity <= 0 or entity.oxyTank.currentHP <= 0 then
-			if entity:has("spaceSuit") then
-				if entity.spaceSuit.O2capacity <= 0 then
-					dead = true
-				end
-			else
-				dead = true
-			end
-		end
-	else
-		error("Vessel has no O2 tank!")
+	if not entityHasO2(entity) then
+		dead = true
 	end
 
 	if dead then
-	-- do other 'dead' clean ups here
+		-- do other 'dead' clean ups here
 		DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
 		if DEAD_ALPHA >= 1 then
-			cf.SwapScreen("Dead", SCREEN_STACK)
+			cf.SwapScreen(enum.sceneDed, SCREEN_STACK)
 			-- cleanDeadData()		-!
 		end
 	end
+
+	-- if entity:has("battery") then print("Battery: " .. entity.battery.capacity) end
 end
 
 function functions.deductO2(dt)
 	-- deduct O2 from player vessel
 	local entity = fun.getEntity(PLAYER.UID)
+
+	if entity:has("oxyGenerator") and entity.oxyGenerator.currentHP > 0 then
+		if entity:has("battery") and entity.battery.currentHP > 0 and entity.battery.capacity > 0 then
+			-- functional generator. Nothing to do
+			return
+		end
+	end
 	if entity:has("oxyTank") then
 		if entity.oxyTank.currentHP > 0 and entity.oxyTank.capacity > 0 then
 			-- deduct from tank
