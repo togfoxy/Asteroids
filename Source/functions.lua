@@ -20,6 +20,7 @@ function functions.loadImages()
 	-- background
 	IMAGES[enum.imagesBackgroundStatic] = love.graphics.newImage("assets/images/bg_space_seamless_2.png")
 	IMAGES[enum.imagesDead] = love.graphics.newImage("assets/images/dead.jpg")
+	IMAGES[enum.imagesShop] = love.graphics.newImage("assets/images/shop.jpg")
 end
 
 function functions.loadAudio()

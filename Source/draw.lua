@@ -185,6 +185,10 @@ function draw.asteroids()
 end
 
 function draw.shop()
+
+	love.graphics.setColor(1,1,1,0.25)
+	love.graphics.draw(IMAGES[enum.imagesShop], 0,0)
+
 	local numofpanels = 4
 	local numofmargins = numofpanels + 1
     local topmargin = 90
@@ -271,9 +275,6 @@ function draw.shop()
 		love.graphics.setFont(FONT[enum.fontDefault])
 		love.graphics.setColor(1,1,1,1)
 		love.graphics.print(txt, drawx, drawy + 16)
-
-
-
 
 		-- draw the click zone (debugging)
 		local zonex = panelx[2]

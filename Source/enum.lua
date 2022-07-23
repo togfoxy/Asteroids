@@ -12,6 +12,7 @@ imagesBlueBarEnd = 9
 imagesGreenBar = 10
 imagesGreenBarEnd = 11
 imagesShopPanel = 12
+imagesShop = 13
 
 audioEngine = 1
 audioLowFuel = 2
