@@ -214,11 +214,13 @@ function draw.shop()
 			BUTTONS[1][compindex].width = zonewidth
 			BUTTONS[1][compindex].height = zoneheight
 			BUTTONS[1][compindex].component = component
+			BUTTONS[1][compindex].type = "repair"		--! make enum?
 
 			-- print wealth
+			if PLAYER.ROCKSKILLED == nil then PLAYER.ROCKSKILLED = 0 end
 			love.graphics.setFont(FONT[enum.fontDefault])
 			love.graphics.setColor(1,1,1,1)
-			love.graphics.print(PLAYER.WEALTH, SCREEN_WIDTH / 2, 30)
+			love.graphics.print("Wealth: " .. PLAYER.WEALTH .. " Score: " .. PLAYER.ROCKSKILLED, SCREEN_WIDTH / 2, 30)
 
 		end
 	end

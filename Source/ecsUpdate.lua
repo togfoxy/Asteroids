@@ -37,6 +37,8 @@ local function activateMiningLaser(dt)
 						if physicsEntity.currentMass <= 0 then
 							fun.killPhysicsEntity(physicsEntity)
 							SOUND.rockExplosion = true
+							if PLAYER.ROCKSKILLED == nil then PLAYER.ROCKSKILLED = 0 end
+							PLAYER.ROCKSKILLED = PLAYER.ROCKSKILLED + 1
 						end
 					end
 				end

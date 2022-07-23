@@ -283,10 +283,12 @@ function love.mousepressed( x, y, button, istouch, presses )
 					if wx >= BUTTONS[i][j].x and wx <= (BUTTONS[i][j].x + BUTTONS[i][j].width) and
 						wy >= BUTTONS[i][j].y and wy <= (BUTTONS[i][j].y + BUTTONS[i][j].height) then
 
-						print(i, j, BUTTONS[i][j].component.label)
-
-						BUTTONS[i][j].component.currentHP = BUTTONS[i][j].component.currentHP + 1000
-						if BUTTONS[i][j].component.currentHP > BUTTONS[i][j].component.maxHP then BUTTONS[i][j].component.currentHP = BUTTONS[i][j].component.maxHP end
+						if PLAYER.WEALTH > 1000 then
+							BUTTONS[i][j].component.currentHP = BUTTONS[i][j].component.currentHP + 1000
+							if BUTTONS[i][j].component.currentHP > BUTTONS[i][j].component.maxHP then BUTTONS[i][j].component.currentHP = BUTTONS[i][j].component.maxHP end
+							PLAYER.WEALTH = PLAYER.WEALTH - 1000
+							if PLAYER.WEALTH < 0 then PLAYER.WEALTH = 0 end
+						end
 					end
 
 
