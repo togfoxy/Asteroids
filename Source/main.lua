@@ -325,6 +325,7 @@ function love.load()
 	cf.AddScreen(enum.sceneAsteroid, SCREEN_STACK)
 
 	-- create the world
+	SHOPWORLD = concord.world()
     ECSWORLD = concord.world()
 	ecsFunctions.init()
 	fun.loadAudio()
@@ -409,6 +410,12 @@ function love.update(dt)
 		if y1 > 925 then
 			physEntity.body:setPosition(x1, 925)			--! hack
 		end
+	end
+
+	SHOP_TIMER = SHOP_TIMER - dt		-- counts down regardless of which screen you on
+	if SHOP_TIMER < 0 then
+		SHOP_TIMER = 0
+		SHOP_ENTITY = nil
 	end
 
 	res.update()

@@ -17,10 +17,12 @@ function constants.load()
 
     SCREEN_STACK = {}
 
+    SHOPWORLD = nil         -- this is to hold ALL the shopping components
     ECSWORLD = {}
     ECS_ENTITIES = {}
     PHYSICS_ENTITIES = {}
-	PHYSICS_ASTEROIDS = {}
+    SHOP_ENTITY = nil
+
 
     PLAYER = {}
     PLAYER.UID = 0              -- store this globally for easy recall
@@ -42,6 +44,9 @@ function constants.load()
     FUEL_CONSUMPTION_RATE = 400      -- low numbers = burns more fuel. High numbers = burns less fuel
 
     DEAD_ALPHA = 0                  -- used to fade to black when dead
+
+    SHOP_TIMER = 0
+    DEFAULT_SHOP_TIMER = 5 * 60     -- seconds
 end
 
 

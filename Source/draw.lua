@@ -1,5 +1,34 @@
 draw = {}
 
+local function fillShop()
+
+	local chance = 25		-- percent
+	SHOP_ENTITY = nil
+	SHOP_ENTITY = concord.entity(SHOPWORLD)
+	:give("chassis")
+	:give("engine")
+	:give("leftThruster")
+	:give("rightThruster")
+	:give("reverseThruster")
+	:give("fuelTank")
+	:give("miningLaser")
+	:give("battery")
+	:give("oxyGenerator")
+	:give("oxyTank")
+	:give("solarPanel")
+	:give("cargoHold")
+	:give("spaceSuit")
+
+	local allComponents = SHOP_ENTITY:getComponents()
+	for componentClass, component in pairs(allComponents) do
+		if love.math.random(1,100) <= chance then
+			-- keep this component in the shop
+		else
+			SHOP_ENTITY:remove(componentClass)
+		end
+	end
+end
+
 local function drawStarbase()
 	love.graphics.setColor(100/256,87/256,188/256,1)
 	local x1, y1, x2, y2, x3, y3, x4, y4
@@ -216,14 +245,58 @@ function draw.shop()
 			BUTTONS[1][compindex].component = component
 			BUTTONS[1][compindex].type = "repair"		--! make enum?
 
-			-- print wealth
-			if PLAYER.ROCKSKILLED == nil then PLAYER.ROCKSKILLED = 0 end
-			love.graphics.setFont(FONT[enum.fontDefault])
-			love.graphics.setColor(1,1,1,1)
-			love.graphics.print("Wealth: " .. PLAYER.WEALTH .. " Score: " .. PLAYER.ROCKSKILLED, SCREEN_WIDTH / 2, 30)
+
 
 		end
 	end
+
+	-- draw shop components that can be bought
+	if SHOP_TIMER <= 0 then
+		fillShop()
+		SHOP_TIMER = DEFAULT_SHOP_TIMER
+	end
+	BUTTONS = {}
+	BUTTONS[2] = {}
+	local drawx = panelx[2] + 10
+	local drawy = panely[2] + 10
+	local compindex = 0
+	local allComponents = SHOP_ENTITY:getComponents()
+	for _, component in pairs(allComponents) do
+		compindex = compindex + 1
+		local zoneheight = 50			--! refactor
+		drawy = drawy + zoneheight
+		local txt = component.label
+		love.graphics.setFont(FONT[enum.fontTech])
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.print(txt, drawx, drawy)
+
+		-- draw the click zone (debugging)
+		local zonex = panelx[2]
+		local zoney = panely[2] + ((compindex) * zoneheight)
+		local zonewidth = panelwidth
+
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.rectangle("line", zonex, zoney, zonewidth, zoneheight)
+
+		-- store buttons for later use
+		BUTTONS[2][compindex] = {}		-- col/row format
+		BUTTONS[2][compindex].col = 2
+		BUTTONS[2][compindex].row = compindex
+		BUTTONS[2][compindex].x = zonex
+		BUTTONS[2][compindex].y = zoney
+		BUTTONS[2][compindex].width = zonewidth
+		BUTTONS[2][compindex].height = zoneheight
+		BUTTONS[2][compindex].component = component
+		BUTTONS[2][compindex].type = "buy"		--! make enum?
+
+	end
+
+	-- print wealth and score
+	if PLAYER.ROCKSKILLED == nil then PLAYER.ROCKSKILLED = 0 end
+	love.graphics.setFont(FONT[enum.fontDefault])
+	love.graphics.setColor(1,1,1,1)
+	love.graphics.print("Wealth: " .. PLAYER.WEALTH .. " Score: " .. PLAYER.ROCKSKILLED, SCREEN_WIDTH / 2, 30)
+
 end
 
 function draw.dead()
