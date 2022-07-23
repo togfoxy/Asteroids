@@ -32,17 +32,20 @@ local function establishPlayerVessel()
 	:give("engine")
 	-- :give("leftThruster")
 	-- :give("rightThruster")
-	:give("reverseThruster")
+	-- :give("reverseThruster")
 	:give("fuelTank")
 	:give("miningLaser")
 	:give("battery")
 	:give("oxyGenerator")
-	:give("oxyTank")
+	-- :give("oxyTank")
 	-- :give("solarPanel")
 	:give("cargoHold")
 	-- :give("spaceSuit")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
+	-- PLAYER.WEALTH = 1000
+
+
 	-- debug
 	-- entity.chassis.currentHP = 0
 	local shipsize = fun.getEntitySize(entity)
@@ -174,6 +177,7 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 		local entity = fun.getEntity(PLAYER.UID)
 		physEntity.body:setLinearVelocity( 0, 0)
 
+		-- get credit for items in hold
 		if entity:has("cargoHold") then
 			if entity.cargoHold.currentHP > 0 then
 				local profit = cf.round(entity.cargoHold.currentAmount)
@@ -182,6 +186,15 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 				entity.cargoHold.currentAmount = 0
 			end
 		end
+
+		-- refill consumerables
+		local allComponents = entity:getComponents()
+		for _, component in pairs(allComponents) do
+			if component.capacity ~= nil then
+				component.capacity = component.maxCapacity
+			end
+		end
+
 		cf.AddScreen(enum.sceneShop, SCREEN_STACK)
 	else
 		physicsEntity1 = fun.getPhysEntity(uid1)
@@ -254,6 +267,28 @@ function love.keypressed( key, scancode, isrepeat )
 	if rightpressed then TRANSLATEX = TRANSLATEX + translatefactor end
 	if uppressed then TRANSLATEY = TRANSLATEY - translatefactor end
 	if downpressed then TRANSLATEY = TRANSLATEY + translatefactor end
+
+	local entity = fun.getEntity(PLAYER.UID)
+	local physEntity = fun.getPhysEntity(PLAYER.UID)
+
+	if love.keyboard.isDown("kp7") and entity:has("fuelTank") and entity:has("rightThruster") and entity.rightThruster.currentHP > 0 then
+		-- do nothing because the :update event has superior turning logic
+	else
+		if love.keyboard.isDown("kp7") then
+			-- rotate ccw
+			physEntity.body:applyTorque(-2500)
+		end
+	end
+
+	if love.keyboard.isDown("kp9") and entity:has("fuelTank") and entity:has("leftThruster") and entity.leftThruster.currentHP > 0 then
+		-- do nothing because the :update event has superior turning logic
+	else
+		-- offer a very basic and slow rotation
+		if love.keyboard.isDown("kp9") then
+			-- rotate cw
+			physEntity.body:applyTorque(2500)
+		end
+	end
 end
 
 function love.wheelmoved(x, y)
@@ -308,6 +343,8 @@ function love.mousepressed( x, y, button, istouch, presses )
 								local purchaseprice = button.component.purchasePrice
 								if PLAYER.WEALTH >= purchaseprice then
 									entity:give(componentType)
+									PLAYER.WEALTH = PLAYER.WEALTH - purchaseprice
+									SHOP_ENTITY:remove(componentType)
 									print("Component purchased:" .. componentType)
 								else
 									print("Can't afford purchase")

@@ -142,7 +142,7 @@ function ecsUpdate.init()
                 DRAW.leftFlame = true
 
             end
-            if entity:has("fuelTank") and love.keyboard.isDown("kp9") then
+            if love.keyboard.isDown("kp9") and entity:has("fuelTank") and entity.leftThruster.currentHP > 0 then
                 -- rotate clockwise
                 local physEntity = fun.getPhysEntity(entity.uid.value)
                 physEntity.body:applyTorque(entity.leftThruster.strength)
@@ -196,12 +196,11 @@ function ecsUpdate.init()
 
                 SOUND.engine = true
                 DRAW.rightFlame = true
-
             end
-            if entity:has("fuelTank") and love.keyboard.isDown("kp7") then
+            if love.keyboard.isDown("kp7") and entity:has("fuelTank") and entity.rightThruster.currentHP > 0 then
                 -- rotate anti-clockwise
                 local physEntity = fun.getPhysEntity(entity.uid.value)
-                physEntity.body:applyTorque(entity.leftThruster.strength * -1)
+                physEntity.body:applyTorque(entity.rightThruster.strength * -1)
             end
         end
     end

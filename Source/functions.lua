@@ -223,6 +223,26 @@ function functions.killPhysicsEntity(entity)
     assert(#PHYSICS_ENTITIES < physicsOrigsize)
 end
 
+local function entityHasO2(entity)
+	local hasO2 = false
+
+	if entity:has("oxyGenerator") and entity.oxyGenerator.currentHP > 0 then
+		if entity:has("battery") and entity.battery.capacity > 0 and entity.battery.currentHP > 0 then
+			return true
+		end
+	end
+
+	if entity:has("oxyTank") and entity.oxyTank.capacity > 0 and entity.oxyTank.currentHP > 0 then
+		return true
+	end
+
+	if entity:has("spaceSuit") and entity.spaceSuit.O2capacity > 0 then
+		return true
+	end
+
+	return false
+end
+
 function functions.checkIfDead(dt)
 	-- returns nothing (is a sub that returns nothing)
 	local dead = false
@@ -235,33 +255,32 @@ function functions.checkIfDead(dt)
 		error("Vessel has no chassis!")
 	end
 
-	if entity:has("oxyTank") then
-		if entity.oxyTank.capacity <= 0 or entity.oxyTank.currentHP <= 0 then
-			if entity:has("spaceSuit") then
-				if entity.spaceSuit.O2capacity <= 0 then
-					dead = true
-				end
-			else
-				dead = true
-			end
-		end
-	else
-		error("Vessel has no O2 tank!")
+	if not entityHasO2(entity) then
+		dead = true
 	end
 
 	if dead then
-	-- do other 'dead' clean ups here
+		-- do other 'dead' clean ups here
 		DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
 		if DEAD_ALPHA >= 1 then
 			cf.SwapScreen(enum.sceneDed, SCREEN_STACK)
 			-- cleanDeadData()		-!
 		end
 	end
+
+	-- if entity:has("battery") then print("Battery: " .. entity.battery.capacity) end
 end
 
 function functions.deductO2(dt)
 	-- deduct O2 from player vessel
 	local entity = fun.getEntity(PLAYER.UID)
+
+	if entity:has("oxyGenerator") and entity.oxyGenerator.currentHP > 0 then
+		if entity:has("battery") and entity.battery.currentHP > 0 and entity.battery.capacity > 0 then
+			-- functional generator. Nothing to do
+			return
+		end
+	end
 	if entity:has("oxyTank") then
 		if entity.oxyTank.currentHP > 0 and entity.oxyTank.capacity > 0 then
 			-- deduct from tank

@@ -46,7 +46,7 @@ function constants.load()
     DEAD_ALPHA = 0                  -- used to fade to black when dead
 
     SHOP_TIMER = 0
-    DEFAULT_SHOP_TIMER = 5 * 60     -- seconds
+    DEFAULT_SHOP_TIMER = 3 * 60     -- seconds
 end
 
 

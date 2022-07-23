@@ -257,13 +257,23 @@ function draw.shop()
 	local compindex = 0
 	local allComponents = SHOP_ENTITY:getComponents()
 	for _, component in pairs(allComponents) do
+		-- these are for sale
 		compindex = compindex + 1
 		local zoneheight = 50			--! refactor
 		drawy = drawy + zoneheight
-		local txt = component.label .. "\n" .. component.purchasePrice
+		local txt = component.label .. " $" .. component.purchasePrice
 		love.graphics.setFont(FONT[enum.fontTech])
 		love.graphics.setColor(1,1,1,1)
-		love.graphics.print(txt, drawx, drawy)
+		love.graphics.print(txt, drawx, drawy - 10)
+
+		-- draw the description
+		local txt = component.description
+		love.graphics.setFont(FONT[enum.fontDefault])
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.print(txt, drawx, drawy + 16)
+
+
+
 
 		-- draw the click zone (debugging)
 		local zonex = panelx[2]
@@ -289,7 +299,7 @@ function draw.shop()
 	if PLAYER.ROCKSKILLED == nil then PLAYER.ROCKSKILLED = 0 end
 	love.graphics.setFont(FONT[enum.fontDefault])
 	love.graphics.setColor(1,1,1,1)
-	love.graphics.print("Wealth: " .. PLAYER.WEALTH .. " Score: " .. PLAYER.ROCKSKILLED, SCREEN_WIDTH / 2, 30)
+	love.graphics.print("Wealth: $" .. cf.strFormatThousand(PLAYER.WEALTH) .. " Score: " .. PLAYER.ROCKSKILLED, SCREEN_WIDTH / 2, 30)
 
 end
 
