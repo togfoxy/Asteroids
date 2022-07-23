@@ -166,6 +166,9 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 	if udtable1.objectType == "Border" or udtable2.objectType == "Border" then
 		-- collision is with border. Do nothing.
 	elseif udtable1.objectType == "Starbase" or udtable2.objectType == "Starbase" then
+		TRANSLATEX = SCREEN_WIDTH / 2
+		TRANSLATEY = SCREEN_HEIGHT / 2
+		ZOOMFACTOR = 1
 		local physEntity = fun.getPhysEntity(PLAYER.UID)
 		physEntity.body:setLinearVelocity( 0, 0)
 		cf.AddScreen(enum.sceneShop, SCREEN_STACK)
@@ -260,9 +263,15 @@ end
 function love.mousepressed( x, y, button, istouch, presses )
 
 	local wx,wy = cam:toWorld(x, y)	-- converts screen x/y to world x/y
-
 	if button == 1 then
+		if cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
 
+			print(wx, wy)
+
+
+
+
+		end
 	end
 end
 

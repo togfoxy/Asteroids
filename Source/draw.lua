@@ -157,38 +157,61 @@ end
 
 function draw.shop()
 
-    local topmargin = 45
+
+
+	local numofpanels = 4
+	local numofmargins = numofpanels + 1
+    local topmargin = 90
     local margin = 35
-    local edge = 35
-    local panelwidth = (SCREEN_WIDTH - (2 * margin) - (2 * edge)) / 3
-print(panelwidth)
-    local panel1x = margin
-    local panel2x = panel1x + panelwidth + edge
-    local panel3x = panel2x + panelwidth + edge
 
-    love.graphics.setColor(1,1,1,1)
-    -- love.graphics.rectangle("line", panel1x, topmargin, panelwidth, 900)
-    -- love.graphics.rectangle("line", panel2x, topmargin, panelwidth, 900)
-    -- love.graphics.rectangle("line", panel3x, topmargin, panelwidth, 900)
+	local panelwidth = SCREEN_WIDTH - (margin * numofmargins)
+	panelwidth = panelwidth / numofpanels
 
-    TRANSLATEX = SCREEN_WIDTH / 2
-    TRANSLATEY = SCREEN_HEIGHT / 2
-    ZOOMFACTOR = 0.4
-
-
-    local panelimagewidth = IMAGES[enum.imagesShopPanel]:getWidth()
+	local panelimagewidth = IMAGES[enum.imagesShopPanel]:getWidth()
     local panelxscale = panelwidth / panelimagewidth
 
-    -- repair
-    love.graphics.draw(IMAGES[enum.imagesShopPanel], panel1x, topmargin, 0, panelxscale, 1)
+	-- draw the panels
+	local panelx = {}
+	local panely = {}
+	local drawx = margin
+	for i = 1, numofpanels do
+		panelx[i] = drawx		-- capture this for easy drawing later
+		panely[i] = topmargin
+		love.graphics.setColor(1,1,1,1)
+		-- love.graphics.draw(IMAGES[enum.imagesShopPanel], drawx, topmargin, 0, panelxscale, 1)
+		drawx = drawx + margin + panelwidth
+	end
+
+	-- draw the ship components that have currenthp
+	local entity = fun.getEntity(PLAYER.UID)
+	local allComponents = entity:getComponents()
+	local drawx = panelx[1] + 10
+	local drawy = panely[1] + 10
+	local compindex = 1
+	love.graphics.setFont(FONT[enum.fontTech])
+	for _, component in pairs(allComponents) do
+		if component.currentHP ~= nil then
+			local txt = component.label .. ": " .. component.currentHP .. " / " .. component.maxHP
+			love.graphics.print(txt, drawx, drawy)
+			drawy = drawy + 50
+
+			-- draw the click zone (debugging)
+
+			local zonex = panelx[1]
+			local zoney = panely[1] + ((compindex-1) * 50)
+			local zonewidth = panelwidth
+			local zoneheight = 50
+
+			love.graphics.rectangle("line", zonex, zoney, zonewidth, zoneheight)
 
 
-    -- purchase
-    love.graphics.draw(IMAGES[enum.imagesShopPanel], panel2x, topmargin, 0, panelxscale, 1)
+
+			compindex = compindex + 1
+		end
+	end
 
 
-    -- sell
-    love.graphics.draw(IMAGES[enum.imagesShopPanel], panel3x, topmargin, 0, panelxscale, 1)
+
 
 end
 

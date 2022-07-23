@@ -22,6 +22,7 @@ audioRockExplosion = 5
 fontDefault = 1
 fontHeavyMetalLarge = 2
 fontHeavyMetalSmall = 3
+fontTech = 4
 
 sceneAsteroid = 1
 sceneShop = 2

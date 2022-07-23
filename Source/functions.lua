@@ -36,6 +36,7 @@ function functions.loadFonts()
     FONT[enum.fontHeavyMetalLarge] = love.graphics.newFont("assets/fonts/Heavy Metal Box.ttf")
     FONT[enum.fontHeavyMetalSmall] = love.graphics.newFont("assets/fonts/Heavy Metal Box.ttf",10)
     FONT[enum.fontDefault] = love.graphics.newFont("assets/fonts/Vera.ttf", 12)
+	FONT[enum.fontTech] = love.graphics.newFont("assets/fonts/CorporateGothicNbpRegular-YJJ2.ttf", 40)
 end
 
 function functions.getPhysEntity(uid)
