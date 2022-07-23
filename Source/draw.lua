@@ -187,13 +187,14 @@ function draw.shop()
 	local drawx = panelx[1] + 10
 	local drawy = panely[1] + 10
 	local compindex = 0
-	love.graphics.setFont(FONT[enum.fontTech])
 	for _, component in pairs(allComponents) do
 		if component.currentHP ~= nil then
 			compindex = compindex + 1
 			local zoneheight = 50
 			drawy = drawy + zoneheight
 			local txt = component.label .. ": " .. component.currentHP .. " / " .. component.maxHP
+			love.graphics.setFont(FONT[enum.fontTech])
+			love.graphics.setColor(1,1,1,1)
 			love.graphics.print(txt, drawx, drawy)
 
 			-- draw the click zone (debugging)
@@ -201,8 +202,10 @@ function draw.shop()
 			local zoney = panely[1] + ((compindex) * zoneheight)
 			local zonewidth = panelwidth
 
+			love.graphics.setColor(1,1,1,1)
 			love.graphics.rectangle("line", zonex, zoney, zonewidth, zoneheight)
 
+			-- store buttons for later use
 			BUTTONS[1][compindex] = {}		-- col/row format
 			BUTTONS[1][compindex].col = 1
 			BUTTONS[1][compindex].row = compindex
@@ -211,6 +214,12 @@ function draw.shop()
 			BUTTONS[1][compindex].width = zonewidth
 			BUTTONS[1][compindex].height = zoneheight
 			BUTTONS[1][compindex].component = component
+
+			-- print wealth
+			love.graphics.setFont(FONT[enum.fontDefault])
+			love.graphics.setColor(1,1,1,1)
+			love.graphics.print(PLAYER.WEALTH, SCREEN_WIDTH / 2, 30)
+
 		end
 	end
 end

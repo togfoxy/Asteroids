@@ -166,11 +166,22 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 	if udtable1.objectType == "Border" or udtable2.objectType == "Border" then
 		-- collision is with border. Do nothing.
 	elseif udtable1.objectType == "Starbase" or udtable2.objectType == "Starbase" then
+		-- go to shop
 		TRANSLATEX = SCREEN_WIDTH / 2
 		TRANSLATEY = SCREEN_HEIGHT / 2
 		ZOOMFACTOR = 1
 		local physEntity = fun.getPhysEntity(PLAYER.UID)
+		local entity = fun.getEntity(PLAYER.UID)
 		physEntity.body:setLinearVelocity( 0, 0)
+
+		if entity:has("cargoHold") then
+			if entity.cargoHold.currentHP > 0 then
+				local profit = cf.round(entity.cargoHold.currentAmount)
+				if PLAYER.WEALTH == nil then PLAYER.WEALTH = 0 end
+				PLAYER.WEALTH = PLAYER.WEALTH + profit
+				entity.cargoHold.currentAmount = 0
+			end
+		end
 		cf.AddScreen(enum.sceneShop, SCREEN_STACK)
 	else
 		physicsEntity1 = fun.getPhysEntity(uid1)
@@ -265,11 +276,22 @@ function love.mousepressed( x, y, button, istouch, presses )
 	local wx,wy = cam:toWorld(x, y)	-- converts screen x/y to world x/y
 	if button == 1 then
 		if cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
+			-- determine which screen button was clicked
+			for i = 1, #BUTTONS do
+				for j = 1, #BUTTONS[i] do
+					-- do a bounding box check
+					if wx >= BUTTONS[i][j].x and wx <= (BUTTONS[i][j].x + BUTTONS[i][j].width) and
+						wy >= BUTTONS[i][j].y and wy <= (BUTTONS[i][j].y + BUTTONS[i][j].height) then
 
-			print(wx, wy)
+						print(i, j, BUTTONS[i][j].component.label)
+
+						BUTTONS[i][j].component.currentHP = BUTTONS[i][j].component.currentHP + 1000
+						if BUTTONS[i][j].component.currentHP > BUTTONS[i][j].component.maxHP then BUTTONS[i][j].component.currentHP = BUTTONS[i][j].component.maxHP end
+					end
 
 
-
+				end
+			end
 
 		end
 	end
