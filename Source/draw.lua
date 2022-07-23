@@ -156,9 +156,6 @@ function draw.asteroids()
 end
 
 function draw.shop()
-
-
-
 	local numofpanels = 4
 	local numofmargins = numofpanels + 1
     local topmargin = 90
@@ -174,6 +171,8 @@ function draw.shop()
 	local panelx = {}
 	local panely = {}
 	local drawx = margin
+	BUTTONS = {}
+	BUTTONS[1] = {}
 	for i = 1, numofpanels do
 		panelx[i] = drawx		-- capture this for easy drawing later
 		panely[i] = topmargin
@@ -187,32 +186,33 @@ function draw.shop()
 	local allComponents = entity:getComponents()
 	local drawx = panelx[1] + 10
 	local drawy = panely[1] + 10
-	local compindex = 1
+	local compindex = 0
 	love.graphics.setFont(FONT[enum.fontTech])
 	for _, component in pairs(allComponents) do
 		if component.currentHP ~= nil then
+			compindex = compindex + 1
+			local zoneheight = 50
+			drawy = drawy + zoneheight
 			local txt = component.label .. ": " .. component.currentHP .. " / " .. component.maxHP
 			love.graphics.print(txt, drawx, drawy)
-			drawy = drawy + 50
 
 			-- draw the click zone (debugging)
-
 			local zonex = panelx[1]
-			local zoney = panely[1] + ((compindex-1) * 50)
+			local zoney = panely[1] + ((compindex) * zoneheight)
 			local zonewidth = panelwidth
-			local zoneheight = 50
 
 			love.graphics.rectangle("line", zonex, zoney, zonewidth, zoneheight)
 
-
-
-			compindex = compindex + 1
+			BUTTONS[1][compindex] = {}		-- col/row format
+			BUTTONS[1][compindex].col = 1
+			BUTTONS[1][compindex].row = compindex
+			BUTTONS[1][compindex].x = zonex
+			BUTTONS[1][compindex].y = zoney
+			BUTTONS[1][compindex].width = zonewidth
+			BUTTONS[1][compindex].height = zoneheight
+			BUTTONS[1][compindex].component = component
 		end
 	end
-
-
-
-
 end
 
 function draw.dead()

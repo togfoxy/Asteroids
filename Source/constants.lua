@@ -31,6 +31,7 @@ function constants.load()
     AUDIO = {}
     IMAGES = {}
     FONT = {}
+    BUTTONS = {}
 
     PHYSICS_DENSITY = 4    -- how many kg's each mass weighs
 
