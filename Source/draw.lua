@@ -260,7 +260,7 @@ function draw.shop()
 		compindex = compindex + 1
 		local zoneheight = 50			--! refactor
 		drawy = drawy + zoneheight
-		local txt = component.label
+		local txt = component.label .. "\n" .. component.purchasePrice
 		love.graphics.setFont(FONT[enum.fontTech])
 		love.graphics.setColor(1,1,1,1)
 		love.graphics.print(txt, drawx, drawy)

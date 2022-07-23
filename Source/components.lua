@@ -13,6 +13,7 @@ function cmp.init()
         c.size = 3
 		c.maxHP = 10000
 		c.currentHP = c.maxHP
+        c.purchasePrice = 1000
     end)
 
     concord.component("engine", function(c)
@@ -21,6 +22,7 @@ function cmp.init()
         c.strength = 10000      -- thrust
 		c.maxHP = 3000
 		c.currentHP = c.maxHP
+        c.purchasePrice = 1000
     end)
 
     concord.component("fuelTank", function(c)
@@ -30,6 +32,7 @@ function cmp.init()
         c.maxCapacity = c.capacity
 		c.maxHP = 3000
 		c.currentHP = c.maxHP
+        c.purchasePrice = 1000
     end)
 
 
@@ -39,6 +42,7 @@ function cmp.init()
         c.strength = 2500      -- thrust
 		c.maxHP = 1000
 		c.currentHP = c.maxHP
+        c.purchasePrice = 1000
     end)
 
     concord.component("rightThruster", function(c)
@@ -47,6 +51,7 @@ function cmp.init()
         c.strength = 2500      -- thrust
 		c.maxHP = 1000
 		c.currentHP = c.maxHP
+        c.purchasePrice = 1000
     end)
 
     concord.component("reverseThruster", function(c)
@@ -55,6 +60,7 @@ function cmp.init()
         c.strength = 2500      -- thrust
 		c.maxHP = 1000
 		c.currentHP = c.maxHP
+        c.purchasePrice = 1000
     end)
 
     concord.component("miningLaser", function(c)
@@ -64,6 +70,7 @@ function cmp.init()
         c.miningRange = 100     -- the reach of the laser
 		c.maxHP = 1000
 		c.currentHP = c.maxHP
+        c.purchasePrice = 1000
     end)
 
     concord.component("battery", function(c)
@@ -73,6 +80,7 @@ function cmp.init()
         c.maxCapacity = c.capacity
         c.maxHP = 1000
         c.currentHP = c.maxHP
+        c.purchasePrice = 1000
     end)
 
     concord.component("oxyGenerator", function(c)
@@ -82,6 +90,7 @@ function cmp.init()
         c.powerNeeds = 1        -- how much power per dt
         c.maxHP = 1000
         c.currentHP = c.maxHP
+        c.purchasePrice = 1000
     end)
 
     concord.component("oxyTank", function(c)
@@ -91,6 +100,7 @@ function cmp.init()
         c.maxCapacity = c.capacity
         c.maxHP = 1000
         c.currentHP = c.maxHP
+        c.purchasePrice = 1000
     end)
 
     concord.component("spaceSuit", function(c)
@@ -98,6 +108,7 @@ function cmp.init()
         c.size = 0
         c.O2capacity = 100-- 100   -- how much dt it holds (seconds)
         c.maxO2Capacity = c.capacity
+        c.purchasePrice = 1000
     end)
 
     concord.component("solarPanel", function(c)
@@ -106,6 +117,7 @@ function cmp.init()
         c.rechargeRate = 1
         c.maxHP = 1000
         c.currentHP = c.maxHP
+        c.purchasePrice = 1000
     end)
 
     concord.component("cargoHold", function(c)
@@ -115,6 +127,7 @@ function cmp.init()
         c.currentAmount = 0         -- current amount stored
         c.maxHP = 2000
         c.currentHP = c.maxHP
+        c.purchasePrice = 1000
     end)
 
 end

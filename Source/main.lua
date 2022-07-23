@@ -305,8 +305,14 @@ function love.mousepressed( x, y, button, istouch, presses )
 								-- do nothing
 								print("Already have this component: " .. componentType)
 							else
-								entity:give(componentType)
-								print("Component purchased:" .. componentType)
+								local purchaseprice = button.component.purchasePrice
+								if PLAYER.WEALTH >= purchaseprice then
+									entity:give(componentType)
+									print("Component purchased:" .. componentType)
+								else
+									print("Can't afford purchase")
+									--! play 'fail' sound
+								end
 							end
 						end
 					end
