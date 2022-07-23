@@ -200,13 +200,10 @@ function draw.shop()
 	local panelx = {}
 	local panely = {}
 	local drawx = margin
-	BUTTONS = {}
-	BUTTONS[1] = {}
+
 	for i = 1, numofpanels do
 		panelx[i] = drawx		-- capture this for easy drawing later
 		panely[i] = topmargin
-		love.graphics.setColor(1,1,1,1)
-		-- love.graphics.draw(IMAGES[enum.imagesShopPanel], drawx, topmargin, 0, panelxscale, 1)
 		drawx = drawx + margin + panelwidth
 	end
 
@@ -215,13 +212,15 @@ function draw.shop()
 	local allComponents = entity:getComponents()
 	local drawx = panelx[1] + 10
 	local drawy = panely[1] + 10
+	BUTTONS = {}
+	BUTTONS[1] = {}
 	local compindex = 0
 	for _, component in pairs(allComponents) do
 		if component.currentHP ~= nil then
 			compindex = compindex + 1
 			local zoneheight = 50
 			drawy = drawy + zoneheight
-			local txt = component.label .. ": " .. component.currentHP .. " / " .. component.maxHP
+			local txt = component.label .. ": " .. cf.round(component.currentHP) .. " / " .. component.maxHP
 			love.graphics.setFont(FONT[enum.fontTech])
 			love.graphics.setColor(1,1,1,1)
 			love.graphics.print(txt, drawx, drawy)
@@ -243,10 +242,7 @@ function draw.shop()
 			BUTTONS[1][compindex].width = zonewidth
 			BUTTONS[1][compindex].height = zoneheight
 			BUTTONS[1][compindex].component = component
-			BUTTONS[1][compindex].type = "repair"		--! make enum?
-
-
-
+			BUTTONS[1][compindex].type = enum.buttonTypeRepair
 		end
 	end
 
@@ -255,9 +251,8 @@ function draw.shop()
 		fillShop()
 		SHOP_TIMER = DEFAULT_SHOP_TIMER
 	end
-	BUTTONS = {}
 	BUTTONS[2] = {}
-	local drawx = panelx[2] + 10
+	local drawx = panelx[2] + 10			-- the 10 is to indent the text a little bit
 	local drawy = panely[2] + 10
 	local compindex = 0
 	local allComponents = SHOP_ENTITY:getComponents()
@@ -287,8 +282,7 @@ function draw.shop()
 		BUTTONS[2][compindex].width = zonewidth
 		BUTTONS[2][compindex].height = zoneheight
 		BUTTONS[2][compindex].component = component
-		BUTTONS[2][compindex].type = "buy"		--! make enum?
-
+		BUTTONS[2][compindex].type = enum.buttonTypeBuy
 	end
 
 	-- print wealth and score

@@ -30,17 +30,17 @@ local function establishPlayerVessel()
     :give("uid")
 	:give("chassis")
 	:give("engine")
-	:give("leftThruster")
-	:give("rightThruster")
+	-- :give("leftThruster")
+	-- :give("rightThruster")
 	:give("reverseThruster")
 	:give("fuelTank")
 	:give("miningLaser")
 	:give("battery")
 	:give("oxyGenerator")
 	:give("oxyTank")
-	:give("solarPanel")
+	-- :give("solarPanel")
 	:give("cargoHold")
-	:give("spaceSuit")
+	-- :give("spaceSuit")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
 	-- debug
@@ -198,13 +198,11 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 			if udtable1.objectType == "Player" then
 				local entity = fun.getEntity(uid1)
 				local component = fun.getRandomComponent(entity)
-
-				print(component.label)
-
 				component.currentHP = component.currentHP - normalimpulse
 				if component.currentHP <= 0 then
 					component.currentHP = 0
 				end
+				print(component.label, component.currentHP)
 			end
 		else
 			-- damage object2
@@ -283,18 +281,37 @@ function love.mousepressed( x, y, button, istouch, presses )
 					if wx >= BUTTONS[i][j].x and wx <= (BUTTONS[i][j].x + BUTTONS[i][j].width) and
 						wy >= BUTTONS[i][j].y and wy <= (BUTTONS[i][j].y + BUTTONS[i][j].height) then
 
-						if PLAYER.WEALTH > 1000 then
-							BUTTONS[i][j].component.currentHP = BUTTONS[i][j].component.currentHP + 1000
-							if BUTTONS[i][j].component.currentHP > BUTTONS[i][j].component.maxHP then BUTTONS[i][j].component.currentHP = BUTTONS[i][j].component.maxHP end
-							PLAYER.WEALTH = PLAYER.WEALTH - 1000
-							if PLAYER.WEALTH < 0 then PLAYER.WEALTH = 0 end
+						local button = BUTTONS[i][j]
+
+						if button.type == enum.buttonTypeRepair then
+							if PLAYER.WEALTH > 1000 then
+								button.component.currentHP = button.component.currentHP + 1000
+								if button.component.currentHP > button.component.maxHP then button.component.currentHP = button.component.maxHP end
+								PLAYER.WEALTH = PLAYER.WEALTH - 1000
+								if PLAYER.WEALTH < 0 then PLAYER.WEALTH = 0 end
+							end
+						end
+
+						if button.type == enum.buttonTypeBuy then
+							local entity = fun.getEntity(PLAYER.UID)
+							local componentType
+
+							for k, v in pairs(button.component) do
+								if k == "__componentClass" then
+									componentType = v.__name
+								end
+							end
+							if entity:has(componentType) then
+								-- do nothing
+								print("Already have this component: " .. componentType)
+							else
+								entity:give(componentType)
+								print("Component purchased:" .. componentType)
+							end
 						end
 					end
-
-
 				end
 			end
-
 		end
 	end
 end

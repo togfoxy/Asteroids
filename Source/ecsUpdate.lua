@@ -214,7 +214,7 @@ function ecsUpdate.init()
         for _, entity in ipairs(self.pool) do
 
             if love.keyboard.isDown("kp2") then
-                if entity.rightThruster.currentHP <= 0 then
+                if entity.reverseThruster.currentHP <= 0 then
                     SOUND.warning = true
                     break
                 end

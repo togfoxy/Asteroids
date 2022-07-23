@@ -27,3 +27,7 @@ fontTech = 4
 sceneAsteroid = 1
 sceneShop = 2
 sceneDed = 3
+
+buttonTypeRepair = 1
+buttonTypeBuy = 2
+buttonTypeSell = 3
