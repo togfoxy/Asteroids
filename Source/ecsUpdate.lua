@@ -262,7 +262,7 @@ function ecsUpdate.init()
     function systemMiningLaser:update(dt)
         if love.mouse.isDown(1) then
             for _, entity in ipairs(self.pool) do
-                if entity.miningLaser.currentHP >=0 then
+                if entity.miningLaser.currentHP > 0 then
                     if entity:has("battery") then
                         if entity.battery.capacity > 0 then
 							if entity:has("cargoHold") then
