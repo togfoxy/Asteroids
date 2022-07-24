@@ -190,6 +190,9 @@ function draw.asteroids()
 	love.graphics.setFont(FONT[enum.fontDefault])
 	love.graphics.print("Battery: " .. cf.round(batterylevel), 30, 90)
 
+	--! temporary fuel level
+	love.graphics.print("Fuel (sec): " .. cf.round(fuel), 30, 105)
+
     -- draw the dead screen with alpha 0 (unless dead!)
     love.graphics.setColor(1,1,1,DEAD_ALPHA)
     love.graphics.draw(IMAGES[enum.imagesDead], 0, 0)
