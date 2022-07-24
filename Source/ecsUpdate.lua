@@ -292,9 +292,9 @@ function ecsUpdate.init()
 					if entity:has("oxyTank") then
 						entity.oxyTank.capacity = entity.oxyTank.capacity + dt
 						if entity.oxyTank.capacity > entity.oxyTank.maxCapacity then entity.oxyTank.capacity = entity.oxyTank.maxCapacity end
-						entity.battery.capacity = entity.battery.capacity - dt
-                    	if entity.battery.capacity <= 0 then entity.battery.capacity = 0 end
 					end
+					entity.battery.capacity = entity.battery.capacity - dt
+					if entity.battery.capacity <= 0 then entity.battery.capacity = 0 end
                 end
             end
         end
