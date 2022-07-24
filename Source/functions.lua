@@ -246,30 +246,20 @@ end
 
 function functions.checkIfDead(dt)
 	-- returns nothing (is a sub that returns nothing)
-	local dead = false
+	local reason = ""
 	local entity = fun.getEntity(PLAYER.UID)
 	if entity:has("chassis") then
 		if entity.chassis.currentHP <= 0 then
-			dead = true
+			reason = "The ship body (chassis) has been destroyed. Don't crash into so many things."
 		end
 	else
 		error("Vessel has no chassis!")
 	end
 
 	if not entityHasO2(entity) then
-		dead = true
+		reason = "You have run out of oxygen. Ensure you have an O2 generator with batteries, or O2 tanks or a space suit with sufficient O2."
 	end
-
-	if dead then
-		-- do other 'dead' clean ups here
-		DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
-		if DEAD_ALPHA >= 1 then
-			cf.SwapScreen(enum.sceneDed, SCREEN_STACK)
-			-- cleanDeadData()		-!
-		end
-	end
-
-	-- if entity:has("battery") then print("Battery: " .. entity.battery.capacity) end
+	return reason
 end
 
 function functions.deductO2(dt)

@@ -36,7 +36,7 @@ local function establishPlayerVessel()
 	:give("fuelTank")
 	:give("miningLaser")
 	:give("battery")
-	:give("oxyGenerator")
+	-- :give("oxyGenerator")
 	-- :give("oxyTank")
 	-- :give("solarPanel")
 	:give("cargoHold")
@@ -49,8 +49,8 @@ local function establishPlayerVessel()
 	-- debug
 	-- entity.chassis.currentHP = 0
 	local shipsize = fun.getEntitySize(entity)
-	--DEBUG_VESSEL_SIZE = 10
-	--shipsize = DEBUG_VESSEL_SIZE
+	DEBUG_VESSEL_SIZE = 25
+	shipsize = DEBUG_VESSEL_SIZE
 
 	local physicsEntity = {}
     physicsEntity.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 75, "dynamic")
@@ -65,8 +65,8 @@ local function establishPlayerVessel()
 	local temptable = {}
 	temptable.uid = entity.uid.value
 	temptable.objectType = "Player"
-
 	physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
+
 
     table.insert(PHYSICS_ENTITIES, physicsEntity)
 
@@ -330,6 +330,7 @@ function love.mousepressed( x, y, button, istouch, presses )
 							end
 						end
 
+						-- purchase items
 						if button.type == enum.buttonTypeBuy then
 							local entity = fun.getEntity(PLAYER.UID)
 							local shopcomponentType
@@ -349,11 +350,13 @@ function love.mousepressed( x, y, button, istouch, presses )
 									SHOP_ENTITY:remove(shopcomponentType)
 
 									local shipsize = fun.getEntitySize(entity)
-	print(shipsize)
-									local physicsEntity = fun.getPhysEntity(PLAYER.UID)
-									physicsEntity.shape = love.physics.newRectangleShape(shipsize, shipsize)
 
-									print("Component purchased:" .. shopcomponentType)
+									local physicsEntity = fun.getPhysEntity(PLAYER.UID)
+									--! idk what is going on here
+									physicsEntity.shape:release()
+									physicsEntity.shape = nil
+
+									print("Component purchased: " .. shopcomponentType)
 								else
 									print("Can't afford purchase")
 									--! play 'fail' sound
@@ -468,7 +471,15 @@ function love.update(dt)
 
 		-- check for dead chassis
 		-- check for dead or empty o2 tank
-		fun.checkIfDead(dt)
+		local deadreason = fun.checkIfDead(dt)
+		if deadreason ~= "" then
+			DEAD_REASON = deadreason
+			DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
+			if DEAD_ALPHA >= 1 then
+				cf.SwapScreen(enum.sceneDed, SCREEN_STACK)
+				-- cleanDeadData()		-!
+			end
+		end
 
 		cam:setPos(TRANSLATEX, TRANSLATEY)
 		cam:setZoom(ZOOMFACTOR)

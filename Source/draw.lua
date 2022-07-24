@@ -190,6 +190,9 @@ function draw.asteroids()
 	love.graphics.setFont(FONT[enum.fontDefault])
 	love.graphics.print("Battery: " .. cf.round(batterylevel), 30, 90)
 
+	--! temporary fuel level
+	love.graphics.print("Fuel (sec): " .. cf.round(fuel), 30, 105)
+
     -- draw the dead screen with alpha 0 (unless dead!)
     love.graphics.setColor(1,1,1,DEAD_ALPHA)
     love.graphics.draw(IMAGES[enum.imagesDead], 0, 0)
@@ -334,6 +337,7 @@ function draw.dead()
     love.graphics.setColor(1,1,1,1)
     love.graphics.setFont(FONT[enum.fontDefault])
     love.graphics.print("You ded", 1000, 500)
+	love.graphics.printf(DEAD_REASON, 850, 530, 400)
 
     TRANSLATEX = SCREEN_WIDTH / 2
     TRANSLATEY = SCREEN_HEIGHT / 2
