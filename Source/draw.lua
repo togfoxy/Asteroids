@@ -337,6 +337,7 @@ function draw.dead()
     love.graphics.setColor(1,1,1,1)
     love.graphics.setFont(FONT[enum.fontDefault])
     love.graphics.print("You ded", 1000, 500)
+	love.graphics.printf(DEAD_REASON, 850, 530, 400)
 
     TRANSLATEX = SCREEN_WIDTH / 2
     TRANSLATEY = SCREEN_HEIGHT / 2

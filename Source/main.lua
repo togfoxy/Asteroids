@@ -36,7 +36,7 @@ local function establishPlayerVessel()
 	:give("fuelTank")
 	:give("miningLaser")
 	:give("battery")
-	:give("oxyGenerator")
+	-- :give("oxyGenerator")
 	-- :give("oxyTank")
 	-- :give("solarPanel")
 	:give("cargoHold")
@@ -471,7 +471,15 @@ function love.update(dt)
 
 		-- check for dead chassis
 		-- check for dead or empty o2 tank
-		fun.checkIfDead(dt)
+		local deadreason = fun.checkIfDead(dt)
+		if deadreason ~= "" then
+			DEAD_REASON = deadreason
+			DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
+			if DEAD_ALPHA >= 1 then
+				cf.SwapScreen(enum.sceneDed, SCREEN_STACK)
+				-- cleanDeadData()		-!
+			end
+		end
 
 		cam:setPos(TRANSLATEX, TRANSLATEY)
 		cam:setZoom(ZOOMFACTOR)
