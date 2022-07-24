@@ -45,11 +45,11 @@ local function establishPlayerVessel()
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
 	PLAYER.WEALTH = 10000
 
-
 	-- debug
 	-- entity.chassis.currentHP = 0
+
 	local shipsize = fun.getEntitySize(entity)
-	-- DEBUG_VESSEL_SIZE = 25
+	-- DEBUG_VESSEL_SIZE = 10
 	-- shipsize = DEBUG_VESSEL_SIZE
 
 	local physicsEntity = {}
