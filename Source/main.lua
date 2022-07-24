@@ -36,7 +36,7 @@ local function establishPlayerVessel()
 	:give("fuelTank")
 	:give("miningLaser")
 	:give("battery")
-	-- :give("oxyGenerator")
+	:give("oxyGenerator")
 	-- :give("oxyTank")
 	-- :give("solarPanel")
 	:give("cargoHold")
@@ -49,8 +49,8 @@ local function establishPlayerVessel()
 	-- debug
 	-- entity.chassis.currentHP = 0
 	local shipsize = fun.getEntitySize(entity)
-	DEBUG_VESSEL_SIZE = 25
-	shipsize = DEBUG_VESSEL_SIZE
+	-- DEBUG_VESSEL_SIZE = 25
+	-- shipsize = DEBUG_VESSEL_SIZE
 
 	local physicsEntity = {}
     physicsEntity.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 75, "dynamic")
@@ -340,9 +340,14 @@ function love.mousepressed( x, y, button, istouch, presses )
 									shopcomponentType = v.__name
 								end
 							end
+
 							if entity:has(shopcomponentType) then		-- this is a string
+								--! upgrade
 								print("Hi")		--!
+								entity.component = cf.deepcopy(button.component)
+
 							else
+								--! purchase
 								local purchaseprice = button.component.purchasePrice
 								if PLAYER.WEALTH >= purchaseprice then
 									entity:give(shopcomponentType)
@@ -350,11 +355,23 @@ function love.mousepressed( x, y, button, istouch, presses )
 									SHOP_ENTITY:remove(shopcomponentType)
 
 									local shipsize = fun.getEntitySize(entity)
+									local temptable = {}
 
 									local physicsEntity = fun.getPhysEntity(PLAYER.UID)
-									--! idk what is going on here
-									physicsEntity.shape:release()
-									physicsEntity.shape = nil
+									local x,y = physicsEntity.body:getPosition()
+									temptable = physicsEntity.fixture:getUserData()
+									fun.killPhysicsEntity(physicsEntity)
+
+									local physicsEntity = {}
+								    physicsEntity.body = love.physics.newBody(PHYSICSWORLD, x, y, "dynamic")
+									physicsEntity.body:setLinearDamping(0)
+									physicsEntity.shape = love.physics.newRectangleShape(shipsize, shipsize)		-- will draw a rectangle around the body x/y. No need to offset it
+									physicsEntity.fixture = love.physics.newFixture(physicsEntity.body, physicsEntity.shape, PHYSICS_DENSITY)		-- the 1 is the density
+									physicsEntity.fixture:setRestitution(0.1)		-- between 0 and 1
+									physicsEntity.fixture:setSensor(false)
+									physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
+
+								    table.insert(PHYSICS_ENTITIES, physicsEntity)
 
 									print("Component purchased: " .. shopcomponentType)
 								else
@@ -473,7 +490,7 @@ function love.update(dt)
 		-- check for dead or empty o2 tank
 		local deadreason = fun.checkIfDead(dt)
 		if deadreason ~= "" then
-			DEAD_REASON = deadreason
+			DEAD_REASON = deadreason		--! refactor to not use globals
 			DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
 			if DEAD_ALPHA >= 1 then
 				cf.SwapScreen(enum.sceneDed, SCREEN_STACK)

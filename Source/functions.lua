@@ -208,9 +208,6 @@ function functions.killPhysicsEntity(entity)
     -- unit test
     local physicsOrigsize = #PHYSICS_ENTITIES
     --
-
-	--!ensure this is only done to asteroids. Perhaps change name of function
-
     -- destroy the body then remove empty body from the array
     for i = 1, #PHYSICS_ENTITIES do		-- needs to be a for i loop so we can do a table remove
         if PHYSICS_ENTITIES[i] == entity then
