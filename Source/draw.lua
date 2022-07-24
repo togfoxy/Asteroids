@@ -179,9 +179,27 @@ function draw.asteroids()
         if bars >= 1 then love.graphics.draw(IMAGES[enum.imagesOrangeBarEnd],drawx,drawy,0,1,1) end
     end
 
+	--! draw temporary battery level
+	local batterylevel = ""
+	if entity:has("battery") then
+		batterylevel = entity.battery.capacity
+	else
+		batterylevel = 0
+	end
+	love.graphics.setColor(1,1,1,1)
+	love.graphics.setFont(FONT[enum.fontDefault])
+	love.graphics.print("Battery: " .. cf.round(batterylevel), 30, 90)
+
     -- draw the dead screen with alpha 0 (unless dead!)
     love.graphics.setColor(1,1,1,DEAD_ALPHA)
     love.graphics.draw(IMAGES[enum.imagesDead], 0, 0)
+
+	-- debug
+	-- draw ship mass and size
+	local physicsEntity = fun.getPhysEntity(PLAYER.UID)
+	love.graphics.setColor(1,1,1,1)
+	love.graphics.print("Mass: " .. physicsEntity.body:getMass(), 30, SCREEN_HEIGHT - 100)
+	love.graphics.print("Size: " .. fun.getEntitySize(entity), 30, SCREEN_HEIGHT - 80)
 end
 
 function draw.shop()
@@ -189,13 +207,14 @@ function draw.shop()
 	love.graphics.setColor(1,1,1,0.25)
 	love.graphics.draw(IMAGES[enum.imagesShop], 0,0)
 
-	local numofpanels = 4
-	local numofmargins = numofpanels + 1
+	local numofcols = 4
+	local numofmargins = numofcols + 1
     local topmargin = 90
     local margin = 35
+	local panelheight = 60
 
 	local panelwidth = SCREEN_WIDTH - (margin * numofmargins)
-	panelwidth = panelwidth / numofpanels
+	panelwidth = panelwidth / numofcols
 
 	local panelimagewidth = IMAGES[enum.imagesShopPanel]:getWidth()
     local panelxscale = panelwidth / panelimagewidth
@@ -205,37 +224,45 @@ function draw.shop()
 	local panely = {}
 	local drawx = margin
 
-	for i = 1, numofpanels do
+	for i = 1, numofcols do	-- this is actually columns
 		panelx[i] = drawx		-- capture this for easy drawing later
 		panely[i] = topmargin
 		drawx = drawx + margin + panelwidth
 	end
 
-	-- draw the ship components that have currenthp
+	-- draw the ship components
 	local entity = fun.getEntity(PLAYER.UID)
 	local allComponents = entity:getComponents()
-	local drawx = panelx[1] + 10
+	local drawx = panelx[1] + 10		-- indent the text
 	local drawy = panely[1] + 10
 	BUTTONS = {}
 	BUTTONS[1] = {}
 	local compindex = 0
 	for _, component in pairs(allComponents) do
-		if component.currentHP ~= nil then
+		if component.description ~= nil then
 			compindex = compindex + 1
-			local zoneheight = 50
-			drawy = drawy + zoneheight
-			local txt = component.label .. ": " .. cf.round(component.currentHP) .. " / " .. component.maxHP
+			drawy = drawy + panelheight
+			local txt = component.label .. ": "
+			if component.currentHP ~= nil then
+				txt = txt .. cf.round(component.currentHP) .. " / " .. component.maxHP
+			end
 			love.graphics.setFont(FONT[enum.fontTech])
 			love.graphics.setColor(1,1,1,1)
-			love.graphics.print(txt, drawx, drawy)
+			love.graphics.print(txt, drawx, drawy - 10)
+
+			-- draw the description
+			local txt = component.description
+			love.graphics.setFont(FONT[enum.fontDefault])
+			love.graphics.setColor(1,1,1,1)
+			love.graphics.print(txt, drawx, drawy + 17)
 
 			-- draw the click zone (debugging)
 			local zonex = panelx[1]
-			local zoney = panely[1] + ((compindex) * zoneheight)
+			local zoney = panely[1] + ((compindex) * panelheight)
 			local zonewidth = panelwidth
 
 			love.graphics.setColor(1,1,1,1)
-			love.graphics.rectangle("line", zonex, zoney, zonewidth, zoneheight)
+			love.graphics.rectangle("line", zonex, zoney, zonewidth, panelheight)
 
 			-- store buttons for later use
 			BUTTONS[1][compindex] = {}		-- col/row format
@@ -244,7 +271,7 @@ function draw.shop()
 			BUTTONS[1][compindex].x = zonex
 			BUTTONS[1][compindex].y = zoney
 			BUTTONS[1][compindex].width = zonewidth
-			BUTTONS[1][compindex].height = zoneheight
+			BUTTONS[1][compindex].height = panelheight
 			BUTTONS[1][compindex].component = component
 			BUTTONS[1][compindex].type = enum.buttonTypeRepair
 		end
@@ -263,8 +290,7 @@ function draw.shop()
 	for _, component in pairs(allComponents) do
 		-- these are for sale
 		compindex = compindex + 1
-		local zoneheight = 50			--! refactor
-		drawy = drawy + zoneheight
+		drawy = drawy + panelheight
 		local txt = component.label .. " $" .. component.purchasePrice
 		love.graphics.setFont(FONT[enum.fontTech])
 		love.graphics.setColor(1,1,1,1)
@@ -274,15 +300,15 @@ function draw.shop()
 		local txt = component.description
 		love.graphics.setFont(FONT[enum.fontDefault])
 		love.graphics.setColor(1,1,1,1)
-		love.graphics.print(txt, drawx, drawy + 16)
+		love.graphics.print(txt, drawx, drawy + 17)
 
 		-- draw the click zone (debugging)
 		local zonex = panelx[2]
-		local zoney = panely[2] + ((compindex) * zoneheight)
+		local zoney = panely[2] + ((compindex) * panelheight)
 		local zonewidth = panelwidth
 
 		love.graphics.setColor(1,1,1,1)
-		love.graphics.rectangle("line", zonex, zoney, zonewidth, zoneheight)
+		love.graphics.rectangle("line", zonex, zoney, zonewidth, panelheight)
 
 		-- store buttons for later use
 		BUTTONS[2][compindex] = {}		-- col/row format
@@ -291,7 +317,7 @@ function draw.shop()
 		BUTTONS[2][compindex].x = zonex
 		BUTTONS[2][compindex].y = zoney
 		BUTTONS[2][compindex].width = zonewidth
-		BUTTONS[2][compindex].height = zoneheight
+		BUTTONS[2][compindex].height = panelheight
 		BUTTONS[2][compindex].component = component
 		BUTTONS[2][compindex].type = enum.buttonTypeBuy
 	end

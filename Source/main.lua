@@ -43,7 +43,7 @@ local function establishPlayerVessel()
 	-- :give("spaceSuit")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
-	-- PLAYER.WEALTH = 1000
+	PLAYER.WEALTH = 10000
 
 
 	-- debug
@@ -318,34 +318,42 @@ function love.mousepressed( x, y, button, istouch, presses )
 
 						local button = BUTTONS[i][j]
 
+						-- repair items
 						if button.type == enum.buttonTypeRepair then
 							if PLAYER.WEALTH > 1000 then
-								button.component.currentHP = button.component.currentHP + 1000
-								if button.component.currentHP > button.component.maxHP then button.component.currentHP = button.component.maxHP end
-								PLAYER.WEALTH = PLAYER.WEALTH - 1000
-								if PLAYER.WEALTH < 0 then PLAYER.WEALTH = 0 end
+								if button.component.currentHP ~= nil then
+									button.component.currentHP = button.component.currentHP + 1000
+									if button.component.currentHP > button.component.maxHP then button.component.currentHP = button.component.maxHP end
+									PLAYER.WEALTH = PLAYER.WEALTH - 1000
+									if PLAYER.WEALTH < 0 then PLAYER.WEALTH = 0 end
+								end
 							end
 						end
 
 						if button.type == enum.buttonTypeBuy then
 							local entity = fun.getEntity(PLAYER.UID)
-							local componentType
+							local shopcomponentType
 
 							for k, v in pairs(button.component) do
 								if k == "__componentClass" then
-									componentType = v.__name
+									shopcomponentType = v.__name
 								end
 							end
-							if entity:has(componentType) then
-								-- do nothing
-								print("Already have this component: " .. componentType)
+							if entity:has(shopcomponentType) then		-- this is a string
+								print("Hi")		--!
 							else
 								local purchaseprice = button.component.purchasePrice
 								if PLAYER.WEALTH >= purchaseprice then
-									entity:give(componentType)
+									entity:give(shopcomponentType)
 									PLAYER.WEALTH = PLAYER.WEALTH - purchaseprice
-									SHOP_ENTITY:remove(componentType)
-									print("Component purchased:" .. componentType)
+									SHOP_ENTITY:remove(shopcomponentType)
+
+									local shipsize = fun.getEntitySize(entity)
+	print(shipsize)
+									local physicsEntity = fun.getPhysEntity(PLAYER.UID)
+									physicsEntity.shape = love.physics.newRectangleShape(shipsize, shipsize)
+
+									print("Component purchased:" .. shopcomponentType)
 								else
 									print("Can't afford purchase")
 									--! play 'fail' sound
