@@ -230,7 +230,7 @@ function draw.shop()
 		drawx = drawx + margin + panelwidth
 	end
 
-	-- draw the ship components that have currenthp
+	-- draw the ship components
 	local entity = fun.getEntity(PLAYER.UID)
 	local allComponents = entity:getComponents()
 	local drawx = panelx[1] + 10		-- indent the text
@@ -239,10 +239,13 @@ function draw.shop()
 	BUTTONS[1] = {}
 	local compindex = 0
 	for _, component in pairs(allComponents) do
-		if component.currentHP ~= nil then
+		if component.description ~= nil then
 			compindex = compindex + 1
 			drawy = drawy + panelheight
-			local txt = component.label .. ": " .. cf.round(component.currentHP) .. " / " .. component.maxHP
+			local txt = component.label .. ": "
+			if component.currentHP ~= nil then
+				txt = txt .. cf.round(component.currentHP) .. " / " .. component.maxHP
+			end
 			love.graphics.setFont(FONT[enum.fontTech])
 			love.graphics.setColor(1,1,1,1)
 			love.graphics.print(txt, drawx, drawy - 10)

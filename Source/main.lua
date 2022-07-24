@@ -318,12 +318,15 @@ function love.mousepressed( x, y, button, istouch, presses )
 
 						local button = BUTTONS[i][j]
 
+						-- repair items
 						if button.type == enum.buttonTypeRepair then
 							if PLAYER.WEALTH > 1000 then
-								button.component.currentHP = button.component.currentHP + 1000
-								if button.component.currentHP > button.component.maxHP then button.component.currentHP = button.component.maxHP end
-								PLAYER.WEALTH = PLAYER.WEALTH - 1000
-								if PLAYER.WEALTH < 0 then PLAYER.WEALTH = 0 end
+								if button.component.currentHP ~= nil then
+									button.component.currentHP = button.component.currentHP + 1000
+									if button.component.currentHP > button.component.maxHP then button.component.currentHP = button.component.maxHP end
+									PLAYER.WEALTH = PLAYER.WEALTH - 1000
+									if PLAYER.WEALTH < 0 then PLAYER.WEALTH = 0 end
+								end
 							end
 						end
 
