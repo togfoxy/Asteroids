@@ -8,7 +8,7 @@ function constants.load()
 
     PHYSICS_WIDTH = 1000	-- metres
     PHYSICS_HEIGHT = 1000	-- metres
-	PHYSICS_SAFEZONE = 100	-- this is 1oo metres on/near the spacedock
+	PHYSICS_SAFEZONE = 100	-- this is 1oo metres height on/near the spacedock
     BOX2D_SCALE = 5
 
     ZOOMFACTOR = 0.9

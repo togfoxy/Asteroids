@@ -32,25 +32,25 @@ local function establishPlayerVessel()
 	:give("engine")
 	-- :give("leftThruster")
 	-- :give("rightThruster")
-	:give("reverseThruster")
+	-- :give("reverseThruster")
 	:give("fuelTank")
 	:give("miningLaser")
 	:give("battery")
-	-- :give("oxyGenerator")
+	:give("oxyGenerator")
 	-- :give("oxyTank")
 	-- :give("solarPanel")
 	:give("cargoHold")
 	-- :give("spaceSuit")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
-	PLAYER.WEALTH = 10000
-
+	-- PLAYER.WEALTH = 10000
 
 	-- debug
 	-- entity.chassis.currentHP = 0
+
 	local shipsize = fun.getEntitySize(entity)
-	DEBUG_VESSEL_SIZE = 25
-	shipsize = DEBUG_VESSEL_SIZE
+	-- DEBUG_VESSEL_SIZE = 10
+	-- shipsize = DEBUG_VESSEL_SIZE
 
 	local physicsEntity = {}
     physicsEntity.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 75, "dynamic")
@@ -176,6 +176,7 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 		local physEntity = fun.getPhysEntity(PLAYER.UID)
 		local entity = fun.getEntity(PLAYER.UID)
 		physEntity.body:setLinearVelocity( 0, 0)
+		physEntity.fixture:setSensor(false)
 
 		-- get credit for items in hold
 		if entity:has("cargoHold") then
@@ -340,23 +341,25 @@ function love.mousepressed( x, y, button, istouch, presses )
 									shopcomponentType = v.__name
 								end
 							end
+
+							local purchaseprice = button.component.purchasePrice
 							if entity:has(shopcomponentType) then		-- this is a string
-								print("Hi")		--!
-							else
-								local purchaseprice = button.component.purchasePrice
+								--! get a refund on old component
+
 								if PLAYER.WEALTH >= purchaseprice then
-									entity:give(shopcomponentType)
+									entity:remove(shopcomponentType)
+									fun.buyComponent(entity, shopcomponentType, button.component)
 									PLAYER.WEALTH = PLAYER.WEALTH - purchaseprice
 									SHOP_ENTITY:remove(shopcomponentType)
+									fun.changeShipPhysicsSize(entity)
+							else
+								--! purchase
+								if PLAYER.WEALTH >= purchaseprice then
+									fun.buyComponent(entity, shopcomponentType, button.component)
 
-									local shipsize = fun.getEntitySize(entity)
-
-									local physicsEntity = fun.getPhysEntity(PLAYER.UID)
-									--! idk what is going on here
-									physicsEntity.shape:release()
-									physicsEntity.shape = nil
-
-									print("Component purchased: " .. shopcomponentType)
+									PLAYER.WEALTH = PLAYER.WEALTH - purchaseprice
+									SHOP_ENTITY:remove(shopcomponentType)
+									fun.changeShipPhysicsSize(entity)
 								else
 									print("Can't afford purchase")
 									--! play 'fail' sound
@@ -441,6 +444,13 @@ function love.update(dt)
 		ECSWORLD:emit("update", dt)
 		PHYSICSWORLD:update(dt) --this puts the world into motion
 
+		-- turn senser back on after leaving dock
+		local physEntity = fun.getPhysEntity(PLAYER.UID)
+		local x,y = physEntity.body:getPosition()
+		if y <= (PHYSICS_HEIGHT - PHYSICS_SAFEZONE) then
+			physEntity.fixture:setSensor(false)
+		end
+
 		if SOUND.engine then
 			AUDIO[enum.audioEngine]:play()
 		else
@@ -473,7 +483,7 @@ function love.update(dt)
 		-- check for dead or empty o2 tank
 		local deadreason = fun.checkIfDead(dt)
 		if deadreason ~= "" then
-			DEAD_REASON = deadreason
+			DEAD_REASON = deadreason		--! refactor to not use globals
 			DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
 			if DEAD_ALPHA >= 1 then
 				cf.SwapScreen(enum.sceneDed, SCREEN_STACK)

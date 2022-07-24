@@ -208,9 +208,6 @@ function functions.killPhysicsEntity(entity)
     -- unit test
     local physicsOrigsize = #PHYSICS_ENTITIES
     --
-
-	--!ensure this is only done to asteroids. Perhaps change name of function
-
     -- destroy the body then remove empty body from the array
     for i = 1, #PHYSICS_ENTITIES do		-- needs to be a for i loop so we can do a table remove
         if PHYSICS_ENTITIES[i] == entity then
@@ -323,4 +320,143 @@ function functions.getFuelBurnTime()
 	end
 	return 0
 end
+
+function functions.changeShipPhysicsSize(entity)
+	-- destroys the physics object and recreates it
+
+	local shipsize = fun.getEntitySize(entity)
+	local temptable = {}
+
+	local physicsEntity = fun.getPhysEntity(PLAYER.UID)
+	local x,y = physicsEntity.body:getPosition()
+	temptable = physicsEntity.fixture:getUserData()
+	fun.killPhysicsEntity(physicsEntity)
+
+	local physicsEntity = {}
+	physicsEntity.body = love.physics.newBody(PHYSICSWORLD, x, y, "dynamic")
+	physicsEntity.body:setLinearDamping(0)
+	physicsEntity.shape = love.physics.newRectangleShape(shipsize, shipsize)		-- will draw a rectangle around the body x/y. No need to offset it
+	physicsEntity.fixture = love.physics.newFixture(physicsEntity.body, physicsEntity.shape, PHYSICS_DENSITY)		-- the 1 is the density
+	physicsEntity.fixture:setRestitution(0.1)		-- between 0 and 1
+	physicsEntity.fixture:setSensor(false)
+	physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
+
+	table.insert(PHYSICS_ENTITIES, physicsEntity)
+end
+
+function functions.buyComponent(entity, strShopComponentType, component)
+	-- entity is an ECS entity that reflects the player
+	-- strShopComponentType is a string with the name of the component
+	-- component is the actual component stored in the button
+
+	if strShopComponentType == "chassis" then
+		entity:give("chassis")
+		entity.chassis.size = component.size
+		entity.chassis.maxHP = component.maxHP
+		entity.chassis.currentHP = component.maxHP
+		entity.chassis.description = "Vessel frame. Size " .. component.size .. ". Health " .. component.maxHP .. "."
+	end
+	if strShopComponentType == "engine" then
+		entity:give("engine")
+		entity.engine.size = component.size
+		entity.engine.strength = component.strength
+		entity.engine.maxHP = component.maxHP
+		entity.engine.currentHP = component.maxHP
+		entity.engine.description = "Main propulsion. Size " .. component.size .. ". Health " .. component.maxHP .. ". Thrust " .. component.strength .. "."
+	end
+	if strShopComponentType == "fuelTank" then
+		entity:give("fuelTank")
+		entity.fuelTank.size = component.size
+		entity.fuelTank.capacity = component.capacity
+		entity.fuelTank.maxCapacity = component.maxCapacity
+		entity.fuelTank.maxHP = component.maxHP
+		entity.fuelTank.currentHP = component.maxHP
+		entity.fuelTank.description = "Engine needs this. Size " .. component.size .. ". Health " .. component.maxHP .. ". Capacity " .. component.maxCapacity .. "."
+	end
+	if strShopComponentType == "leftThruster" then
+		entity:give("leftThruster")
+		entity.leftThruster.size = component.size
+		entity.leftThruster.strength = component.strength
+		entity.leftThruster.maxHP = component.maxHP
+		entity.leftThruster.currentHP = component.maxHP
+		entity.leftThruster.description = "Slide to the right. Size " .. component.size .. ". Health " .. component.maxHP .. ". Thrust " .. component.strength .. "."
+	end
+	if strShopComponentType == "rightThruster" then
+		entity:give("rightThruster")
+		entity.rightThruster.size = component.size
+		entity.rightThruster.strength = component.strength
+		entity.rightThruster.maxHP = component.maxHP
+		entity.rightThruster.currentHP = component.maxHP
+		entity.rightThruster.description = "Slide to the right. Size " .. component.size .. ". Health " .. component.maxHP .. ". Thrust " .. component.strength .. "."
+	end
+	if strShopComponentType == "reverseThruster" then
+		entity:give("reverseThruster")
+		entity.reverseThruster.size = component.size
+		entity.reverseThruster.strength = component.strength
+		entity.reverseThruster.maxHP = component.maxHP
+		entity.reverseThruster.currentHP = component.maxHP
+		entity.reverseThruster.description = "Braking is good. Size " .. component.size .. ". Health " .. component.maxHP .. ". Thrust " .. component.strength .. "."
+	end
+	if strShopComponentType == "miningLaser" then
+		entity:give("miningLaser")
+		entity.miningLaser.size = component.size
+		entity.miningLaser.miningRate = component.miningRate
+		entity.miningLaser.miningRange = component.miningRange
+		entity.miningLaser.maxHP = component.maxHP
+		entity.miningLaser.currentHP = component.maxHP
+		entity.miningLaser.description = "Mines rocks. Size " .. component.size .. ". Health " .. component.maxHP .. ". Mining speed " .. component.miningRate .. ". Laser range " .. component.miningRange
+	end
+	if strShopComponentType == "battery" then
+		entity:give("battery")
+		entity.battery.size = component.size
+		entity.battery.capacity = component.capacity
+		entity.battery.maxCapacity = component.maxCapacity
+		entity.battery.maxHP = component.maxHP
+		entity.battery.currentHP = component.maxHP
+		entity.battery.description = "Powers lasers. Size " .. component.size .. ". Health " .. component.maxHP .. ". Capacity " .. component.maxCapacity .. "."
+	end
+	if strShopComponentType == "oxyGenerator" then
+		entity:give("oxyGenerator")
+		entity.oxyGenerator.size = component.size
+		entity.oxyGenerator.powerNeeds = component.powerNeeds
+		entity.oxyGenerator.maxHP = component.maxHP
+		entity.oxyGenerator.currentHP = component.maxHP
+		entity.oxyGenerator.description = "Makes O2 to keep you alive. Size " .. component.size .. ". Health " .. component.maxHP .. ". Draws " .. component.powerNeeds .. " per second."
+	end
+	if strShopComponentType == "oxyTank" then
+		entity:give("oxyTank")
+		entity.oxyTank.size = component.size
+		entity.oxyTank.capacity = component.capacity
+		entity.oxyTank.maxCapacity = component.maxCapacity
+		entity.oxyTank.maxHP = component.maxHP
+		entity.oxyTank.currentHP = component.maxHP
+		entity.oxyTank.description = "Holds spare oxygen. Size " .. component.size .. ". Health " .. component.maxHP .. ". Capactiy " .. component.capacity .. " seconds."
+	end
+	if strShopComponentType == "spaceSuit" then
+		entity:give("spaceSuit")
+		entity.spaceSuit.size = component.size
+		entity.spaceSuit.O2capacity = component.O2capacity
+		entity.spaceSuit.maxO2Capacity = component.maxO2Capacity
+		entity.spaceSuit.description = "Use when O2 runs out. O2 capacity " .. component.maxO2Capacity .. " seconds."
+	end
+	if strShopComponentType == "solarPanel" then
+		entity:give("solarPanel")
+		entity.solarPanel.size = component.size
+		entity.solarPanel.rechargeRate = component.rechargeRate
+		entity.solarPanel.maxHP = component.maxHP
+		entity.solarPanel.currentHP = component.maxHP
+		entity.solarPanel.description = "Recharges batteries. Size " .. component.size .. ". Health " .. component.maxHP .. ". Recharge rate " .. component.rechargeRate .. " power per second."
+	end
+	if strShopComponentType == "cargoHold" then
+		entity:give("cargoHold")
+		entity.cargoHold.size = component.size
+		entity.cargoHold.maxAmount = component.maxAmount
+		entity.cargoHold.currentAmount = 0
+		entity.cargoHold.maxHP = component.maxHP
+		entity.cargoHold.currentHP = component.maxHP
+		entity.cargoHold.description = "Holds rocks. Size " .. component.size .. ". Health " .. component.maxHP .. ". Capacity " .. component.maxAmount .. " tons."
+	end
+
+end
+
 return functions

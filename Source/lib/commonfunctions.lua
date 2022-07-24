@@ -297,7 +297,6 @@ function printAllPhysicsObjects(world, BOX2D_SCALE)
 	end
 end
 
-
 function getPerpendicularVector(x1,y1,x2,y2)
 	-- returns a vector 90 degrees to the provided vector
 	-- vector originates halfway from provided sector
