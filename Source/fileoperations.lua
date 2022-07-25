@@ -110,13 +110,19 @@ local function prepVessel()
 		VESSEL_SAVE_TABLE.spaceSuitdescription = entity.spaceSuit.description
     end
 
+    -- physics objects
+    local shipsize = fun.getEntitySize(entity)
+    local physicsEntity = fun.getPhysEntity
+    local x,y = physicsEntity.getPosition()
+    VESSEL_SAVE_TABLE.shipsize = shipsize
+    VESSEL_SAVE_TABLE.x = x
+    VESSEL_SAVE_TABLE.y = y
+    VESSEL_SAVE_TABLE.objectType = "Player"
+
     return VESSEL_SAVE_TABLE
 end
 
-
 function fileops.saveGame()
-
-
      local vessel_table = prepVessel()
 
      local savedir = love.filesystem.getSourceBaseDirectory( )
@@ -127,9 +133,6 @@ function fileops.saveGame()
      print(savedir)
      print(savefile)
      print(success, message)
-
-
-
 end
 
 return fileops
