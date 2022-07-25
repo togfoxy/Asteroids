@@ -12,6 +12,18 @@ Camera = require 'lib.cam11.cam11'
 concord = require 'lib.concord'
 -- https://github.com/Tjakka5/Concord
 
+bitser = require 'lib.bitser'
+-- https://github.com/gvx/bitser
+
+nativefs = require 'lib.nativefs'
+-- https://github.com/megagrump/nativefs
+
+lovelyToasts = require 'lib.lovelyToasts'
+-- https://github.com/Loucee/Lovely-Toasts
+
+baton = require 'lib.baton'
+-- https://github.com/tesselode/baton
+
 
 cf = require 'lib.commonfunctions'
 enum = require 'enum'
@@ -30,9 +42,9 @@ local function establishPlayerVessel()
     :give("uid")
 	:give("chassis")
 	:give("engine")
-	-- :give("leftThruster")
-	-- :give("rightThruster")
-	-- :give("reverseThruster")
+	:give("leftThruster")
+	:give("rightThruster")
+	:give("reverseThruster")
 	:give("fuelTank")
 	:give("miningLaser")
 	:give("battery")
@@ -352,6 +364,9 @@ function love.mousepressed( x, y, button, istouch, presses )
 									PLAYER.WEALTH = PLAYER.WEALTH - purchaseprice
 									SHOP_ENTITY:remove(shopcomponentType)
 									fun.changeShipPhysicsSize(entity)
+								else
+									--! play 'fail' sound
+								end
 							else
 								--! purchase
 								if PLAYER.WEALTH >= purchaseprice then
