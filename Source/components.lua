@@ -128,7 +128,7 @@ function cmp.init()
         c.maxHP = love.math.random(1,3) * 1000
         c.currentHP = c.maxHP
         c.purchasePrice = 1000
-        c.description = "Recharges batteries. Size " .. c.size .. ". Health " .. c.maxHP .. ". Recharge rate " .. c.rechargeRate .. " power per second."
+        c.description = "Recharges batteries. Size " .. c.size .. ". Health " .. c.maxHP .. ". Recharge rate " .. c.rechargeRate .. " power/sec."
     end)
 
     concord.component("cargoHold", function(c)

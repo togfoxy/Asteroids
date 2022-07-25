@@ -42,9 +42,9 @@ local function establishPlayerVessel()
     :give("uid")
 	:give("chassis")
 	:give("engine")
-	:give("leftThruster")
-	:give("rightThruster")
-	:give("reverseThruster")
+	-- :give("leftThruster")
+	-- :give("rightThruster")
+	-- :give("reverseThruster")
 	:give("fuelTank")
 	:give("miningLaser")
 	:give("battery")
@@ -210,6 +210,7 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 
 		cf.AddScreen(enum.sceneShop, SCREEN_STACK)
 	else
+		-- collision with asteroids and players
 		physicsEntity1 = fun.getPhysEntity(uid1)
 		physicsEntity2 = fun.getPhysEntity(uid2)
 		assert(physicsEntity1 ~= nil)
@@ -228,7 +229,14 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 				if component.currentHP <= 0 then
 					component.currentHP = 0
 				end
-				print(component.label, component.currentHP)
+				-- print(component.label, component.currentHP)
+
+				local rndscrape = love.math.random(1,2)
+				if rndscrape == 1 then
+					SOUND.scrape1 = true
+				else
+					SOUND.scrape2 = true
+				end
 			end
 		else
 			-- damage object2
@@ -236,7 +244,7 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 				local entity = fun.getEntity(uid2)
 				local component = fun.getRandomComponent(entity)
 
-				print(component.label)
+				-- print(component.label)
 
 				component.currentHP = component.currentHP - normalimpulse
 				if component.currentHP <= 0 then
@@ -488,8 +496,12 @@ function love.update(dt)
 		end
 		if SOUND.rockExplosion then
 			AUDIO[enum.audioRockExplosion]:play()
-		else
-			--AUDIO[enum.audioRockExplosion]:play()
+		end
+		if SOUND.scrape1 then
+			AUDIO[enum.audioRockScrape1]:play()
+		end
+		if SOUND.scrape2 then
+			AUDIO[enum.audioRockScrape2]:play()
 		end
 
 		fun.deductO2(dt)

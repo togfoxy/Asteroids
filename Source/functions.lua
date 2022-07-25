@@ -29,6 +29,8 @@ function functions.loadAudio()
 	AUDIO[enum.audioWarning] = love.audio.newSource("assets/audio/507906__m-cel__warning-sound.ogg", "static")
 	AUDIO[enum.audioMiningLaser] = love.audio.newSource("assets/audio/223472__parabolix__underground-machine-heart-loop.mp3", "static")
 	AUDIO[enum.audioRockExplosion] = love.audio.newSource("assets/audio/cannon_hit.ogg", "static")
+	AUDIO[enum.audioRockScrape1] = love.audio.newSource("assets/audio/metalscrape1.mp3", "static")
+	AUDIO[enum.audioRockScrape2] = love.audio.newSource("assets/audio/metalscrape2.mp3", "static")
 
 	AUDIO[enum.audioRockExplosion]:setVolume(0.5)
 end
@@ -445,7 +447,7 @@ function functions.buyComponent(entity, strShopComponentType, component)
 		entity.solarPanel.rechargeRate = component.rechargeRate
 		entity.solarPanel.maxHP = component.maxHP
 		entity.solarPanel.currentHP = component.maxHP
-		entity.solarPanel.description = "Recharges batteries. Size " .. component.size .. ". Health " .. component.maxHP .. ". Recharge rate " .. component.rechargeRate .. " power per second."
+		entity.solarPanel.description = "Recharges batteries. Size " .. component.size .. ". Health " .. component.maxHP .. ". Recharge rate " .. component.rechargeRate .. " power/sec."
 	end
 	if strShopComponentType == "cargoHold" then
 		entity:give("cargoHold")
