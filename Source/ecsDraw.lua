@@ -80,7 +80,6 @@ function ecsDraw.init()
 
                 -- draw the vessel png
                 local vesselsize = fun.getEntitySize(entity)
-                -- vesselsize = DEBUG_VESSEL_SIZE
 
                 local x0, y0 = physEntity.body:getPosition()
                 local drawx = x0 * BOX2D_SCALE
@@ -96,22 +95,24 @@ function ecsDraw.init()
                 x1 = x1 * BOX2D_SCALE
                 y1 = y1 * BOX2D_SCALE
                 local facing = physEntity.body:getAngle()       -- radians
+                local offset = cf.round((vesselsize - 11) / 2)      -- 11 is the 'baseline' for the flames
+                if offset < 0 then offset = 0 end
 
                 if DRAW.engineFlame then		--! these are globals but probably shouldn't be
                     love.graphics.setColor(1,1,1,1)  --! the scale factor shouldn't be hard coded but move as the ship grows
-                    love.graphics.draw(IMAGES[enum.imagesEngineFlame], x1, y1, facing, 10, 10, 2, -3)        --  r, sx, sy, ox, oy, kx, ky)
+                    love.graphics.draw(IMAGES[enum.imagesEngineFlame], x1, y1, facing, 10, 10, 2, -3 - (offset / 2))        --  r, sx, sy, ox, oy, kx, ky)
                 end
                 if DRAW.leftFlame then
                     love.graphics.setColor(1,1,1,1)
-                    love.graphics.draw(IMAGES[enum.imagesEngineFlame], x1, y1, facing + 1.57, 5, 5, 3, -6)        --  r, sx, sy, ox, oy, kx, ky)
+                    love.graphics.draw(IMAGES[enum.imagesEngineFlame], x1, y1, facing + 1.57, 5, 5, 3, -6 - offset)        --  r, sx, sy, ox, oy, kx, ky)
                 end
                 if DRAW.rightFlame then
                     love.graphics.setColor(1,1,1,1)
-                    love.graphics.draw(IMAGES[enum.imagesEngineFlame], x1, y1, facing - 1.57, 5, 5, 3, -6)        --  r, sx, sy, ox, oy, kx, ky)
+                    love.graphics.draw(IMAGES[enum.imagesEngineFlame], x1, y1, facing - 1.57, 5, 5, 3, -6 - offset)        --  r, sx, sy, ox, oy, kx, ky)
                 end
                 if DRAW.reverseFlame then
                     love.graphics.setColor(1,1,1,1)
-                    love.graphics.draw(IMAGES[enum.imagesEngineFlame], x1, y1, facing + 3.14, 5, 5, 3, -6)        --  r, sx, sy, ox, oy, kx, ky)
+                    love.graphics.draw(IMAGES[enum.imagesEngineFlame], x1, y1, facing + 3.14, 5, 5, 3, -6 - offset)        --  r, sx, sy, ox, oy, kx, ky)
                 end
 
                 -- draw destroyed markers
