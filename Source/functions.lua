@@ -206,7 +206,23 @@ function functions.getLowComponentString(entity)
 	return result
 end
 
+function functions.killECSEntity(entity)
+	-- does NOT kill the physics entity
+
+	-- remove the entity from the arrary
+    for i = 1, #ECS_ENTITIES do
+        if ECS_ENTITIES[i] == entity then
+            table.remove(ECS_ENTITIES, i)
+            break
+        end
+    end
+	-- destroy the entity
+    entity:destroy()
+end
+
 function functions.killPhysicsEntity(entity)
+	-- used on rocks and other things
+
     -- unit test
     local physicsOrigsize = #PHYSICS_ENTITIES
     --
