@@ -34,6 +34,7 @@ cmp = require 'components'
 ecs = require 'ecsFunctions'
 ecsDraw = require 'ecsDraw'
 ecsUpdate = require 'ecsUpdate'
+fileops = require 'fileoperations'
 
 local function establishPlayerVessel()
 	-- add player
@@ -270,6 +271,9 @@ function love.keyreleased( key, scancode )
 		TRANSLATEY = (y1 * BOX2D_SCALE)
 	    ZOOMFACTOR = 0.4
 	end
+	if key == "s" then
+		fileops.saveGame()
+	end
 end
 
 function love.keypressed( key, scancode, isrepeat )
@@ -440,7 +444,6 @@ function love.load()
 	TRANSLATEX = (x1 * BOX2D_SCALE)
 	TRANSLATEY = (y1 * BOX2D_SCALE)
     ZOOMFACTOR = 0.4
-
 end
 
 function love.draw()
