@@ -46,9 +46,6 @@ local function loadFromVesselTable(savetable)
 
     -- create the physical object
 
-
-
-
 end
 
 function fileops.saveGame()
@@ -76,8 +73,13 @@ function fileops.saveGame()
     -- save the physical object
     local savefile = savedir .. "\\savedata\\" .. "vessel_physics.dat"
     local serialisedString = bitser.dumps(savetable)
-    local success, message = nativefs.write(savefile, serialisedString)
+    local success1, message = nativefs.write(savefile, serialisedString)
     print(savefile, success, message)
+    if success and success1 then
+        lovelyToasts.show("Game saved",5)
+    else
+        lovelyToasts.show("Save failed", 5)
+    end
 end
 
 function fileops.loadGame()
@@ -85,15 +87,15 @@ function fileops.loadGame()
     local entity = fun.getEntity(PLAYER.UID)
     local physEntity = fun.getPhysEntity(PLAYER.UID)
 
+
     local savedir = love.filesystem.getSourceBaseDirectory( )
     local savefile = savedir .. "\\savedata\\" .. "vessel.dat"
 	if nativefs.getInfo(savefile) then
 		contents, size = nativefs.read(savefile)
 	    local str = bitser.loads(contents)
-
         entity:deserialize(str)
     else
-		error = true
+        --! make this error trapping a bit more sophisticated
 	end
 
     -- load physics object
@@ -106,8 +108,10 @@ function fileops.loadGame()
         physEntity.body:setPosition(savetable.x, savetable.y)
     	physEntity.fixture:setSensor(false)
         fun.changeShipPhysicsSize(entity)
+
+        lovelyToasts.show("Game loaded",5)
     else
-		error = true
+        lovelyToasts.show("Game failed to load",5)
 	end
 end
 
