@@ -301,14 +301,28 @@ function ecsUpdate.init()
     end
     ECSWORLD:addSystems(systemOxyGen)
 
-	systemOxyTank = concord.system({
-		pool = {"oxyTank"}
+	-- systemOxyTank = concord.system({
+	-- 	pool = {"oxyTank"}
+	-- })
+	-- function systemOxyTank:update(dt)
+	-- 	for _, entity in ipairs(self.pool) do
+    --     end
+	-- end
+	-- ECSWORLD:addSystems(systemOxyTank)
+
+	systemBattery = concord.system({
+		pool = {"battery"}
 	})
-	function systemOxyTank:update(dt)
+	function systemBattery:update(dt)
 		for _, entity in ipairs(self.pool) do
+			if entity.battery.capacity <= 25 or entity.battery.currentHP <= 0 then
+				-- the 25 is an arbitrary number of seconds
+				SOUND.warning = true
+			end
         end
 	end
-    -- ECSWORLD:addSystems(systemOxyTank)
+	ECSWORLD:addSystems(systemBattery)
+
 
     systemSolarPanel = concord.system({
         pool = {"solarPanel"}

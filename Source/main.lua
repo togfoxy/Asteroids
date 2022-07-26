@@ -379,20 +379,25 @@ function love.mousepressed( x, y, button, istouch, presses )
 									PLAYER.WEALTH = PLAYER.WEALTH - purchaseprice
 									SHOP_ENTITY:remove(shopcomponentType)
 									fun.changeShipPhysicsSize(entity)
+									SOUND.ding = true
 								else
-									--! play 'fail' sound
+									-- play 'fail' sound
+									SOUND.wrong = true
 								end
 							else
 								--! purchase
+								--! refactor this and above
 								if PLAYER.WEALTH >= purchaseprice then
 									fun.buyComponent(entity, shopcomponentType, button.component)
 
 									PLAYER.WEALTH = PLAYER.WEALTH - purchaseprice
 									SHOP_ENTITY:remove(shopcomponentType)
 									fun.changeShipPhysicsSize(entity)
+									SOUND.ding = true
 								else
 									print("Can't afford purchase")
-									--! play 'fail' sound
+									-- play 'fail' sound
+									SOUND.wrong = true
 								end
 							end
 						end
@@ -509,6 +514,12 @@ function love.update(dt)
 		end
 		if SOUND.scrape2 then
 			AUDIO[enum.audioRockScrape2]:play()
+		end
+		if SOUND.ding then
+			AUDIO[enum.audioDing]:play()
+		end
+		if SOUND.wrong then
+			AUDIO[enum.audioWrong]:play()
 		end
 
 		fun.deductO2(dt)

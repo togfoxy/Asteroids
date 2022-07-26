@@ -31,6 +31,9 @@ function functions.loadAudio()
 	AUDIO[enum.audioRockExplosion] = love.audio.newSource("assets/audio/cannon_hit.ogg", "static")
 	AUDIO[enum.audioRockScrape1] = love.audio.newSource("assets/audio/metalscrape1.mp3", "static")
 	AUDIO[enum.audioRockScrape2] = love.audio.newSource("assets/audio/metalscrape2.mp3", "static")
+	AUDIO[enum.audioDing] = love.audio.newSource("assets/audio/387232__steaq__badge-coin-win.wav", "static")
+	AUDIO[enum.audioWrong] = love.audio.newSource("assets/audio/wrong.mp3", "static")
+
 
 	AUDIO[enum.audioRockExplosion]:setVolume(0.5)
 end

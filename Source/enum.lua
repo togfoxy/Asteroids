@@ -21,6 +21,8 @@ audioMiningLaser = 4
 audioRockExplosion = 5
 audioRockScrape1 = 6
 audioRockScrape2 = 7
+audioDing = 10
+audioWrong = 11
 
 fontDefault = 1
 fontHeavyMetalLarge = 2
