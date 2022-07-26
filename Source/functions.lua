@@ -220,15 +220,16 @@ function functions.killECSEntity(entity)
     entity:destroy()
 end
 
-function functions.killPhysicsEntity(entity)
+function functions.killPhysicsEntity(physEntity)
 	-- used on rocks and other things
+	-- receives a physics entity
 
     -- unit test
     local physicsOrigsize = #PHYSICS_ENTITIES
     --
     -- destroy the body then remove empty body from the array
     for i = 1, #PHYSICS_ENTITIES do		-- needs to be a for i loop so we can do a table remove
-        if PHYSICS_ENTITIES[i] == entity then
+        if PHYSICS_ENTITIES[i] == physEntity then
             PHYSICS_ENTITIES[i].body:destroy()
             table.remove(PHYSICS_ENTITIES, i)
             break
@@ -341,6 +342,8 @@ end
 
 function functions.changeShipPhysicsSize(entity)
 	-- destroys the physics object and recreates it
+	-- receives an ECS entity
+	-- returns nothing
 
 	local shipsize = fun.getEntitySize(entity)
 	local temptable = {}

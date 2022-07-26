@@ -54,38 +54,61 @@ end
 function fileops.saveGame()
     -- local vessel_table = prepVessel()
 
-    local shipsize = fun.getEntitySize(entity)
-    local physicsEntity = fun.getPhysEntity
-    local x,y = physicsEntity.getPosition()
-    savetable.shipsize = shipsize
+    local entity = fun.getEntity(PLAYER.UID)        -- this has to be before "get size" function
+    local physicsEntity = fun.getPhysEntity(PLAYER.UID)
+
+    local x,y = physicsEntity.body:getPosition()
+--local shipsize = fun.getEntitySize(entity)
+    -- savetable.shipsize = shipsize
+    local savetable = {}
     savetable.x = x
     savetable.y = y
-    savetable.objectType = "Player" 
+    savetable.objectType = "Player"
 
     local savedir = love.filesystem.getSourceBaseDirectory( )
     local savefile = savedir .. "\\savedata\\" .. "vessel.dat"
 
-    local entity = fun.getEntity(PLAYER.UID)
     local str = entity:serialize()
     local serialisedString = bitser.dumps(str)
     local success, message = nativefs.write(savefile, serialisedString)
-    print(success, message)
+    print(savefile, success, message)
+
+    -- save the physical object
+    local savefile = savedir .. "\\savedata\\" .. "vessel_physics.dat"
+    local serialisedString = bitser.dumps(savetable)
+    local success, message = nativefs.write(savefile, serialisedString)
+    print(savefile, success, message)
 end
 
 function fileops.loadGame()
+
+    local entity = fun.getEntity(PLAYER.UID)
+    local physEntity = fun.getPhysEntity(PLAYER.UID)
 
     local savedir = love.filesystem.getSourceBaseDirectory( )
     local savefile = savedir .. "\\savedata\\" .. "vessel.dat"
 	if nativefs.getInfo(savefile) then
 		contents, size = nativefs.read(savefile)
-        print(size)
 	    local str = bitser.loads(contents)
-        local entity = fun.getEntity(PLAYER.UID)
+
         entity:deserialize(str)
     else
 		error = true
 	end
 
+    -- load physics object
+    local savefile = savedir .. "\\savedata\\" .. "vessel_physics.dat"
+	if nativefs.getInfo(savefile) then
+		contents, size = nativefs.read(savefile)
+	    local savetable = bitser.loads(contents)
+
+        local shipsize = fun.getEntitySize(entity)
+        physEntity.body:setPosition(savetable.x, savetable.y)
+    	physEntity.fixture:setSensor(false)
+        fun.changeShipPhysicsSize(entity)
+    else
+		error = true
+	end
 end
 
 return fileops

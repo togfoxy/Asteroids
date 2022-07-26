@@ -12,7 +12,7 @@ function cmp.init()
 		c.label = "Chassis"
         c.size = love.math.random(2,4)
 		c.maxHP = 4000 + love.math.random(1,10) * 1000
-		c.currentHP = 2000 --c.maxHP
+		c.currentHP = c.maxHP
         c.purchasePrice = 1000
         c.description = "Vessel frame. Size " .. c.size .. ". Health " .. c.maxHP .. "."
     end)

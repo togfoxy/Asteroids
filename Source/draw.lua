@@ -135,6 +135,7 @@ function draw.asteroids()
     cam:detach()
 
     -- draw the HUD
+	love.graphics.setColor(1,1,1,1)
     love.graphics.draw(IMAGES[enum.imagesEjectButton],25,25)
     -- o2 left
     local o2left = fun.getO2left()
