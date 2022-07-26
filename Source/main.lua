@@ -552,6 +552,8 @@ function love.update(dt)
 		SHOP_ENTITY = nil
 	end
 
+	fun.playAmbientMusic()
+
 	lovelyToasts.update(dt)
 	res.update()
 end

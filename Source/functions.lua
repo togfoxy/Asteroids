@@ -35,6 +35,9 @@ function functions.loadAudio()
 	AUDIO[enum.audioWrong] = love.audio.newSource("assets/audio/wrong.mp3", "static")
 
 
+	-- bground music
+	AUDIO[enum.audioBGSkismo] = love.audio.newSource("assets/music/Reflekt.mp3", "stream")
+
 	AUDIO[enum.audioRockExplosion]:setVolume(0.5)
 end
 
@@ -481,6 +484,15 @@ function functions.buyComponent(entity, strShopComponentType, component)
 		entity.cargoHold.description = "Holds rocks. Size " .. component.size .. ". Health " .. component.maxHP .. ". Capacity " .. component.maxAmount .. " tons."
 	end
 
+end
+
+function functions.playAmbientMusic()
+	local intCount = love.audio.getActiveSourceCount()
+	if intCount == 0 then
+		if love.math.random(1,2000) == 1 then		-- allow for some silence between ambient music
+			AUDIO[enum.audioBGSkismo]:play()
+		end
+	end
 end
 
 return functions

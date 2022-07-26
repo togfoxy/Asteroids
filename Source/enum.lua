@@ -23,6 +23,7 @@ audioRockScrape1 = 6
 audioRockScrape2 = 7
 audioDing = 10
 audioWrong = 11
+audioBGSkismo = 12
 
 fontDefault = 1
 fontHeavyMetalLarge = 2
