@@ -250,11 +250,15 @@ function draw.shop()
 			drawy = drawy + panelheight
 			local txt = component.label .. ": "
 			if component.currentHP ~= nil then
+				if component.currentHP < component.maxHP then
+					love.graphics.setColor(1,0,0,1)
+				else
+					love.graphics.setColor(1,1,1,1)
+				end
 				txt = txt .. cf.round(component.currentHP) .. " / " .. component.maxHP
 			end
 			love.graphics.setFont(FONT[enum.fontTech])
-			love.graphics.setColor(1,1,1,1)
-			love.graphics.print(txt, drawx, drawy - 10)
+			love.graphics.print(txt, drawx, drawy - 10)		-- colour and alpha is set up above
 
 			-- draw the description
 			local txt = component.description

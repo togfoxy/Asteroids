@@ -73,7 +73,7 @@ function fileops.loadGame()
     local savefile = savedir .. "\\savedata\\" .. "globals.dat"
 	if nativefs.getInfo(savefile) then
 		contents, size = nativefs.read(savefile)
-	    local PLAYER = bitser.loads(contents)
+	    PLAYER = bitser.loads(contents)
     else
         loaderror = true
     end
