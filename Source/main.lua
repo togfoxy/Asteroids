@@ -460,6 +460,7 @@ function love.draw()
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
 		draw.shop()
 	end
+	lovelyToasts.draw()
     res.stop()
 end
 
@@ -540,5 +541,6 @@ function love.update(dt)
 		SHOP_ENTITY = nil
 	end
 
+	lovelyToasts.update(dt)
 	res.update()
 end

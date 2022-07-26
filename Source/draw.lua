@@ -124,6 +124,8 @@ end
 function draw.asteroids()
 
     cam:attach()
+
+	-- wallpaper
     love.graphics.setColor(1,1,1,1)
     love.graphics.draw(IMAGES[enum.imagesBackgroundStatic], 0, 0, 0, 5.24, 10)
     ECSWORLD:emit("draw")
