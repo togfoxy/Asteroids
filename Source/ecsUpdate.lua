@@ -86,7 +86,8 @@ function ecsUpdate.init()
 
         		physEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
 
-                entity.fuelTank.capacity = entity.fuelTank.capacity - (vectordistance / FUEL_CONSUMPTION_RATE)
+				local fuelused = vectordistance * dt
+                entity.fuelTank.capacity = entity.fuelTank.capacity - fuelused
 
                 SOUND.engine = true
                 DRAW.engineFlame = true

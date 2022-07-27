@@ -30,7 +30,7 @@ function cmp.init()
     concord.component("fuelTank", function(c)
 		c.label = "Fuel tank"
         c.size = love.math.random(2,4)
-        c.capacity = 50000 + love.math.random(1,10) * 10000   -- how much thrust it contains
+        c.capacity = 100000 + love.math.random(1,8) * 10000   -- how much thrust it contains
         c.maxCapacity = c.capacity
 		c.maxHP = love.math.random(2,4) * 1000
 		c.currentHP = c.maxHP

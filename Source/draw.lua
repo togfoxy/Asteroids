@@ -144,7 +144,7 @@ local function drawHUD()
 	local scalex = 1
 	love.graphics.setColor(0,1,0,1)
 	love.graphics.setLineWidth(5)
-	love.graphics.line(drawx,drawy, drawx + (fuel * scalex), drawy)
+	love.graphics.line(drawx, drawy, drawx + (fuel * scalex), drawy)
 	love.graphics.setLineWidth(1)
 
 	-- hold space (gold)
@@ -170,6 +170,30 @@ local function drawHUD()
 		love.graphics.setLineWidth(5)
 		love.graphics.line(drawx, drawy, drawx + barlength, drawy)
 		love.graphics.setLineWidth(1)
+	end
+
+	-- draw the 'non-gauge' components that don't have capacity
+	if entity:has("oxyTank") then
+		local drawx = SCREEN_WIDTH - 100
+print("X = " .. drawx)
+		local drawy = 50
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.setFont(FONT[enum.fontDefault])
+		love.graphics.print("O2", drawx, drawy)
+	end
+	if entity:has("solarPanel") then
+		local drawx = SCREEN_WIDTH - 100 + 50
+		local drawy = 50
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.setFont(FONT[enum.fontDefault])
+		love.graphics.print("SP", drawx, drawy)
+	end
+	if entity:has("spaceSuit") then
+		local drawx = SCREEN_WIDTH - 100
+		local drawy = 100
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.setFont(FONT[enum.fontDefault])
+		love.graphics.print("SS", drawx, drawy)
 	end
 end
 
