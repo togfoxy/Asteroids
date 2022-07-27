@@ -135,6 +135,11 @@ local function drawHUD()
 	love.graphics.setLineWidth(5)
 	love.graphics.line(drawx,drawy, drawx + (o2left * scalex), drawy)
 	love.graphics.setLineWidth(1)
+	if o2left < 25 then
+		-- draw flashing light
+		love.graphics.setColor(1,0,0, O2_ALARM_ALPHA)
+		love.graphics.circle("fill", drawx - 20, drawy, 5)
+	end
 
 	-- fuel left (green)
 	local fuel = fun.getFuelBurnTime()
@@ -146,6 +151,11 @@ local function drawHUD()
 	love.graphics.setLineWidth(5)
 	love.graphics.line(drawx, drawy, drawx + (fuel * scalex), drawy)
 	love.graphics.setLineWidth(1)
+	if fuel < 10 then
+		-- draw flashing light
+		love.graphics.setColor(1,0,0, FUEL_ALARM_ALPHA)
+		love.graphics.circle("fill", drawx - 20, drawy, 5)
+	end
 
 	-- hold space (gold)
 	local entity = fun.getEntity(PLAYER.UID)
@@ -159,7 +169,15 @@ local function drawHUD()
 		love.graphics.setLineWidth(5)
 		love.graphics.line(drawx, drawy, drawx + barlength, drawy)
 		love.graphics.setLineWidth(1)
+		if cargopercent > 0.98 then
+			-- draw flashing light
+			love.graphics.setColor(1,0,0, 1)
+			love.graphics.circle("fill", drawx - 20, drawy, 5)
+		end
 	end
+
+
+	-- battery
 	if entity:has("battery") then
 		local batterypercent = (entity.battery.capacity / entity.battery.maxCapacity)		-- decimal
 		local drawx = 75
@@ -170,7 +188,13 @@ local function drawHUD()
 		love.graphics.setLineWidth(5)
 		love.graphics.line(drawx, drawy, drawx + barlength, drawy)
 		love.graphics.setLineWidth(1)
+		if batterypercent < 0.25 then
+			-- draw flashing light
+			love.graphics.setColor(1,0,0, BATTERY_ALARM_ALPHA)
+			love.graphics.circle("fill", drawx - 20, drawy, 5)
+		end
 	end
+
 
 	-- draw the 'non-gauge' components that don't have capacity
 	if entity:has("oxyTank") then

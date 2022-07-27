@@ -58,9 +58,10 @@ local function establishPlayerVessel()
 	-- :give("spaceSuit")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
-	-- PLAYER.WEALTH = 10000
+
 
 	-- debug
+	-- PLAYER.WEALTH = 10000
 	-- entity.chassis.currentHP = 0
 
 	local shipsize = fun.getEntitySize(entity)
@@ -551,8 +552,20 @@ function love.update(dt)
 			if BUBBLE[i].timeleft <= 0 then table.remove(BUBBLE, i) end
 		end
 
+		-- alarm lights
+		O2_ALARM_ALPHA = O2_ALARM_ALPHA + dt
+		if O2_ALARM_ALPHA > 1 then O2_ALARM_ALPHA = 0 end
+
+		FUEL_ALARM_ALPHA = FUEL_ALARM_ALPHA + dt
+		if FUEL_ALARM_ALPHA > 1 then FUEL_ALARM_ALPHA = 0 end
+
+		BATTERY_ALARM_ALPHA = BATTERY_ALARM_ALPHA + dt
+		if BATTERY_ALARM_ALPHA > 1 then BATTERY_ALARM_ALPHA = 0 end
+
 		cam:setPos(TRANSLATEX, TRANSLATEY)
 		cam:setZoom(ZOOMFACTOR)
+
+
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
 		local physEntity = fun.getPhysEntity(PLAYER.UID)
 		local x1, y1 = physEntity.body:getPosition()
