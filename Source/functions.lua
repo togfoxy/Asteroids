@@ -487,6 +487,7 @@ function functions.buyComponent(entity, strShopComponentType, component)
 end
 
 function functions.playAmbientMusic()
+	if cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
 	local intCount = love.audio.getActiveSourceCount()
 	if intCount == 0 then
 		if love.math.random(1,2000) == 1 then		-- allow for some silence between ambient music

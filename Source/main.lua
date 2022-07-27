@@ -50,7 +50,7 @@ local function establishPlayerVessel()
 	:give("miningLaser")
 	:give("battery")
 	:give("oxyGenerator")
-	-- :give("oxyTank")
+	:give("oxyTank")
 	-- :give("solarPanel")
 	:give("cargoHold")
 	-- :give("spaceSuit")
@@ -209,6 +209,7 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 			end
 		end
 
+		AUDIO[enum.audioBGSkismo]:stop()
 		cf.AddScreen(enum.sceneShop, SCREEN_STACK)
 	else
 		-- collision with asteroids and players
