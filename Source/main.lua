@@ -59,7 +59,6 @@ local function establishPlayerVessel()
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
 
-
 	-- debug
 	-- PLAYER.WEALTH = 10000
 	-- entity.chassis.currentHP = 0

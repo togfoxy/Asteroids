@@ -51,6 +51,11 @@ function constants.load()
     FUEL_ALARM_ALPHA = 0
     BATTERY_ALARM_ALPHA = 0
 
+    -- warning thresholds
+    BATTERY_THRESHOLD_SECONDS = 40
+
+
+
     BUBBLE = {}     -- manages floating text
 end
 

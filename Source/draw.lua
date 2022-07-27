@@ -176,7 +176,6 @@ local function drawHUD()
 		end
 	end
 
-
 	-- battery
 	if entity:has("battery") then
 		local batterypercent = (entity.battery.capacity / entity.battery.maxCapacity)		-- decimal
@@ -188,7 +187,7 @@ local function drawHUD()
 		love.graphics.setLineWidth(5)
 		love.graphics.line(drawx, drawy, drawx + barlength, drawy)
 		love.graphics.setLineWidth(1)
-		if batterypercent < 0.25 then
+		if entity.battery.capacity < BATTERY_THRESHOLD_SECONDS then	-- note this is NOT percentage but hard seconds
 			-- draw flashing light
 			love.graphics.setColor(1,0,0, BATTERY_ALARM_ALPHA)
 			love.graphics.circle("fill", drawx - 20, drawy, 5)

@@ -13,8 +13,6 @@ local function activateMiningLaser(dt)
 	-- get distance between player and mouse click
 	local x0,y0 = playerPE.body:getPosition()
 	local distance = cf.GetDistance(x0, y0, bx, by)
-	-- print(x0, y0, bx, by)
-	-- print("dist = " .. distance)
 
 	if distance <= playerEntity.miningLaser.miningRange then
 		for _, asteroid in pairs(PHYSICSWORLD:getBodies()) do		-- this is bodies - not entities
@@ -41,7 +39,7 @@ local function activateMiningLaser(dt)
 							newbubble.x = x --  * BOX2D_SCALE
 							newbubble.y = y --  * BOX2D_SCALE
 							table.insert(BUBBLE, newbubble)
-	-- print(massMoved, x, y, wx, wy, bx, by)
+
 						end
 
 						SOUND.miningLaser = true
@@ -77,7 +75,7 @@ function ecsUpdate.init()
                     if entity.fuelTank.currentHP <= 0 then
                         SOUND.warning = true
                         break
-                    elseif entity.fuelTank.capacity <= 0 then
+                    elseif fun.getFuelBurnTime() <= 10 then
                         SOUND.lowFuel = true
                         break
                     end
@@ -123,7 +121,7 @@ function ecsUpdate.init()
                     if entity.fuelTank.currentHP <= 0 then
                         SOUND.warning = true
                         break
-                    elseif entity.fuelTank.capacity <= 0 then
+                    elseif fun.getFuelBurnTime() <= 10 then
                         SOUND.lowFuel = true
                         break
                     end
@@ -178,7 +176,7 @@ function ecsUpdate.init()
                     if entity.fuelTank.currentHP <= 0 then
                         SOUND.warning = true
                         break
-                    elseif entity.fuelTank.capacity <= 0 then
+                    elseif fun.getFuelBurnTime() <= 10 then
                         SOUND.lowFuel = true
                         break
                     end
@@ -233,7 +231,7 @@ function ecsUpdate.init()
                     if entity.fuelTank.currentHP <= 0 then
                         SOUND.warning = true
                         break
-                    elseif entity.fuelTank.capacity <= 0 then
+                    elseif fun.getFuelBurnTime() <= 10 then
                         SOUND.lowFuel = true
                         break
                     end
@@ -327,7 +325,7 @@ function ecsUpdate.init()
 	})
 	function systemBattery:update(dt)
 		for _, entity in ipairs(self.pool) do
-			if entity.battery.capacity <= 25 or entity.battery.currentHP <= 0 then
+			if entity.battery.capacity <= BATTERY_THRESHOLD_SECONDS or entity.battery.currentHP <= 0 then
 				-- the 25 is an arbitrary number of seconds
 				SOUND.warning = true
 			end
