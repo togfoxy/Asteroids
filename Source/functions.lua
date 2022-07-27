@@ -37,6 +37,9 @@ function functions.loadAudio()
 
 	-- bground music
 	AUDIO[enum.audioBGSkismo] = love.audio.newSource("assets/music/Reflekt.mp3", "stream")
+	AUDIO[enum.audioBGEric1] = love.audio.newSource("assets/music/Urban-Jungle-2061.mp3", "stream")
+	AUDIO[enum.audioBGEric2] = love.audio.newSource("assets/music/World-of-Automatons.mp3", "stream")
+
 
 	AUDIO[enum.audioRockExplosion]:setVolume(0.5)
 end
@@ -487,11 +490,20 @@ function functions.buyComponent(entity, strShopComponentType, component)
 end
 
 function functions.playAmbientMusic()
-	if cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
 	local intCount = love.audio.getActiveSourceCount()
 	if intCount == 0 then
-		if love.math.random(1,2000) == 1 then		-- allow for some silence between ambient music
-			AUDIO[enum.audioBGSkismo]:play()
+		if cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
+			if love.math.random(1,2000) == 1 then		-- allow for some silence between ambient music
+				AUDIO[enum.audioBGSkismo]:play()
+			end
+		elseif	cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
+			if love.math.random(1,2000) == 1 then		-- allow for some silence between ambient music
+				if love.math.random(1,2) == 1 then
+					AUDIO[enum.audioBGEric1]:play()
+				else
+					AUDIO[enum.audioBGEric2]:play()
+				end
+			end
 		end
 	end
 end
