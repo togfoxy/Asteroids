@@ -47,6 +47,8 @@ function constants.load()
 
     SHOP_TIMER = 0
     DEFAULT_SHOP_TIMER = 3 * 60     -- seconds
+
+    BUBBLE = {}     -- manages floating text
 end
 
 

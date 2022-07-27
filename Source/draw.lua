@@ -175,7 +175,6 @@ local function drawHUD()
 	-- draw the 'non-gauge' components that don't have capacity
 	if entity:has("oxyTank") then
 		local drawx = SCREEN_WIDTH - 100
-print("X = " .. drawx)
 		local drawy = 50
 		love.graphics.setColor(1,1,1,1)
 		love.graphics.setFont(FONT[enum.fontDefault])
@@ -209,9 +208,11 @@ function draw.asteroids()
     -- background
     drawStarbase()
     drawAsteroids()
+
     -- cf.printAllPhysicsObjects(PHYSICSWORLD, BOX2D_SCALE)
     cam:detach()
 
+	draw.bubbles()
 	drawHUD()
 
 	-- draw the dead screen with alpha 0 (unless dead!)
@@ -371,7 +372,14 @@ function draw.dead()
     ZOOMFACTOR = 0.4
 end
 
-
-
+function draw.bubbles()
+	for _, bubble in pairs(BUBBLE) do
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.setFont(FONT[enum.fontDefault])
+		local drawy = bubble.y
+		local yoffset = (4 - bubble.timeleft) * 10		-- need to scale up the y movement
+		love.graphics.print(bubble.text, bubble.x, drawy - yoffset)
+	end
+end
 
 return draw

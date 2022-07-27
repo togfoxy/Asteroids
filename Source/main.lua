@@ -326,13 +326,18 @@ function love.wheelmoved(x, y)
 	if y > 0 then
 		-- wheel moved up. Zoom in
 		ZOOMFACTOR = ZOOMFACTOR + 0.1
+		if ZOOMFACTOR == 0.6 then ZOOMFACTOR = 0.7 end
 	end
 	if y < 0 then
 		ZOOMFACTOR = ZOOMFACTOR - 0.1
+		if ZOOMFACTOR == 0.6 then ZOOMFACTOR = 0.5 end
 	end
 	if ZOOMFACTOR < 0.1 then ZOOMFACTOR = 0.1 end
 	--if ZOOMFACTOR > 4 then ZOOMFACTOR = 4 end
 	print("Zoom factor is now ".. ZOOMFACTOR)
+
+	-- delete the bubbles to stop them being drawn funny on zoom change
+	BUBBLE = {}
 end
 
 function love.mousepressed( x, y, button, istouch, presses )
@@ -463,6 +468,7 @@ function love.draw()
 
 	if cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
 		draw.asteroids()
+
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneDed then
 		draw.dead()
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
@@ -537,6 +543,12 @@ function love.update(dt)
 				cf.SwapScreen(enum.sceneDed, SCREEN_STACK)
 				-- cleanDeadData()		-!
 			end
+		end
+
+		-- decrease bubble text timers
+		for i = #BUBBLE, 1, -1 do
+			BUBBLE[i].timeleft = BUBBLE[i].timeleft - dt
+			if BUBBLE[i].timeleft <= 0 then table.remove(BUBBLE, i) end
 		end
 
 		cam:setPos(TRANSLATEX, TRANSLATEY)
