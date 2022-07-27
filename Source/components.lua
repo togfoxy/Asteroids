@@ -30,7 +30,7 @@ function cmp.init()
     concord.component("fuelTank", function(c)
 		c.label = "Fuel tank"
         c.size = love.math.random(2,4)
-        c.capacity = 50000 + love.math.random(1,10) * 10000   -- how much thrust it contains
+        c.capacity = 100000 + love.math.random(1,8) * 10000   -- how much thrust it contains
         c.maxCapacity = c.capacity
 		c.maxHP = love.math.random(2,4) * 1000
 		c.currentHP = c.maxHP
@@ -47,6 +47,7 @@ function cmp.init()
 		c.currentHP = c.maxHP
         c.purchasePrice = 1000
         c.description = "Slide to the right. Size " .. c.size .. ". Health " .. c.maxHP .. ". Thrust " .. c.strength .. "."
+        c.description = c.description .. "\nStronger thrusters enable faster turning."
     end)
 
     concord.component("rightThruster", function(c)
@@ -57,6 +58,7 @@ function cmp.init()
 		c.currentHP = c.maxHP
         c.purchasePrice = 1000
         c.description = "Slide to the left. Size " .. c.size .. ". Health " .. c.maxHP .. ". Thrust " .. c.strength .. "."
+        c.description = c.description .. "\nStronger thrusters enable faster turning."
     end)
 
     concord.component("reverseThruster", function(c)
@@ -135,7 +137,7 @@ function cmp.init()
         c.label = "Cargo hold"
         c.size = love.math.random(1,3)
         c.maxAmount = 5000 * c.size
-        c.currentAmount = 0         -- current amount stored
+        c.currentAmount = 0        -- current amount stored
         c.maxHP = love.math.random(1,3) * 1000
         c.currentHP = c.maxHP
         c.purchasePrice = 1000

@@ -121,6 +121,82 @@ local function drawAsteroids()
 	end
 end
 
+local function drawHUD()
+	-- draw the HUD
+	love.graphics.setColor(1,1,1,1)
+
+	-- o2 left
+	local o2left = fun.getO2left()
+	if o2left > 100 then o2left = 100 end	-- 100 is an arbitrary 100 to make % easy
+	local drawx = 75
+	local drawy = 50
+	local scalex = 1
+	love.graphics.setColor(0,188/255,1,1)
+	love.graphics.setLineWidth(5)
+	love.graphics.line(drawx,drawy, drawx + (o2left * scalex), drawy)
+	love.graphics.setLineWidth(1)
+
+	-- fuel left (green)
+	local fuel = fun.getFuelBurnTime()
+	if fuel > 100 then fuel = 100 end	-- 100 is an arbitrary 100 to make % easy
+	local drawx = 75
+	local drawy = 75
+	local scalex = 1
+	love.graphics.setColor(0,1,0,1)
+	love.graphics.setLineWidth(5)
+	love.graphics.line(drawx, drawy, drawx + (fuel * scalex), drawy)
+	love.graphics.setLineWidth(1)
+
+	-- hold space (gold)
+	local entity = fun.getEntity(PLAYER.UID)
+	if entity:has("cargoHold") then
+		local cargopercent = (entity.cargoHold.currentAmount / entity.cargoHold.maxAmount)		-- decimal
+		local drawx = 75
+		local drawy = 100
+		local barlength = 100 * cargopercent
+		local scalex = 1
+		love.graphics.setColor(1,1,0,1)
+		love.graphics.setLineWidth(5)
+		love.graphics.line(drawx, drawy, drawx + barlength, drawy)
+		love.graphics.setLineWidth(1)
+	end
+	if entity:has("battery") then
+		local batterypercent = (entity.battery.capacity / entity.battery.maxCapacity)		-- decimal
+		local drawx = 75
+		local drawy = 125
+		local barlength = 100 * batterypercent
+		local scalex = 1
+		love.graphics.setColor(1,0,1,1)
+		love.graphics.setLineWidth(5)
+		love.graphics.line(drawx, drawy, drawx + barlength, drawy)
+		love.graphics.setLineWidth(1)
+	end
+
+	-- draw the 'non-gauge' components that don't have capacity
+	if entity:has("oxyTank") then
+		local drawx = SCREEN_WIDTH - 100
+print("X = " .. drawx)
+		local drawy = 50
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.setFont(FONT[enum.fontDefault])
+		love.graphics.print("O2", drawx, drawy)
+	end
+	if entity:has("solarPanel") then
+		local drawx = SCREEN_WIDTH - 100 + 50
+		local drawy = 50
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.setFont(FONT[enum.fontDefault])
+		love.graphics.print("SP", drawx, drawy)
+	end
+	if entity:has("spaceSuit") then
+		local drawx = SCREEN_WIDTH - 100
+		local drawy = 100
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.setFont(FONT[enum.fontDefault])
+		love.graphics.print("SS", drawx, drawy)
+	end
+end
+
 function draw.asteroids()
 
     cam:attach()
@@ -136,74 +212,18 @@ function draw.asteroids()
     -- cf.printAllPhysicsObjects(PHYSICSWORLD, BOX2D_SCALE)
     cam:detach()
 
-    -- draw the HUD
-	love.graphics.setColor(1,1,1,1)
-    love.graphics.draw(IMAGES[enum.imagesEjectButton],25,25)
-    -- o2 left
-    local o2left = fun.getO2left()
-    if o2left > 100 then o2left = 100 end	-- 100 is an arbitrary 100 to make % easy
-    local bars = math.ceil(o2left / 10)
-    local drawx = 109
-    local drawy = 30
-    for i = 1, bars - 1 do
-        love.graphics.draw(IMAGES[enum.imagesBlueBar],drawx,drawy,0,1,1)
-        drawx = drawx + 7
-        drawy = drawy + 0
-    end
-    if bars >= 1 then love.graphics.draw(IMAGES[enum.imagesBlueBarEnd],drawx,drawy,0,1,1) end
+	drawHUD()
 
-    -- fuel left (green)
-    local fuel = fun.getFuelBurnTime()
-    if fuel > 100 then fuel = 100 end	-- 100 is an arbitrary 100 to make % easy
-    local bars = math.ceil(fuel / 10)
-    local drawx = 109
-    local drawy = 50
-    for i = 1, bars - 1 do
-        love.graphics.draw(IMAGES[enum.imagesGreenBar],drawx,drawy,0,1,1)
-        drawx = drawx + 7
-        drawy = drawy + 0
-    end
-    if bars >= 1 then love.graphics.draw(IMAGES[enum.imagesGreenBarEnd],drawx,drawy,0,1,1) end
-
-    -- hold space (gold)
-    local entity = fun.getEntity(PLAYER.UID)
-    if entity:has("cargoHold") then
-        local holdused = entity.cargoHold.currentAmount
-        local holdpercent = cf.round(holdused/entity.cargoHold.maxAmount * 100)
-        if holdpercent > 100 then holdpercent = 100 end	-- 100 is an arbitrary 100 to make % easy
-        local bars = math.ceil(holdpercent / 10)
-        local drawx = 109
-        local drawy = 70
-        for i = 1, bars - 1 do
-            love.graphics.draw(IMAGES[enum.imagesOrangeBar],drawx,drawy,0,1,1)
-            drawx = drawx + 7
-            drawy = drawy + 0
-        end
-        if bars >= 1 then love.graphics.draw(IMAGES[enum.imagesOrangeBarEnd],drawx,drawy,0,1,1) end
-    end
-
-	--! draw temporary battery level
-	local batterylevel = ""
-	if entity:has("battery") then
-		batterylevel = entity.battery.capacity
-	else
-		batterylevel = 0
-	end
-	love.graphics.setColor(1,1,1,1)
-	love.graphics.setFont(FONT[enum.fontDefault])
-	love.graphics.print("Battery: " .. cf.round(batterylevel), 30, 90)
-
-	--! temporary fuel level
-	love.graphics.print("Fuel (sec): " .. cf.round(fuel), 30, 105)
-
-    -- draw the dead screen with alpha 0 (unless dead!)
-    love.graphics.setColor(1,1,1,DEAD_ALPHA)
-    love.graphics.draw(IMAGES[enum.imagesDead], 0, 0)
+	-- draw the dead screen with alpha 0 (unless dead!)
+	love.graphics.setColor(1,1,1,DEAD_ALPHA)
+	love.graphics.draw(IMAGES[enum.imagesDead], 0, 0)
 
 	-- debug
 	-- draw ship mass and size
+	local entity = fun.getEntity(PLAYER.UID)
 	local physicsEntity = fun.getPhysEntity(PLAYER.UID)
 	love.graphics.setColor(1,1,1,1)
+	love.graphics.setFont(FONT[enum.fontDefault])
 	love.graphics.print("Mass: " .. physicsEntity.body:getMass(), 30, SCREEN_HEIGHT - 100)
 	love.graphics.print("Size: " .. fun.getEntitySize(entity), 30, SCREEN_HEIGHT - 80)
 end

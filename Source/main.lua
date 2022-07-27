@@ -41,18 +41,20 @@ local function establishPlayerVessel()
 	local entity = concord.entity(ECSWORLD)
     :give("drawable")
     :give("uid")
+
 	:give("chassis")
 	:give("engine")
-	-- :give("leftThruster")
-	-- :give("rightThruster")
-	-- :give("reverseThruster")
 	:give("fuelTank")
 	:give("miningLaser")
 	:give("battery")
 	:give("oxyGenerator")
+	:give("cargoHold")
+
+	-- :give("leftThruster")
+	-- :give("rightThruster")
+	-- :give("reverseThruster")
 	-- :give("oxyTank")
 	-- :give("solarPanel")
-	:give("cargoHold")
 	-- :give("spaceSuit")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
@@ -209,6 +211,7 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 			end
 		end
 
+		AUDIO[enum.audioBGSkismo]:stop()
 		cf.AddScreen(enum.sceneShop, SCREEN_STACK)
 	else
 		-- collision with asteroids and players
@@ -551,6 +554,8 @@ function love.update(dt)
 		SHOP_TIMER = 0
 		SHOP_ENTITY = nil
 	end
+
+	fun.playAmbientMusic()
 
 	lovelyToasts.update(dt)
 	res.update()
