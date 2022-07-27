@@ -47,6 +47,11 @@ function constants.load()
 
     SHOP_TIMER = 0
     DEFAULT_SHOP_TIMER = 3 * 60     -- seconds
+    O2_ALARM_ALPHA = 0
+    FUEL_ALARM_ALPHA = 0
+    BATTERY_ALARM_ALPHA = 0
+
+    BUBBLE = {}     -- manages floating text
 end
 
 

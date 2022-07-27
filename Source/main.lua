@@ -58,9 +58,10 @@ local function establishPlayerVessel()
 	-- :give("spaceSuit")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
-	-- PLAYER.WEALTH = 10000
+
 
 	-- debug
+	-- PLAYER.WEALTH = 10000
 	-- entity.chassis.currentHP = 0
 
 	local shipsize = fun.getEntitySize(entity)
@@ -326,13 +327,18 @@ function love.wheelmoved(x, y)
 	if y > 0 then
 		-- wheel moved up. Zoom in
 		ZOOMFACTOR = ZOOMFACTOR + 0.1
+		if ZOOMFACTOR == 0.6 then ZOOMFACTOR = 0.7 end
 	end
 	if y < 0 then
 		ZOOMFACTOR = ZOOMFACTOR - 0.1
+		if ZOOMFACTOR == 0.6 then ZOOMFACTOR = 0.5 end
 	end
 	if ZOOMFACTOR < 0.1 then ZOOMFACTOR = 0.1 end
 	--if ZOOMFACTOR > 4 then ZOOMFACTOR = 4 end
 	print("Zoom factor is now ".. ZOOMFACTOR)
+
+	-- delete the bubbles to stop them being drawn funny on zoom change
+	BUBBLE = {}
 end
 
 function love.mousepressed( x, y, button, istouch, presses )
@@ -463,6 +469,7 @@ function love.draw()
 
 	if cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
 		draw.asteroids()
+
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneDed then
 		draw.dead()
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
@@ -539,8 +546,26 @@ function love.update(dt)
 			end
 		end
 
+		-- decrease bubble text timers
+		for i = #BUBBLE, 1, -1 do
+			BUBBLE[i].timeleft = BUBBLE[i].timeleft - dt
+			if BUBBLE[i].timeleft <= 0 then table.remove(BUBBLE, i) end
+		end
+
+		-- alarm lights
+		O2_ALARM_ALPHA = O2_ALARM_ALPHA + dt
+		if O2_ALARM_ALPHA > 1 then O2_ALARM_ALPHA = 0 end
+
+		FUEL_ALARM_ALPHA = FUEL_ALARM_ALPHA + dt
+		if FUEL_ALARM_ALPHA > 1 then FUEL_ALARM_ALPHA = 0 end
+
+		BATTERY_ALARM_ALPHA = BATTERY_ALARM_ALPHA + dt
+		if BATTERY_ALARM_ALPHA > 1 then BATTERY_ALARM_ALPHA = 0 end
+
 		cam:setPos(TRANSLATEX, TRANSLATEY)
 		cam:setZoom(ZOOMFACTOR)
+
+
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
 		local physEntity = fun.getPhysEntity(PLAYER.UID)
 		local x1, y1 = physEntity.body:getPosition()

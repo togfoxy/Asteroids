@@ -33,6 +33,17 @@ local function activateMiningLaser(dt)
 						DRAW.miningLaser = true
 						DRAW.miningLaserX = bx
 						DRAW.miningLaserY = by
+						if love.math.random(1,100) == 1 then
+							-- add bubble text
+							local newbubble = {}
+							newbubble.text = cf.round(math.max(massMoved, 1))
+							newbubble.timeleft = 4
+							newbubble.x = x --  * BOX2D_SCALE
+							newbubble.y = y --  * BOX2D_SCALE
+							table.insert(BUBBLE, newbubble)
+	-- print(massMoved, x, y, wx, wy, bx, by)
+						end
+
 						SOUND.miningLaser = true
 						if physicsEntity.currentMass <= 0 then
 							fun.killPhysicsEntity(physicsEntity)
