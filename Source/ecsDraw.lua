@@ -136,6 +136,16 @@ function ecsDraw.init()
                     love.graphics.setColor(146/255, 89/255, 14/255, 1)
                     love.graphics.line(x1, y1, x2, y2)
                 end
+
+                -- draw SOS beacon
+                if entity:has("SOSBeacon") and entity.SOSBeacon.activated and entity.SOSBeacon.currentHP > 0 then
+    				if entity:has("battery") and entity.battery.capacity > 0 and entity.battery.currentHP > 0 then
+                        love.graphics.setColor(1,0,0,SOSBEACON_ALARM_ALPHA)
+                        love.graphics.circle("fill", x1, y1, vesselsize)
+
+
+                    end
+                end
             end
         end
     end

@@ -333,7 +333,6 @@ function ecsUpdate.init()
 	end
 	ECSWORLD:addSystems(systemBattery)
 
-
     systemSolarPanel = concord.system({
         pool = {"solarPanel"}
     })
@@ -351,6 +350,38 @@ function ecsUpdate.init()
         end
     end
     ECSWORLD:addSystems(systemSolarPanel)
+
+	systemSOSBeacon = concord.system({
+        pool = {"SOSBeacon"}
+    })
+    function systemSOSBeacon:update(dt)
+        for _, entity in ipairs(self.pool) do
+			if entity.SOSBeacon.activated and entity.SOSBeacon.currentHP > 0 then
+				if entity:has("battery") and entity.battery.capacity > 0 and entity.battery.currentHP > 0 then
+					entity.battery.capacity = entity.battery.capacity - dt	-- beacon drains the battery
+					-- there is a chance the vessel is rescued
+					if love.math.random(1,1000) == 1 then
+						-- rescued!
+						entity.SOSBeacon.activated = false
+						cf.AddScreen(enum.sceneShop, SCREEN_STACK)
+					end
+				end
+			end
+			if love.mouse.isDown(1) and entity.SOSBeacon.currentHP > 0 then
+				-- drawx/y is the top left corner of the box/button
+				local drawheight = 20 		-- it's a square so width is the same
+				local drawx = SCREEN_WIDTH - 100 - drawheight
+				local drawy = 150
+				x, y = love.mouse.getPosition()
+				if x >= drawx and x <= drawx + drawheight and
+					y >= drawy and y <= drawy + drawheight then
+
+					entity.SOSBeacon.activated = not entity.SOSBeacon.activated
+				end
+			end
+		end
+	end
+	ECSWORLD:addSystems(systemSOSBeacon)
 end
 
 return ecsUpdate

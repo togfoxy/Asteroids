@@ -56,6 +56,7 @@ local function establishPlayerVessel()
 	-- :give("oxyTank")
 	-- :give("solarPanel")
 	-- :give("spaceSuit")
+	:give("SOSBeacon")
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
 
@@ -560,6 +561,9 @@ function love.update(dt)
 
 		BATTERY_ALARM_ALPHA = BATTERY_ALARM_ALPHA + dt
 		if BATTERY_ALARM_ALPHA > 1 then BATTERY_ALARM_ALPHA = 0 end
+
+		SOSBEACON_ALARM_ALPHA = SOSBEACON_ALARM_ALPHA + dt
+		if SOSBEACON_ALARM_ALPHA > 1 then SOSBEACON_ALARM_ALPHA = 0 end
 
 		cam:setPos(TRANSLATEX, TRANSLATEY)
 		cam:setZoom(ZOOMFACTOR)
