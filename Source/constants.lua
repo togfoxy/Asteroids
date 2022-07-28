@@ -50,6 +50,12 @@ function constants.load()
     O2_ALARM_ALPHA = 0
     FUEL_ALARM_ALPHA = 0
     BATTERY_ALARM_ALPHA = 0
+    SOSBEACON_ALARM_ALPHA = 0
+
+    -- warning thresholds
+    BATTERY_THRESHOLD_SECONDS = 40
+
+
 
     BUBBLE = {}     -- manages floating text
 end

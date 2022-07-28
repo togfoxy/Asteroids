@@ -18,6 +18,7 @@ local function fillShop()
 	:give("solarPanel")
 	:give("cargoHold")
 	:give("spaceSuit")
+	:give("SOSBeacon")
 
 	local allComponents = SHOP_ENTITY:getComponents()
 	for componentClass, component in pairs(allComponents) do
@@ -27,6 +28,7 @@ local function fillShop()
 			SHOP_ENTITY:remove(componentClass)
 		end
 	end
+	SHOP_ENTITY:ensure("SOSBeacon")
 end
 
 local function drawStarbase()
@@ -176,7 +178,6 @@ local function drawHUD()
 		end
 	end
 
-
 	-- battery
 	if entity:has("battery") then
 		local batterypercent = (entity.battery.capacity / entity.battery.maxCapacity)		-- decimal
@@ -188,7 +189,7 @@ local function drawHUD()
 		love.graphics.setLineWidth(5)
 		love.graphics.line(drawx, drawy, drawx + barlength, drawy)
 		love.graphics.setLineWidth(1)
-		if batterypercent < 0.25 then
+		if entity.battery.capacity < BATTERY_THRESHOLD_SECONDS then	-- note this is NOT percentage but hard seconds
 			-- draw flashing light
 			love.graphics.setColor(1,0,0, BATTERY_ALARM_ALPHA)
 			love.graphics.circle("fill", drawx - 20, drawy, 5)
@@ -217,6 +218,24 @@ local function drawHUD()
 		love.graphics.setColor(1,1,1,1)
 		love.graphics.setFont(FONT[enum.fontDefault])
 		love.graphics.print("SS", drawx, drawy)
+	end
+
+	-- draw buttons
+	-- SOS Beacan
+	local mode
+	if entity:has("SOSBeacon") and entity.SOSBeacon.currentHP > 0 then
+		if entity:has("battery") and entity.battery.capacity > 0 and entity.battery.currentHP > 0 then
+			if entity.SOSBeacon.activated then
+				mode = "fill"
+			else
+				mode = "line"
+			end
+			local drawx = SCREEN_WIDTH - 100
+			local drawy = 150
+			love.graphics.setColor(1,0,0,1)
+			love.graphics.rectangle(mode, drawx, drawy, 20, 20)			-- drawx/y is the top left corner of the square
+			love.graphics.circle("line", drawx, drawy, 5)
+		end
 	end
 end
 
@@ -379,6 +398,8 @@ function draw.shop()
 
 	-- print wealth and score
 	if PLAYER.ROCKSKILLED == nil then PLAYER.ROCKSKILLED = 0 end
+	if PLAYER.WEALTH == nil then PLAYER.WEALTH = 0 end
+
 	love.graphics.setFont(FONT[enum.fontDefault])
 	love.graphics.setColor(1,1,1,1)
 	love.graphics.print("Wealth: $" .. cf.strFormatThousand(PLAYER.WEALTH) .. " Score: " .. PLAYER.ROCKSKILLED, SCREEN_WIDTH / 2, 30)

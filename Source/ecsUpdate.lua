@@ -13,8 +13,6 @@ local function activateMiningLaser(dt)
 	-- get distance between player and mouse click
 	local x0,y0 = playerPE.body:getPosition()
 	local distance = cf.GetDistance(x0, y0, bx, by)
-	-- print(x0, y0, bx, by)
-	-- print("dist = " .. distance)
 
 	if distance <= playerEntity.miningLaser.miningRange then
 		for _, asteroid in pairs(PHYSICSWORLD:getBodies()) do		-- this is bodies - not entities
@@ -41,7 +39,7 @@ local function activateMiningLaser(dt)
 							newbubble.x = x --  * BOX2D_SCALE
 							newbubble.y = y --  * BOX2D_SCALE
 							table.insert(BUBBLE, newbubble)
-	-- print(massMoved, x, y, wx, wy, bx, by)
+
 						end
 
 						SOUND.miningLaser = true
@@ -77,7 +75,7 @@ function ecsUpdate.init()
                     if entity.fuelTank.currentHP <= 0 then
                         SOUND.warning = true
                         break
-                    elseif entity.fuelTank.capacity <= 0 then
+                    elseif fun.getFuelBurnTime() <= 10 then
                         SOUND.lowFuel = true
                         break
                     end
@@ -123,7 +121,7 @@ function ecsUpdate.init()
                     if entity.fuelTank.currentHP <= 0 then
                         SOUND.warning = true
                         break
-                    elseif entity.fuelTank.capacity <= 0 then
+                    elseif fun.getFuelBurnTime() <= 10 then
                         SOUND.lowFuel = true
                         break
                     end
@@ -178,7 +176,7 @@ function ecsUpdate.init()
                     if entity.fuelTank.currentHP <= 0 then
                         SOUND.warning = true
                         break
-                    elseif entity.fuelTank.capacity <= 0 then
+                    elseif fun.getFuelBurnTime() <= 10 then
                         SOUND.lowFuel = true
                         break
                     end
@@ -233,7 +231,7 @@ function ecsUpdate.init()
                     if entity.fuelTank.currentHP <= 0 then
                         SOUND.warning = true
                         break
-                    elseif entity.fuelTank.capacity <= 0 then
+                    elseif fun.getFuelBurnTime() <= 10 then
                         SOUND.lowFuel = true
                         break
                     end
@@ -327,14 +325,13 @@ function ecsUpdate.init()
 	})
 	function systemBattery:update(dt)
 		for _, entity in ipairs(self.pool) do
-			if entity.battery.capacity <= 25 or entity.battery.currentHP <= 0 then
+			if entity.battery.capacity <= BATTERY_THRESHOLD_SECONDS or entity.battery.currentHP <= 0 then
 				-- the 25 is an arbitrary number of seconds
 				SOUND.warning = true
 			end
         end
 	end
 	ECSWORLD:addSystems(systemBattery)
-
 
     systemSolarPanel = concord.system({
         pool = {"solarPanel"}
@@ -353,6 +350,38 @@ function ecsUpdate.init()
         end
     end
     ECSWORLD:addSystems(systemSolarPanel)
+
+	systemSOSBeacon = concord.system({
+        pool = {"SOSBeacon"}
+    })
+    function systemSOSBeacon:update(dt)
+        for _, entity in ipairs(self.pool) do
+			if entity.SOSBeacon.activated and entity.SOSBeacon.currentHP > 0 then
+				if entity:has("battery") and entity.battery.capacity > 0 and entity.battery.currentHP > 0 then
+					entity.battery.capacity = entity.battery.capacity - dt	-- beacon drains the battery
+					-- there is a chance the vessel is rescued
+					if love.math.random(1,1000) == 1 then
+						-- rescued!
+						entity.SOSBeacon.activated = false
+						cf.AddScreen(enum.sceneShop, SCREEN_STACK)
+					end
+				end
+			end
+			if love.mouse.isDown(1) and entity.SOSBeacon.currentHP > 0 then
+				-- drawx/y is the top left corner of the box/button
+				local drawheight = 20 		-- it's a square so width is the same
+				local drawx = SCREEN_WIDTH - 100 - drawheight
+				local drawy = 150
+				x, y = love.mouse.getPosition()
+				if x >= drawx and x <= drawx + drawheight and
+					y >= drawy and y <= drawy + drawheight then
+
+					entity.SOSBeacon.activated = not entity.SOSBeacon.activated
+				end
+			end
+		end
+	end
+	ECSWORLD:addSystems(systemSOSBeacon)
 end
 
 return ecsUpdate

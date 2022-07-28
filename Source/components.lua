@@ -136,12 +136,23 @@ function cmp.init()
     concord.component("cargoHold", function(c)
         c.label = "Cargo hold"
         c.size = love.math.random(1,3)
+        c.maxHP = love.math.random(1,3) * 1000
+        c.currentHP = c.maxHP
         c.maxAmount = 5000 * c.size
         c.currentAmount = 0        -- current amount stored
+        c.purchasePrice = 1000
+        c.description = "Holds rocks. Size " .. c.size .. ". Health " .. c.maxHP .. ". Capacity " .. c.maxAmount .. " tons."
+
+    end)
+
+    concord.component("SOSBeacon", function(c)
+        c.label = "SOS beacon"
+        c.size = love.math.random(1,3)
         c.maxHP = love.math.random(1,3) * 1000
         c.currentHP = c.maxHP
         c.purchasePrice = 1000
-        c.description = "Holds rocks. Size " .. c.size .. ". Health " .. c.maxHP .. ". Capacity " .. c.maxAmount .. " tons."
+        c.activated = false
+        c.description = "Activate when you need help. Needs a battery."
     end)
 end
 
