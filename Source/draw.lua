@@ -107,12 +107,23 @@ local function drawAsteroids()
 					points[i] = points[i] * BOX2D_SCALE
 				end
 
-				if udtable.isSelected then
-					love.graphics.setColor(0, 1, 1, 1)
-				else
-					love.graphics.setColor(139/255,139/255,139/255,1)
-				end
+
+				love.graphics.setColor(139/255,139/255,139/255,1)
+
 				love.graphics.polygon("line", points)
+
+				if udtable.oreType == enum.oreTypeGold then
+					love.graphics.setColor(236/255,164/255,18/255,1)
+					love.graphics.polygon("fill", points)
+				end
+				if udtable.oreType == enum.oreTypeSilver then
+					love.graphics.setColor(192/255,192/255,192/255,1)
+					love.graphics.polygon("fill", points)
+				end
+				if udtable.oreType == enum.oreTypeBronze then
+					love.graphics.setColor(122/255,84/255,9/255,1)
+					love.graphics.polygon("fill", points)
+				end
 
 				-- -- print the mass for debug reasons
 				-- love.graphics.setColor(1,1,1,1)

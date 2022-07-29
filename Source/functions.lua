@@ -153,9 +153,21 @@ function functions.createAsteroid()
 	local temptable = {}
 	temptable.uid = cf.Getuuid()
 	temptable.objectType = "Asteroid"
-	asteroid.fixture:setUserData(temptable)		--
 	asteroid.originalMass = asteroid.body:getMass()
 	asteroid.currentMass = asteroid.originalMass
+
+	local rndnum = love.math.random(1, 100)
+	if rndnum == 1 then
+		temptable.oreType = enum.oreTypeGold	-- gold
+	elseif rndnum == 2 or rndnum == 3 then
+		temptable.oreType = enum.oreTypeSilver	-- silver
+	elseif rndnum >= 4 and rndnum <= 6 then
+		temptable.oreType = enum.oreTypeBronze	-- bronze
+	else
+		-- normal ore
+		temptable.oreType = 0
+	end
+	asteroid.fixture:setUserData(temptable)
 
     table.insert(PHYSICS_ENTITIES, asteroid)
 end
