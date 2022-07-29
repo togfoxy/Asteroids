@@ -30,7 +30,7 @@ function cmp.init()
     concord.component("fuelTank", function(c)
 		c.label = "Fuel tank"
         c.size = love.math.random(2,4)
-        c.capacity = 100000 + love.math.random(1,8) * 10000   -- how much thrust it contains
+        c.capacity = 150000 + love.math.random(1,8) * 10000   -- how much thrust it contains
         c.maxCapacity = c.capacity
 		c.maxHP = love.math.random(2,4) * 1000
 		c.currentHP = c.maxHP
@@ -153,6 +153,15 @@ function cmp.init()
         c.purchasePrice = 1000
         c.activated = false
         c.description = "Activate when you need help. Needs a battery."
+    end)
+
+    concord.component("Stabiliser", function(c)
+        c.label = "Stabiliser"
+        c.size = love.math.random(1,3)
+        c.maxHP = love.math.random(1,3) * 1000
+        c.currentHP = c.maxHP
+        c.purchasePrice = 1000
+        c.description = "Stops you spinning around."
     end)
 end
 

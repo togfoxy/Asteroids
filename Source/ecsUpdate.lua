@@ -382,6 +382,29 @@ function ecsUpdate.init()
 		end
 	end
 	ECSWORLD:addSystems(systemSOSBeacon)
+
+	systemStabiliser = concord.system({
+        pool = {"Stabiliser"}
+    })
+    function systemStabiliser:update(dt)
+        for _, entity in ipairs(self.pool) do
+			local physEntity = fun.getPhysEntity(entity.uid.value)
+			local rotation = physEntity.body:getAngularVelocity()
+
+			if not love.keyboard.isDown("kp7") and not love.keyboard.isDown("kp9") then
+				if entity:has("fuelTank") then
+					if rotation < 0 and entity:has("leftThruster") and entity.leftThruster.currentHP > 0 then
+						physEntity.body:applyTorque(entity.leftThruster.strength)
+					elseif rotation > 0 and entity:has("rightThruster") and entity.rightThruster.currentHP > 0 then
+						physEntity.body:applyTorque(entity.rightThruster.strength * -1)
+					else
+						-- do nothing
+					end
+				end
+			end
+		end
+	end
+	ECSWORLD:addSystems(systemStabiliser)
 end
 
 return ecsUpdate
