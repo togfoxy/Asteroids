@@ -19,6 +19,7 @@ local function fillShop()
 	:give("cargoHold")
 	:give("spaceSuit")
 	:give("SOSBeacon")
+	:give("Stabiliser")
 
 	local allComponents = SHOP_ENTITY:getComponents()
 	for componentClass, component in pairs(allComponents) do
@@ -28,7 +29,6 @@ local function fillShop()
 			SHOP_ENTITY:remove(componentClass)
 		end
 	end
-	SHOP_ENTITY:ensure("SOSBeacon")
 end
 
 local function drawStarbase()
@@ -218,6 +218,13 @@ local function drawHUD()
 		love.graphics.setColor(1,1,1,1)
 		love.graphics.setFont(FONT[enum.fontDefault])
 		love.graphics.print("SS", drawx, drawy)
+	end
+	if entity:has("Stabiliser") then
+		local drawx = SCREEN_WIDTH - 100 + 50
+		local drawy = 100
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.setFont(FONT[enum.fontDefault])
+		love.graphics.print("St", drawx, drawy)
 	end
 
 	-- draw buttons

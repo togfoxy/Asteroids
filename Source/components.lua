@@ -154,6 +154,15 @@ function cmp.init()
         c.activated = false
         c.description = "Activate when you need help. Needs a battery."
     end)
+
+    concord.component("Stabiliser", function(c)
+        c.label = "Stabiliser"
+        c.size = love.math.random(1,3)
+        c.maxHP = love.math.random(1,3) * 1000
+        c.currentHP = c.maxHP
+        c.purchasePrice = 1000
+        c.description = "Stops you spinning around."
+    end)
 end
 
 return cmp
