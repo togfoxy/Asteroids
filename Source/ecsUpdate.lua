@@ -383,6 +383,30 @@ function ecsUpdate.init()
 	end
 	ECSWORLD:addSystems(systemSOSBeacon)
 
+	systemejectionPod = concord.system({
+        pool = {"ejectionPod"}
+    })
+    function systemejectionPod:update(dt)
+        for _, entity in ipairs(self.pool) do
+			if love.mouse.isDown(1) and entity.ejectionPod.currentHP > 0 then
+				x, y = love.mouse.getPosition()
+
+				local buttonwidth = 20
+				local buttonx = SCREEN_WIDTH - 100 + 50 - buttonwidth
+				local buttony = 150
+
+
+				if x >= buttonx and x <= buttonx + buttonwidth and
+					y >= buttony and y <= buttony + buttonwidth then
+
+						print("hi")
+
+				end
+			end
+		end
+	end
+	ECSWORLD:addSystems(systemejectionPod)
+
 	systemStabiliser = concord.system({
         pool = {"Stabiliser"}
     })

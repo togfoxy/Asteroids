@@ -163,6 +163,15 @@ function cmp.init()
         c.purchasePrice = 1000
         c.description = "Stops you spinning around."
     end)
+
+    concord.component("ejectionPod", function(c)
+        c.label = "Ejection pod"
+        c.size = love.math.random(1,3)
+        c.maxHP = love.math.random(1,3) * 3000
+        c.currentHP = c.maxHP
+        c.purchasePrice = 1000
+        c.description = "Lets you abandon ship and hope for the best."
+    end)
 end
 
 return cmp

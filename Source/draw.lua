@@ -20,6 +20,7 @@ local function fillShop()
 	:give("spaceSuit")
 	:give("SOSBeacon")
 	:give("Stabiliser")
+	:give("ejectionPod")
 
 	local allComponents = SHOP_ENTITY:getComponents()
 	for componentClass, component in pairs(allComponents) do
@@ -107,22 +108,19 @@ local function drawAsteroids()
 					points[i] = points[i] * BOX2D_SCALE
 				end
 
-
-				love.graphics.setColor(139/255,139/255,139/255,1)
-
-				love.graphics.polygon("line", points)
-
 				if udtable.oreType == enum.oreTypeGold then
 					love.graphics.setColor(236/255,164/255,18/255,1)
 					love.graphics.polygon("fill", points)
-				end
-				if udtable.oreType == enum.oreTypeSilver then
+				elseif udtable.oreType == enum.oreTypeSilver then
 					love.graphics.setColor(192/255,192/255,192/255,1)
 					love.graphics.polygon("fill", points)
-				end
-				if udtable.oreType == enum.oreTypeBronze then
+
+				elseif udtable.oreType == enum.oreTypeBronze then
 					love.graphics.setColor(122/255,84/255,9/255,1)
 					love.graphics.polygon("fill", points)
+				else
+					love.graphics.setColor(139/255,139/255,139/255,1)
+					love.graphics.polygon("line", points)
 				end
 
 				-- -- print the mass for debug reasons
@@ -252,8 +250,22 @@ local function drawHUD()
 			local drawy = 150
 			love.graphics.setColor(1,0,0,1)
 			love.graphics.rectangle(mode, drawx, drawy, 20, 20)			-- drawx/y is the top left corner of the square
-			love.graphics.circle("line", drawx, drawy, 5)
+
+			love.graphics.setFont(FONT[enum.fontDefault])
+			love.graphics.setColor(1,1,1,1)
+			love.graphics.print("SOS", drawx + 3, drawy + 5)
 		end
+	end
+	-- draw ejection button
+	if entity:has("ejectionPod") and entity.ejectionPod.currentHP > 0 then
+		local drawx = SCREEN_WIDTH - 100 + 50
+		local drawy = 150
+		love.graphics.setColor(1,0,0,1)
+		love.graphics.rectangle("fill", drawx, drawy, 20, 20)			-- drawx/y is the top left corner of the square
+
+		love.graphics.setFont(FONT[enum.fontDefault])
+		love.graphics.setColor(1,1,1,1)
+		love.graphics.print("E", drawx + 5, drawy + 5)
 	end
 end
 

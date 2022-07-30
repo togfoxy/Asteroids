@@ -50,14 +50,16 @@ local function establishPlayerVessel()
 	:give("oxyGenerator")
 	:give("cargoHold")
 
-	:give("leftThruster")
-	:give("rightThruster")
-	:give("reverseThruster")
+	-- :give("leftThruster")
+	-- :give("rightThruster")
+	-- :give("reverseThruster")
 	-- :give("oxyTank")
 	-- :give("solarPanel")
-	:give("spaceSuit")
-	-- :give("SOSBeacon")
-	:give("Stabiliser")
+	-- :give("spaceSuit")
+	:give("SOSBeacon")
+	-- :give("Stabiliser")
+	:give("ejectionPod")
+
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
 
