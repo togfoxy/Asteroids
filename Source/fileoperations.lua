@@ -12,7 +12,7 @@ function fileops.saveGame()
     local savetable = {}
     savetable.x = x
     savetable.y = y
-    savetable.objectType = "Player"
+    savetable.objectType = "Player"     --! this might not be player. It might be "Pod"
 
     local savedir = love.filesystem.getSourceBaseDirectory( )
 

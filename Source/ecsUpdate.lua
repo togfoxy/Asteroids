@@ -1,13 +1,54 @@
 ecsUpdate = {}
 
+local function ejectPlayer(entity)
+	-- kills the player ECS
+	-- kills the play physics object
+	-- creates a new ECS
+	-- creates a new physics object
+	local physEntity = fun.getPhysEntity(PLAYER.UID)
+
+	local playerx, playery = physEntity.body:getPosition()		-- BOX2D x and y
+
+	fun.killECSEntity(entity)
+	fun.killPhysicsEntity(physEntity)
+
+	local newentity = concord.entity(ECSWORLD)
+	:give("drawable")
+    :give("uid")
+	:give("chassis")
+	:give("oxyTank")
+	:give("SOSBeacon")
+
+	table.insert(ECS_ENTITIES, newentity)
+	PLAYER.UID = newentity.uid.value 		-- store this for easy recall
+
+	local shipsize = fun.getEntitySize(newentity)
+	local physicsEntity = {}
+    physicsEntity.body = love.physics.newBody(PHYSICSWORLD, playerx, playery, "dynamic")
+	physicsEntity.body:setLinearDamping(0)
+	-- physicsEntity.body:setMass(500)		-- kg		-- made redundant by newFixture
+	physicsEntity.shape = love.physics.newRectangleShape(shipsize, shipsize)		-- will draw a rectangle around the body x/y. No need to offset it
+	physicsEntity.fixture = love.physics.newFixture(physicsEntity.body, physicsEntity.shape, PHYSICS_DENSITY)		-- the 1 is the density
+	physicsEntity.fixture:setRestitution(0.1)		-- between 0 and 1
+	physicsEntity.fixture:setSensor(false)
+
+	local temptable = {}
+	temptable.uid = newentity.uid.value
+	temptable.objectType = "Pod"
+	physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
+
+    table.insert(PHYSICS_ENTITIES, physicsEntity)
+
+end
+
 local function activateMiningLaser(dt)
 
-	x, y = love.mouse.getPosition( )
+	x, y = love.mouse.getPosition()
 	local wx,wy = cam:toWorld(x, y)		-- converts screen x/y to world x/y
 	local bx = wx / BOX2D_SCALE			-- converts world x/y to BOX2D x/y
 	local by = wy / BOX2D_SCALE
 
-	local playerEntity = fun.getEntity(PLAYER.UID)
+	local playerEntity = fun.getEntity(PLAYER.UID)		--! need to start passing ENTITY as a parameter more often
 	local playerPE = fun.getPhysEntity(PLAYER.UID)
 
 	-- get distance between player and mouse click
@@ -311,15 +352,6 @@ function ecsUpdate.init()
     end
     ECSWORLD:addSystems(systemOxyGen)
 
-	-- systemOxyTank = concord.system({
-	-- 	pool = {"oxyTank"}
-	-- })
-	-- function systemOxyTank:update(dt)
-	-- 	for _, entity in ipairs(self.pool) do
-    --     end
-	-- end
-	-- ECSWORLD:addSystems(systemOxyTank)
-
 	systemBattery = concord.system({
 		pool = {"battery"}
 	})
@@ -398,9 +430,37 @@ function ecsUpdate.init()
 
 				if x >= buttonx and x <= buttonx + buttonwidth and
 					y >= buttony and y <= buttony + buttonwidth then
+					ejectPlayer(entity)
 
-						print("hi")
+					--! Propel the pod towards the base
+					-- local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
+	                -- facing = cf.convRadToCompass(facing)
+					--
+	                -- local vectordistance = entity.engine.strength      -- amount of force
+					--
+	        		-- local x2, y2 = cf.AddVectorToPoint(x1, y1, facing, vectordistance)
+	        		-- local xvector = (x2 - x1) * 20 * dt
+	        		-- local yvector = (y2 - y1) * 20 * dt
+					--
+	        		-- physEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
 
+
+					-- get the players x/y
+					local playerPhysEntity = fun.getPhysEntity(PLAYER.UID)
+					local x1, y1 = playerPhysEntity.body:getPosition()
+					local x2, y2
+
+					-- get the starbase x/y
+					for _, physEntity in pairs(PHYSICS_ENTITIES) do
+						local temptable = physEntity.fixture:getUserData()
+						if temptable.objectType == "Starbase" then
+							x2, y2 = physEntity.body:getPosition()
+							local xvector = (x2 - x1) * 2000
+							local yvector = (y2 - y1) * 2000
+							playerPhysEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
+							print(xvector, yvector)
+						end
+					end
 				end
 			end
 		end

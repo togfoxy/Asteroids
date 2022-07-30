@@ -56,7 +56,7 @@ local function establishPlayerVessel()
 	-- :give("oxyTank")
 	-- :give("solarPanel")
 	-- :give("spaceSuit")
-	:give("SOSBeacon")
+	-- :give("SOSBeacon")
 	-- :give("Stabiliser")
 	:give("ejectionPod")
 
@@ -83,7 +83,7 @@ local function establishPlayerVessel()
 
 	local temptable = {}
 	temptable.uid = entity.uid.value
-	temptable.objectType = "Player"
+	temptable.objectType = "Player"						-- other type is "Pod"
 	physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
 
 
@@ -230,15 +230,13 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 		local rndnum = love.math.random(1, totalmass)
 		if rndnum <= mass1 then
 			-- damage object1
-			if udtable1.objectType == "Player" then
+			if udtable1.objectType == "Player" or udtable1.objectType == "Pod" then
 				local entity = fun.getEntity(uid1)
 				local component = fun.getRandomComponent(entity)
 				component.currentHP = component.currentHP - normalimpulse
 				if component.currentHP <= 0 then
 					component.currentHP = 0
 				end
-				-- print(component.label, component.currentHP)
-
 				local rndscrape = love.math.random(1,2)
 				if rndscrape == 1 then
 					SOUND.scrape1 = true
@@ -248,12 +246,9 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 			end
 		else
 			-- damage object2
-			if udtable2.objectType == "Player" then
+			if udtable2.objectType == "Player" or udtable2.objectType == "Pod" then
 				local entity = fun.getEntity(uid2)
 				local component = fun.getRandomComponent(entity)
-
-				-- print(component.label)
-
 				component.currentHP = component.currentHP - normalimpulse
 				if component.currentHP <= 0 then
 					component.currentHP = 0
