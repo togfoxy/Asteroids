@@ -35,6 +35,7 @@ ecs = require 'ecsFunctions'
 ecsDraw = require 'ecsDraw'
 ecsUpdate = require 'ecsUpdate'
 fileops = require 'fileoperations'
+keymaps = require 'keymaps'
 
 local function establishPlayerVessel()
 	-- add player
@@ -58,7 +59,7 @@ local function establishPlayerVessel()
 	-- :give("spaceSuit")
 	-- :give("SOSBeacon")
 	-- :give("Stabiliser")
-	:give("ejectionPod")
+	-- :give("ejectionPod")
 
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
@@ -280,7 +281,7 @@ function love.keyreleased( key, scancode )
 
 		cf.RemoveScreen(SCREEN_STACK)
 	end
-	if key == "kp5" then
+	if input:down("centreview") then
 		local x1, y1 = fun.getPhysEntityXY(PLAYER.UID)
 		TRANSLATEX = (x1 * BOX2D_SCALE)
 		TRANSLATEY = (y1 * BOX2D_SCALE)
@@ -314,20 +315,20 @@ function love.keypressed( key, scancode, isrepeat )
 	local entity = fun.getEntity(PLAYER.UID)
 	local physEntity = fun.getPhysEntity(PLAYER.UID)
 
-	if love.keyboard.isDown("kp7") and entity:has("fuelTank") and entity:has("rightThruster") and entity.rightThruster.currentHP > 0 then
+	if input:down('rotateleft') and entity:has("fuelTank") and entity:has("rightThruster") and entity.rightThruster.currentHP > 0 then
 		-- do nothing because the :update event has superior turning logic
 	else
-		if love.keyboard.isDown("kp7") then
+		if input:down('rotateleft') then
 			-- rotate ccw
 			physEntity.body:applyTorque(-2500)
 		end
 	end
 
-	if love.keyboard.isDown("kp9") and entity:has("fuelTank") and entity:has("leftThruster") and entity.leftThruster.currentHP > 0 then
+	if input:down('rotateright') and entity:has("fuelTank") and entity:has("leftThruster") and entity.leftThruster.currentHP > 0 then
 		-- do nothing because the :update event has superior turning logic
 	else
 		-- offer a very basic and slow rotation
-		if love.keyboard.isDown("kp9") then
+		if input:down('rotateright') then
 			-- rotate cw
 			physEntity.body:applyTorque(2500)
 		end
@@ -462,6 +463,8 @@ function love.load()
 	fun.loadFonts()
 	establishPhysicsWorld()
 
+	keymaps.init()
+
 	for i = 1, NUMBER_OF_ASTEROIDS do
 		fun.createAsteroid()
 	end
@@ -588,6 +591,8 @@ function love.update(dt)
 				cf.AddScreen(enum.sceneShop, SCREEN_STACK)		--! should probably go to a screen with an explanation
 			end
 		end
+
+		input:update()
 
 		cam:setPos(TRANSLATEX, TRANSLATEY)
 		cam:setZoom(ZOOMFACTOR)

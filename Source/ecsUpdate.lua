@@ -107,7 +107,8 @@ function ecsUpdate.init()
             local x1 = physEntity.body:getX()
             local y1 = physEntity.body:getY()
 
-            if love.keyboard.isDown("kp8") then
+            if input:down('moveforward') then
+				input:down('moveforward')
                 if entity.engine.currentHP <= 0 then
                     SOUND.warning = true
                     break
@@ -152,8 +153,7 @@ function ecsUpdate.init()
     })
     function systemLeftThruster:update(dt)
         for _, entity in ipairs(self.pool) do
-
-            if love.keyboard.isDown("kp6") then
+			if input:down('moveright') then
                 if entity.leftThruster.currentHP <= 0 then
                     SOUND.warning = true
                     break
@@ -193,7 +193,7 @@ function ecsUpdate.init()
                 DRAW.leftFlame = true
 
             end
-            if love.keyboard.isDown("kp9") and entity:has("fuelTank") and entity.leftThruster.currentHP > 0 then
+            if input:down('rotateright') and entity:has("fuelTank") and entity.leftThruster.currentHP > 0 then
                 -- rotate clockwise
                 local physEntity = fun.getPhysEntity(entity.uid.value)
                 physEntity.body:applyTorque(entity.leftThruster.strength)
@@ -207,8 +207,7 @@ function ecsUpdate.init()
     })
     function systemRightThruster:update(dt)
         for _, entity in ipairs(self.pool) do
-
-            if love.keyboard.isDown("kp4") then
+			if input:down('moveleft') then
                 if entity.rightThruster.currentHP <= 0 then
                     SOUND.warning = true
                     break
@@ -248,7 +247,7 @@ function ecsUpdate.init()
                 SOUND.engine = true
                 DRAW.rightFlame = true
             end
-            if love.keyboard.isDown("kp7") and entity:has("fuelTank") and entity.rightThruster.currentHP > 0 then
+            if input:down('rotateleft') and entity:has("fuelTank") and entity.rightThruster.currentHP > 0 then
                 -- rotate anti-clockwise
                 local physEntity = fun.getPhysEntity(entity.uid.value)
                 physEntity.body:applyTorque(entity.rightThruster.strength * -1)
@@ -263,8 +262,8 @@ function ecsUpdate.init()
     function systemReverseThruster:update(dt)
         for _, entity in ipairs(self.pool) do
 
-            if love.keyboard.isDown("kp2") then
-                if entity.reverseThruster.currentHP <= 0 then
+            if input:down('movebackwards') then
+				if entity.reverseThruster.currentHP <= 0 then
                     SOUND.warning = true
                     break
                 end
@@ -475,7 +474,8 @@ function ecsUpdate.init()
 			local physEntity = fun.getPhysEntity(entity.uid.value)
 			local rotation = physEntity.body:getAngularVelocity()
 
-			if not love.keyboard.isDown("kp7") and not love.keyboard.isDown("kp9") then
+			if not input:down('rotateleft') and not input:down('rotateright') then
+
 				if entity:has("fuelTank") then
 					if rotation < 0 and entity:has("leftThruster") and entity.leftThruster.currentHP > 0 then
 						physEntity.body:applyTorque(entity.leftThruster.strength)
