@@ -47,15 +47,15 @@ local function drawStarbase()
 			for _, fixture in pairs(PHYSICS_ENTITIES[i].body:getFixtures()) do
 				local shape = fixture:getShape()
 				if shape:typeOf("CircleShape") then
-					local drawx, drawy = body:getWorldPoints(shape:getPoint())
-					drawx = drawx * BOX2D_SCALE
-					drawy = drawy * BOX2D_SCALE
-					local radius = shape:getRadius()
-					radius = radius * BOX2D_SCALE
-					love.graphics.setColor(1, 0, 0, 1)
-					love.graphics.circle("line", drawx, drawy, radius)
-					love.graphics.setColor(1, 1, 1, 1)
-					love.graphics.print("r:" .. cf.round(radius,2), drawx + 7, drawy - 3)
+					-- local drawx, drawy = body:getWorldPoints(shape:getPoint())
+					-- drawx = drawx * BOX2D_SCALE
+					-- drawy = drawy * BOX2D_SCALE
+					-- local radius = shape:getRadius()
+					-- radius = radius * BOX2D_SCALE
+					-- love.graphics.setColor(1, 0, 0, 1)
+					-- love.graphics.circle("line", drawx, drawy, radius)
+					-- love.graphics.setColor(1, 1, 1, 1)
+					-- love.graphics.print("r:" .. cf.round(radius,2), drawx + 7, drawy - 3)
 				elseif shape:typeOf("PolygonShape") then     -- currently only works on four points (square and rectangle)
 					x1, y1, x2, y2, x3, y3, x4, y4 = PHYSICS_ENTITIES[i].body:getWorldPoints(shape:getPoints())
 					x1 = x1 * BOX2D_SCALE
@@ -68,6 +68,13 @@ local function drawStarbase()
 					y4 = y4 * BOX2D_SCALE
 					-- love.graphics.setColor(1, 0, 0, 1)
 					love.graphics.polygon("line", x1, y1, x2, y2, x3, y3, x4, y4)
+
+					local drawx = x4
+					local drawy = y4
+
+					love.graphics.setColor(1, 1, 1, 1)
+					love.graphics.draw(IMAGES[enum.imagesStarbase], drawx, drawy)
+
 				else
 					love.graphics.line(body:getWorldPoints(shape:getPoints()))
 					error("This physics object needs to be scaled before drawing")

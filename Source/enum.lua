@@ -14,6 +14,7 @@ imagesGreenBarEnd = 11
 imagesShopPanel = 12
 imagesShop = 13
 imagesPod = 14
+imagesStarbase = 15
 
 audioEngine = 1
 audioLowFuel = 2
