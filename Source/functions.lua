@@ -43,6 +43,8 @@ function functions.loadAudio()
 
 
 	AUDIO[enum.audioRockExplosion]:setVolume(0.5)
+	AUDIO[enum.audioRockScrape1]:setVolume(0.5)
+	AUDIO[enum.audioRockScrape2]:setVolume(0.5)
 end
 
 function functions.loadFonts()
