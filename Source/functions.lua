@@ -5,6 +5,7 @@ function functions.loadImages()
 	IMAGES[enum.imagesEngineFlame] = love.graphics.newImage("assets/images/flame.png")
 	IMAGES[enum.imagesVessel] = love.graphics.newImage("assets/images/ship1.png")
 	IMAGES[enum.imagesPod] = love.graphics.newImage("assets/images/pod.png")
+	IMAGES[enum.imagesStarbase] = love.graphics.newImage("assets/images/starbase.png")
 
 	-- hud
 	IMAGES[enum.imagesEjectButton] = love.graphics.newImage("assets/images/ejectbutton.png")
@@ -43,6 +44,8 @@ function functions.loadAudio()
 
 
 	AUDIO[enum.audioRockExplosion]:setVolume(0.5)
+	AUDIO[enum.audioRockScrape1]:setVolume(0.5)
+	AUDIO[enum.audioRockScrape2]:setVolume(0.5)
 end
 
 function functions.loadFonts()
