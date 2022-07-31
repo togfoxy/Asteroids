@@ -215,7 +215,13 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 			end
 		end
 
-		AUDIO[enum.audioBGSkismo]:stop()
+		AUDIO[enum.audioBGSkismo]:stop()		--!  need to stop other tracks if there are any.
+
+		local temptable = physEntity.fixture:getUserData()
+		if temptable.objectType == "Pod" then
+			temptable.objectType = "Player"
+		end
+
 		cf.AddScreen(enum.sceneShop, SCREEN_STACK)
 	else
 		-- collision with asteroids and players
@@ -494,6 +500,7 @@ function love.update(dt)
 			physEntity.fixture:setSensor(false)
 		end
 
+		--! put this into a sub function
 		if SOUND.engine then
 			AUDIO[enum.audioEngine]:play()
 		else
@@ -562,6 +569,18 @@ function love.update(dt)
 
 		SOSBEACON_ALARM_ALPHA = SOSBEACON_ALARM_ALPHA + dt
 		if SOSBEACON_ALARM_ALPHA > 1 then SOSBEACON_ALARM_ALPHA = 0 end
+
+		-- see if rescued while in escape pod
+		-- there is a chance the vessel is rescued
+
+		local temptable	 = physEntity.fixture:getUserData()
+		if temptable.objectType == "Pod" then
+			if love.math.random(1,2000) == 1 then			-- this is half the chance of an SOS beacon
+				-- rescued!
+				entity.SOSBeacon.activated = false
+				cf.AddScreen(enum.sceneShop, SCREEN_STACK)		--! should probably go to a screen with an explanation
+			end
+		end
 
 		cam:setPos(TRANSLATEX, TRANSLATEY)
 		cam:setZoom(ZOOMFACTOR)

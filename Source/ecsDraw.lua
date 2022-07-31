@@ -60,12 +60,13 @@ function ecsDraw.init()
                 local facing = physEntity.body:getAngle()       -- radians
                 local xoffset = 25      -- idk why this hardcoded value works
                 local yoffset = 28
+                love.graphics.setColor(1, 1, 1, 1)
                 if temptable.objectType == "Player" then
-                    love.graphics.setColor(1, 1, 1, 1)
+                     love.graphics.draw(IMAGES[enum.imagesVessel], drawx, drawy, facing, vesselsize/10, vesselsize/10, xoffset, yoffset)
                 else
-                    love.graphics.setColor(0, 1, 0, 1)
+                    print(vesselsize)
+                    love.graphics.draw(IMAGES[enum.imagesPod], drawx, drawy, facing, vesselsize / 5, vesselsize / 5, xoffset, yoffset)
                 end
-                love.graphics.draw(IMAGES[enum.imagesVessel], drawx, drawy, facing, vesselsize/10, vesselsize/10, xoffset, yoffset)
 
                 -- draw the different flames
                 local x1, y1 = fun.getPhysEntityXY(entity.uid.value)

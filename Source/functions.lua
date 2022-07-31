@@ -4,6 +4,7 @@ function functions.loadImages()
 
 	IMAGES[enum.imagesEngineFlame] = love.graphics.newImage("assets/images/flame.png")
 	IMAGES[enum.imagesVessel] = love.graphics.newImage("assets/images/ship1.png")
+	IMAGES[enum.imagesPod] = love.graphics.newImage("assets/images/pod.png")
 
 	-- hud
 	IMAGES[enum.imagesEjectButton] = love.graphics.newImage("assets/images/ejectbutton.png")
