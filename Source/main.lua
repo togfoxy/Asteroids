@@ -50,14 +50,16 @@ local function establishPlayerVessel()
 	:give("oxyGenerator")
 	:give("cargoHold")
 
-	:give("leftThruster")
-	:give("rightThruster")
-	:give("reverseThruster")
+	-- :give("leftThruster")
+	-- :give("rightThruster")
+	-- :give("reverseThruster")
 	-- :give("oxyTank")
 	-- :give("solarPanel")
-	:give("spaceSuit")
+	-- :give("spaceSuit")
 	-- :give("SOSBeacon")
-	:give("Stabiliser")
+	-- :give("Stabiliser")
+	:give("ejectionPod")
+
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
 
@@ -81,7 +83,7 @@ local function establishPlayerVessel()
 
 	local temptable = {}
 	temptable.uid = entity.uid.value
-	temptable.objectType = "Player"
+	temptable.objectType = "Player"						-- other type is "Pod"
 	physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
 
 
@@ -209,11 +211,17 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 		local allComponents = entity:getComponents()
 		for _, component in pairs(allComponents) do
 			if component.capacity ~= nil then
-				component.capacity = component.maxCapacity
+				component.capacity = component.maxCapacity		--! check this includes space suit
 			end
 		end
 
-		AUDIO[enum.audioBGSkismo]:stop()
+		AUDIO[enum.audioBGSkismo]:stop()		--!  need to stop other tracks if there are any.
+
+		local temptable = physEntity.fixture:getUserData()
+		if temptable.objectType == "Pod" then
+			temptable.objectType = "Player"
+		end
+
 		cf.AddScreen(enum.sceneShop, SCREEN_STACK)
 	else
 		-- collision with asteroids and players
@@ -228,15 +236,13 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 		local rndnum = love.math.random(1, totalmass)
 		if rndnum <= mass1 then
 			-- damage object1
-			if udtable1.objectType == "Player" then
+			if udtable1.objectType == "Player" or udtable1.objectType == "Pod" then
 				local entity = fun.getEntity(uid1)
 				local component = fun.getRandomComponent(entity)
 				component.currentHP = component.currentHP - normalimpulse
 				if component.currentHP <= 0 then
 					component.currentHP = 0
 				end
-				-- print(component.label, component.currentHP)
-
 				local rndscrape = love.math.random(1,2)
 				if rndscrape == 1 then
 					SOUND.scrape1 = true
@@ -246,12 +252,9 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 			end
 		else
 			-- damage object2
-			if udtable2.objectType == "Player" then
+			if udtable2.objectType == "Player" or udtable2.objectType == "Pod" then
 				local entity = fun.getEntity(uid2)
 				local component = fun.getRandomComponent(entity)
-
-				-- print(component.label)
-
 				component.currentHP = component.currentHP - normalimpulse
 				if component.currentHP <= 0 then
 					component.currentHP = 0
@@ -263,12 +266,19 @@ end
 
 function love.keyreleased( key, scancode )
 	if key == "escape" then
-		cf.RemoveScreen(SCREEN_STACK)
 
-		local x1, y1 = fun.getPhysEntityXY(PLAYER.UID)
+		local physEntity = fun.getPhysEntity(PLAYER.UID)
+		local x1, y1 = physEntity.body:getPosition()
+		if y1 > 915 then
+			physEntity.body:setPosition(x1, 915)
+			x1, y1 = physEntity.body:getPosition()
+		end
+
 		TRANSLATEX = (x1 * BOX2D_SCALE)
 		TRANSLATEY = (y1 * BOX2D_SCALE)
 		ZOOMFACTOR = 0.4
+
+		cf.RemoveScreen(SCREEN_STACK)
 	end
 	if key == "kp5" then
 		local x1, y1 = fun.getPhysEntityXY(PLAYER.UID)
@@ -497,6 +507,7 @@ function love.update(dt)
 			physEntity.fixture:setSensor(false)
 		end
 
+		--! put this into a sub function
 		if SOUND.engine then
 			AUDIO[enum.audioEngine]:play()
 		else
@@ -565,6 +576,18 @@ function love.update(dt)
 
 		SOSBEACON_ALARM_ALPHA = SOSBEACON_ALARM_ALPHA + dt
 		if SOSBEACON_ALARM_ALPHA > 1 then SOSBEACON_ALARM_ALPHA = 0 end
+
+		-- see if rescued while in escape pod
+		-- there is a chance the vessel is rescued
+
+		local temptable	 = physEntity.fixture:getUserData()
+		if temptable.objectType == "Pod" then
+			if love.math.random(1,2000) == 1 then			-- this is half the chance of an SOS beacon
+				-- rescued!
+				entity.SOSBeacon.activated = false
+				cf.AddScreen(enum.sceneShop, SCREEN_STACK)		--! should probably go to a screen with an explanation
+			end
+		end
 
 		cam:setPos(TRANSLATEX, TRANSLATEY)
 		cam:setZoom(ZOOMFACTOR)

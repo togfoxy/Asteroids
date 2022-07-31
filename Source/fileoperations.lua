@@ -7,12 +7,12 @@ function fileops.saveGame()
     local physicsEntity = fun.getPhysEntity(PLAYER.UID)
 
     local x,y = physicsEntity.body:getPosition()
---local shipsize = fun.getEntitySize(entity)
-    -- savetable.shipsize = shipsize
+    local temptable = physicsEntity.fixture:getUserData()
+
     local savetable = {}
     savetable.x = x
     savetable.y = y
-    savetable.objectType = "Player"
+    savetable.objectType = temptable.objectType
 
     local savedir = love.filesystem.getSourceBaseDirectory( )
 
@@ -31,6 +31,12 @@ function fileops.saveGame()
     local savefile = savedir .. "\\savedata\\" .. "globals.dat"
     local serialisedString = bitser.dumps(PLAYER)
     local success2, message = nativefs.write(savefile, serialisedString)
+
+    -- asteroids    --! need to create a custom table for serialising
+    -- local savefile = savedir .. "\\savedata\\" .. "asteroids.dat"
+    -- local serialisedString = bitser.dumps(PHYSICS_ENTITIES)
+    -- local success2, message = nativefs.write(savefile, serialisedString)
+
     print(savefile, success, message)
     if success and success1 and success2 then
         lovelyToasts.show("Game saved",5)
@@ -64,6 +70,12 @@ function fileops.loadGame()
         local shipsize = fun.getEntitySize(entity)
         physEntity.body:setPosition(savetable.x, savetable.y)
     	physEntity.fixture:setSensor(false)
+
+        local temptable = {}
+    	temptable.uid = entity.uid.value
+    	temptable.objectType = savetable.objectType
+    	physEntity.fixture:setUserData(temptable)
+
         fun.changeShipPhysicsSize(entity)
     else
         loaderror = true
