@@ -7,12 +7,12 @@ function fileops.saveGame()
     local physicsEntity = fun.getPhysEntity(PLAYER.UID)
 
     local x,y = physicsEntity.body:getPosition()
---local shipsize = fun.getEntitySize(entity)
-    -- savetable.shipsize = shipsize
+    local temptable = physicsEntity.fixture:getUserData()
+
     local savetable = {}
     savetable.x = x
     savetable.y = y
-    savetable.objectType = "Player"     --! this might not be player. It might be "Pod"
+    savetable.objectType = temptable.objectType
 
     local savedir = love.filesystem.getSourceBaseDirectory( )
 
@@ -64,6 +64,12 @@ function fileops.loadGame()
         local shipsize = fun.getEntitySize(entity)
         physEntity.body:setPosition(savetable.x, savetable.y)
     	physEntity.fixture:setSensor(false)
+
+        local temptable = {}
+    	temptable.uid = entity.uid.value
+    	temptable.objectType = savetable.objectType
+    	physEntity.fixture:setUserData(temptable)	
+
         fun.changeShipPhysicsSize(entity)
     else
         loaderror = true
