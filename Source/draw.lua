@@ -154,6 +154,9 @@ local function drawHUD()
 
 	-- fuel left (green)
 	local fuel = fun.getFuelBurnTime()
+
+print(fuel)
+
 	if fuel > 100 then fuel = 100 end	-- 100 is an arbitrary 100 to make % easy
 	local drawx = 75
 	local drawy = 75

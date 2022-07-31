@@ -118,30 +118,30 @@ function ecsUpdate.init()
                         break
                     elseif fun.getFuelBurnTime() <= 10 then
                         SOUND.lowFuel = true
-                        break
                     end
                 else
                     SOUND.warning = true
                     break
                 end
 
-                local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
-                facing = cf.convRadToCompass(facing)
+				if fun.getFuelBurnTime() > 0 then
+	                local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
+	                facing = cf.convRadToCompass(facing)
 
-                local vectordistance = entity.engine.strength      -- amount of force
+	                local vectordistance = entity.engine.strength      -- amount of force
 
-        		local x2, y2 = cf.AddVectorToPoint(x1, y1, facing, vectordistance)
-        		local xvector = (x2 - x1) * 20 * dt
-        		local yvector = (y2 - y1) * 20 * dt
+	        		local x2, y2 = cf.AddVectorToPoint(x1, y1, facing, vectordistance)
+	        		local xvector = (x2 - x1) * 20 * dt
+	        		local yvector = (y2 - y1) * 20 * dt
 
-        		physEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
+	        		physEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
 
-				local fuelused = vectordistance * dt
-                entity.fuelTank.capacity = entity.fuelTank.capacity - fuelused
+					local fuelused = vectordistance * dt
+	                entity.fuelTank.capacity = entity.fuelTank.capacity - fuelused
 
-                SOUND.engine = true
-                DRAW.engineFlame = true
-
+	                SOUND.engine = true
+	                DRAW.engineFlame = true
+				end
             end
         end
     end
