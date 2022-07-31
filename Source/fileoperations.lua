@@ -31,6 +31,12 @@ function fileops.saveGame()
     local savefile = savedir .. "\\savedata\\" .. "globals.dat"
     local serialisedString = bitser.dumps(PLAYER)
     local success2, message = nativefs.write(savefile, serialisedString)
+
+    -- asteroids    --! need to create a custom table for serialising
+    -- local savefile = savedir .. "\\savedata\\" .. "asteroids.dat"
+    -- local serialisedString = bitser.dumps(PHYSICS_ENTITIES)
+    -- local success2, message = nativefs.write(savefile, serialisedString)
+
     print(savefile, success, message)
     if success and success1 and success2 then
         lovelyToasts.show("Game saved",5)
@@ -68,7 +74,7 @@ function fileops.loadGame()
         local temptable = {}
     	temptable.uid = entity.uid.value
     	temptable.objectType = savetable.objectType
-    	physEntity.fixture:setUserData(temptable)	
+    	physEntity.fixture:setUserData(temptable)
 
         fun.changeShipPhysicsSize(entity)
     else

@@ -211,7 +211,7 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 		local allComponents = entity:getComponents()
 		for _, component in pairs(allComponents) do
 			if component.capacity ~= nil then
-				component.capacity = component.maxCapacity
+				component.capacity = component.maxCapacity		--! check this includes space suit
 			end
 		end
 
@@ -266,12 +266,19 @@ end
 
 function love.keyreleased( key, scancode )
 	if key == "escape" then
-		cf.RemoveScreen(SCREEN_STACK)
 
-		local x1, y1 = fun.getPhysEntityXY(PLAYER.UID)
+		local physEntity = fun.getPhysEntity(PLAYER.UID)
+		local x1, y1 = physEntity.body:getPosition()
+		if y1 > 915 then
+			physEntity.body:setPosition(x1, 915)
+			x1, y1 = physEntity.body:getPosition()
+		end
+
 		TRANSLATEX = (x1 * BOX2D_SCALE)
 		TRANSLATEY = (y1 * BOX2D_SCALE)
 		ZOOMFACTOR = 0.4
+
+		cf.RemoveScreen(SCREEN_STACK)
 	end
 	if key == "kp5" then
 		local x1, y1 = fun.getPhysEntityXY(PLAYER.UID)
