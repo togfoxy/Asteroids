@@ -287,10 +287,10 @@ function love.keyreleased( key, scancode )
 		TRANSLATEY = (y1 * BOX2D_SCALE)
 	    ZOOMFACTOR = 0.4
 	end
-	if key == "s" then
+	if key == "f6" then
 		fileops.saveGame()
 	end
-	if key == "l" then
+	if key == "f7" then
 		fileops.loadGame()
 	end
 end
