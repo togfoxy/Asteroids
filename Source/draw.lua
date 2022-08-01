@@ -89,7 +89,7 @@ local function drawStarbase()
 
 	love.graphics.setFont(FONT[enum.fontHeavyMetalLarge])
     love.graphics.setColor(1,1,1,1)
-	love.graphics.printf("STARBASE SAFE HAVEN", drawx - 750, drawy - 25, 1000, "left", 0, 7, 7)		--! test this on other resolutions
+	love.graphics.printf("STARBASE SAFE HAVEN", drawx - 750, drawy + 150, 1000, "left", 0, 7, 7)		--! test this on other resolutions
 
 	-- -- draw the safezone
 	-- local x1, y1, x2, y2		-- intentionally declared again to clear the old value
@@ -314,11 +314,15 @@ function draw.shop()
 	love.graphics.setColor(1,1,1,0.25)
 	love.graphics.draw(IMAGES[enum.imagesShop], 0,0)
 
+	love.graphics.setColor(1,1,1,1)
+	-- love.graphics.draw(IMAGES[enum.imagesShopPanel], 34, 148, 0, 0.88, 0.65)
+	love.graphics.draw(IMAGES[enum.imagesShopPanels], 0, 0, 0, 1, 1, 8, 6)
+
 	local numofcols = 4
 	local numofmargins = numofcols + 1
     local topmargin = 90
     local margin = 35
-	local panelheight = 60
+	local panelheight = 62
 
 	local panelwidth = SCREEN_WIDTH - (margin * numofmargins)
 	panelwidth = panelwidth / numofcols
@@ -345,46 +349,65 @@ function draw.shop()
 	BUTTONS = {}
 	BUTTONS[1] = {}
 	local compindex = 0
+
+	-- load the table to be sorted
+	local tablesort = {}
 	for _, component in pairs(allComponents) do
 		if component.description ~= nil then
-			compindex = compindex + 1
-			drawy = drawy + panelheight
-			local txt = component.label .. ": "
-			if component.currentHP ~= nil then
-				if component.currentHP < component.maxHP then
-					love.graphics.setColor(1,0,0,1)
-				else
+			-- add this name to the sort table
+			table.insert(tablesort, component.label)
+		end
+	end
+	table.sort(tablesort)
+
+	while #tablesort > 0 do
+		for _, component in pairs(allComponents) do
+			if component.label ~= nil then
+				if component.label == tablesort[1] then
+					compindex = compindex + 1
+					drawy = drawy + panelheight
+
+					local txt = component.label .. ": "
+					if component.currentHP ~= nil then
+						if component.currentHP < component.maxHP then
+							love.graphics.setColor(1,0,0,1)
+						else
+							love.graphics.setColor(1,1,1,1)
+						end
+						txt = txt .. cf.round(component.currentHP) .. " / " .. component.maxHP
+					end
+					love.graphics.setFont(FONT[enum.fontTech])
+					love.graphics.print(txt, drawx, drawy - 10)		-- colour and alpha is set up above
+
+					-- draw the description
+					local txt = component.description
+					love.graphics.setFont(FONT[enum.fontDefault])
 					love.graphics.setColor(1,1,1,1)
+					love.graphics.print(txt, drawx, drawy + 17)
+
+					-- draw the click zone (debugging)
+					local zonex = panelx[1]
+					local zoney = panely[1] + ((compindex) * panelheight)
+					local zonewidth = panelwidth
+
+					love.graphics.setColor(1,1,1,1)
+					-- love.graphics.rectangle("line", zonex, zoney, zonewidth, panelheight)
+
+					-- store buttons for later use
+					BUTTONS[1][compindex] = {}		-- col/row format
+					BUTTONS[1][compindex].col = 1
+					BUTTONS[1][compindex].row = compindex
+					BUTTONS[1][compindex].x = zonex
+					BUTTONS[1][compindex].y = zoney
+					BUTTONS[1][compindex].width = zonewidth
+					BUTTONS[1][compindex].height = panelheight
+					BUTTONS[1][compindex].component = component
+					BUTTONS[1][compindex].type = enum.buttonTypeRepair
+
+					table.remove(tablesort, 1)
+					break		-- break the 'pairs' loop
 				end
-				txt = txt .. cf.round(component.currentHP) .. " / " .. component.maxHP
 			end
-			love.graphics.setFont(FONT[enum.fontTech])
-			love.graphics.print(txt, drawx, drawy - 10)		-- colour and alpha is set up above
-
-			-- draw the description
-			local txt = component.description
-			love.graphics.setFont(FONT[enum.fontDefault])
-			love.graphics.setColor(1,1,1,1)
-			love.graphics.print(txt, drawx, drawy + 17)
-
-			-- draw the click zone (debugging)
-			local zonex = panelx[1]
-			local zoney = panely[1] + ((compindex) * panelheight)
-			local zonewidth = panelwidth
-
-			love.graphics.setColor(1,1,1,1)
-			love.graphics.rectangle("line", zonex, zoney, zonewidth, panelheight)
-
-			-- store buttons for later use
-			BUTTONS[1][compindex] = {}		-- col/row format
-			BUTTONS[1][compindex].col = 1
-			BUTTONS[1][compindex].row = compindex
-			BUTTONS[1][compindex].x = zonex
-			BUTTONS[1][compindex].y = zoney
-			BUTTONS[1][compindex].width = zonewidth
-			BUTTONS[1][compindex].height = panelheight
-			BUTTONS[1][compindex].component = component
-			BUTTONS[1][compindex].type = enum.buttonTypeRepair
 		end
 	end
 
@@ -419,7 +442,7 @@ function draw.shop()
 		local zonewidth = panelwidth
 
 		love.graphics.setColor(1,1,1,1)
-		love.graphics.rectangle("line", zonex, zoney, zonewidth, panelheight)
+		-- love.graphics.rectangle("line", zonex, zoney, zonewidth, panelheight)
 
 		-- store buttons for later use
 		BUTTONS[2][compindex] = {}		-- col/row format
