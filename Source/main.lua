@@ -155,7 +155,7 @@ local function establishPhysicsWorld()
 	-- physicsEntity.body:setLinearDamping(0)
 	starbase.body:setMass(5000)
 
-	starbase.shape = love.physics.newPolygonShape(-250,-25,250,-25,250,25,-250,25)
+	starbase.shape = love.physics.newPolygonShape(-250,-19,250,-19,250,20,-250,20)
 
 	starbase.fixture = love.physics.newFixture(starbase.body, starbase.shape) --attach shape to body
 	starbase.fixture:setRestitution(0)		-- between 0 and 1

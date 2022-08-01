@@ -89,7 +89,7 @@ local function drawStarbase()
 
 	love.graphics.setFont(FONT[enum.fontHeavyMetalLarge])
     love.graphics.setColor(1,1,1,1)
-	love.graphics.printf("STARBASE SAFE HAVEN", drawx - 750, drawy - 25, 1000, "left", 0, 7, 7)		--! test this on other resolutions
+	love.graphics.printf("STARBASE SAFE HAVEN", drawx - 750, drawy + 150, 1000, "left", 0, 7, 7)		--! test this on other resolutions
 
 	-- -- draw the safezone
 	-- local x1, y1, x2, y2		-- intentionally declared again to clear the old value
