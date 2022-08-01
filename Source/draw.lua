@@ -314,11 +314,15 @@ function draw.shop()
 	love.graphics.setColor(1,1,1,0.25)
 	love.graphics.draw(IMAGES[enum.imagesShop], 0,0)
 
+	love.graphics.setColor(1,1,1,1)
+	-- love.graphics.draw(IMAGES[enum.imagesShopPanel], 34, 148, 0, 0.88, 0.65)
+	love.graphics.draw(IMAGES[enum.imagesShopPanels], 0, 0, 0, 1, 1, 8, 6)
+
 	local numofcols = 4
 	local numofmargins = numofcols + 1
     local topmargin = 90
     local margin = 35
-	local panelheight = 60
+	local panelheight = 62
 
 	local panelwidth = SCREEN_WIDTH - (margin * numofmargins)
 	panelwidth = panelwidth / numofcols
@@ -387,7 +391,7 @@ function draw.shop()
 					local zonewidth = panelwidth
 
 					love.graphics.setColor(1,1,1,1)
-					love.graphics.rectangle("line", zonex, zoney, zonewidth, panelheight)
+					-- love.graphics.rectangle("line", zonex, zoney, zonewidth, panelheight)
 
 					-- store buttons for later use
 					BUTTONS[1][compindex] = {}		-- col/row format
@@ -438,7 +442,7 @@ function draw.shop()
 		local zonewidth = panelwidth
 
 		love.graphics.setColor(1,1,1,1)
-		love.graphics.rectangle("line", zonex, zoney, zonewidth, panelheight)
+		-- love.graphics.rectangle("line", zonex, zoney, zonewidth, panelheight)
 
 		-- store buttons for later use
 		BUTTONS[2][compindex] = {}		-- col/row format

@@ -18,6 +18,7 @@ function functions.loadImages()
 
 	-- shop
 	IMAGES[enum.imagesShopPanel] = love.graphics.newImage("assets/images/shoppanel.png")
+	IMAGES[enum.imagesShopPanels] = love.graphics.newImage("assets/images/shoppanels.png")
 
 	-- background
 	IMAGES[enum.imagesBackgroundStatic] = love.graphics.newImage("assets/images/bg_space_seamless_2.png")
@@ -52,7 +53,7 @@ function functions.loadFonts()
     FONT[enum.fontHeavyMetalLarge] = love.graphics.newFont("assets/fonts/Heavy Metal Box.ttf")
     FONT[enum.fontHeavyMetalSmall] = love.graphics.newFont("assets/fonts/Heavy Metal Box.ttf",10)
     FONT[enum.fontDefault] = love.graphics.newFont("assets/fonts/Vera.ttf", 12)
-	FONT[enum.fontTech] = love.graphics.newFont("assets/fonts/CorporateGothicNbpRegular-YJJ2.ttf", 40)
+	FONT[enum.fontTech] = love.graphics.newFont("assets/fonts/CorporateGothicNbpRegular-YJJ2.ttf", 36)
 end
 
 function functions.getPhysEntity(uid)

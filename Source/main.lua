@@ -53,7 +53,7 @@ local function establishPlayerVessel()
 
 	-- :give("leftThruster")
 	-- :give("rightThruster")
-	-- :give("reverseThruster")
+	:give("reverseThruster")
 	-- :give("oxyTank")
 	-- :give("solarPanel")
 	-- :give("spaceSuit")
