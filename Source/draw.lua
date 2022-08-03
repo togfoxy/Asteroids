@@ -212,7 +212,6 @@ local function drawHUD()
 		end
 	end
 
-
 	-- draw the 'non-gauge' components that don't have capacity
 	if entity:has("oxyTank") then
 		local drawx = SCREEN_WIDTH - 100
@@ -284,11 +283,12 @@ local function drawHUD()
 	-- love.graphics.setColor(1,1,1,1)
 	-- love.graphics.print("O", drawx + 5, drawy + 5)
 
+	-- draw the buttons in the global table
+
 
 	for k, button in pairs(GUI_BUTTONS) do
 		if button.scene == enum.sceneAsteroid and button.visible then
-			-- draw the button		--! doesn't deal with button.state yet
-
+			-- draw the button
 			love.graphics.setColor(button.bgcolour)
 			if button.state == "on" then
 				love.graphics.rectangle("fill", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
@@ -302,10 +302,6 @@ local function drawHUD()
 			love.graphics.print(button.label, button.x + 5, button.y + 5)
 		end
 	end
-
-
-
-
 end
 
 function draw.asteroids()
@@ -488,14 +484,32 @@ function draw.shop()
 		BUTTONS[2][compindex].type = enum.buttonTypeBuy
 	end
 
+	-- draw the shopping receipt
+	love.graphics.setFont(FONT[enum.fontTech])
+	love.graphics.setColor(1,1,1,1)
+
+	local drawx = panelx[4] + 10
+	local drawy = panely[4] + 60
+	for k, item in pairs(RECEIPT) do
+		love.graphics.print(item.description, drawx, drawy)
+		love.graphics.print(item.amount, drawx + 250, drawy)
+		drawy = drawy + 20
+	end
+
 	-- print wealth and score
 	if PLAYER.ROCKSKILLED == nil then PLAYER.ROCKSKILLED = 0 end
 	if PLAYER.WEALTH == nil then PLAYER.WEALTH = 0 end
 
-	love.graphics.setFont(FONT[enum.fontDefault])
+	love.graphics.setFont(FONT[enum.fontTech])
 	love.graphics.setColor(1,1,1,1)
-	love.graphics.print("Wealth: $" .. cf.strFormatThousand(PLAYER.WEALTH) .. " Score: " .. PLAYER.ROCKSKILLED, SCREEN_WIDTH / 2, 30)
 
+	local drawx = SCREEN_WIDTH * 0.33
+	local drawy = 50
+	love.graphics.print("Wealth: $" .. cf.strFormatThousand(PLAYER.WEALTH), drawx, drawy)
+
+	local drawx = SCREEN_WIDTH * 0.66
+	local drawy = 50
+	love.graphics.print("Score: " .. PLAYER.ROCKSKILLED, drawx, drawy)
 end
 
 function draw.dead()
@@ -517,6 +531,29 @@ function draw.bubbles()
 		local yoffset = (4 - bubble.timeleft) * 10		-- need to scale up the y movement
 		love.graphics.print(bubble.text, bubble.x, drawy - yoffset)
 	end
+end
+
+function draw.mainMenu()
+
+	for k, button in pairs(GUI_BUTTONS) do
+		if button.scene == enum.sceneMainMenu and button.visible then
+			-- draw the button		--! doesn't deal with button.state yet
+
+			love.graphics.setColor(button.bgcolour)
+			if button.state == "on" then
+				love.graphics.rectangle("fill", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+			else
+				love.graphics.rectangle("line", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+			end
+
+			-- draw the label
+			love.graphics.setFont(FONT[enum.fontDefault])
+			love.graphics.setColor(button.labelcolour)
+			love.graphics.print(button.label, button.x + 5, button.y + 5)
+		end
+	end
+
+
 end
 
 return draw

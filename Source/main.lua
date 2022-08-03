@@ -36,140 +36,9 @@ ecsDraw = require 'ecsDraw'
 ecsUpdate = require 'ecsUpdate'
 fileops = require 'fileoperations'
 keymaps = require 'keymaps'
-
-local function establishPlayerVessel()
-	-- add player
-	local entity = concord.entity(ECSWORLD)
-    :give("drawable")
-    :give("uid")
-
-	:give("chassis")
-	:give("engine")
-	:give("fuelTank")
-	:give("miningLaser")
-	:give("battery")
-	:give("oxyGenerator")
-	:give("cargoHold")
-
-	-- :give("leftThruster")
-	-- :give("rightThruster")
-	-- :give("reverseThruster")
-	-- :give("oxyTank")
-	-- :give("solarPanel")
-	-- :give("spaceSuit")
-	-- :give("SOSBeacon")
-	-- :give("Stabiliser")
-	-- :give("ejectionPod")
-
-    table.insert(ECS_ENTITIES, entity)
-	PLAYER.UID = entity.uid.value 		-- store this for easy recall
-
-	-- debug
-	-- PLAYER.WEALTH = 10000
-	-- entity.chassis.currentHP = 0
-	-- entity.battery.capacity = 20
-
-	local shipsize = fun.getEntitySize(entity)
-	-- DEBUG_VESSEL_SIZE = 10
-	-- shipsize = DEBUG_VESSEL_SIZE
-
-	local physicsEntity = {}
-    physicsEntity.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 75, "dynamic")
-	physicsEntity.body:setLinearDamping(0)
-	-- physicsEntity.body:setMass(500)		-- kg		-- made redundant by newFixture
-	physicsEntity.shape = love.physics.newRectangleShape(shipsize, shipsize)		-- will draw a rectangle around the body x/y. No need to offset it
-	-- physicsEntity.shape = love.physics.newPolygonShape(PLAYER.POINTS)
-	physicsEntity.fixture = love.physics.newFixture(physicsEntity.body, physicsEntity.shape, PHYSICS_DENSITY)		-- the 1 is the density
-	physicsEntity.fixture:setRestitution(0.1)		-- between 0 and 1
-	physicsEntity.fixture:setSensor(false)
-
-	local temptable = {}
-	temptable.uid = entity.uid.value
-	temptable.objectType = "Player"						-- other type is "Pod"
-	physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
+buttons = require 'buttons'
 
 
-    table.insert(PHYSICS_ENTITIES, physicsEntity)
-
-	print("Ship mass is " .. physicsEntity.body:getMass())
-	print("Ship size is " .. shipsize)
-end
-
-local function establishWorldBorders()
-	-- bottom border
-	local PHYSICSBORDER1 = {}
-    PHYSICSBORDER1.body = love.physics.newBody(PHYSICSWORLD, 0 + (PHYSICS_WIDTH / 2), PHYSICS_HEIGHT, "static") -- x, y.  The shape comes next
-    PHYSICSBORDER1.shape = love.physics.newRectangleShape(PHYSICS_WIDTH, 5) --make a rectangle with a width and a height
-    PHYSICSBORDER1.fixture = love.physics.newFixture(PHYSICSBORDER1.body, PHYSICSBORDER1.shape) --attach shape to body
-	PHYSICSBORDER1.fixture:setRestitution( 1 )
-	local temptable = {}
-	temptable.uid = cf.Getuuid()
-	temptable.objectType = "Border"
-	PHYSICSBORDER1.fixture:setUserData(temptable)
-	-- top border
-	local PHYSICSBORDER2 = {}
-    PHYSICSBORDER2.body = love.physics.newBody(PHYSICSWORLD, 0 + (PHYSICS_WIDTH / 2), 0, "static") --remember, the shape (the rectangle we create next) anchors to the body from its center, so we have to move it to (650/2, 650-50/2)
-    PHYSICSBORDER2.shape = love.physics.newRectangleShape(PHYSICS_WIDTH, 5) --make a rectangle with a width of 650 and a height of 50
-    PHYSICSBORDER2.fixture = love.physics.newFixture(PHYSICSBORDER2.body, PHYSICSBORDER2.shape) --attach shape to body
-	PHYSICSBORDER2.fixture:setRestitution( 1 )
-	local temptable = {}
-	temptable.uid = cf.Getuuid()
-	temptable.objectType = "Border"
-	PHYSICSBORDER2.fixture:setUserData(temptable)
-	-- left border
-	local PHYSICSBORDER3 = {}
-    PHYSICSBORDER3.body = love.physics.newBody(PHYSICSWORLD, 0, 0 + (PHYSICS_HEIGHT / 2), "static") --remember, the shape (the rectangle we create next) anchors to the body from its center, so we have to move it to (650/2, 650-50/2)
-    PHYSICSBORDER3.shape = love.physics.newRectangleShape(5, PHYSICS_HEIGHT) --make a rectangle with a width of 650 and a height of 50
-    PHYSICSBORDER3.fixture = love.physics.newFixture(PHYSICSBORDER3.body, PHYSICSBORDER3.shape) --attach shape to body
-	PHYSICSBORDER3.fixture:setRestitution( 1 )
-	local temptable = {}
-	temptable.uid = cf.Getuuid()
-	temptable.objectType = "Border"
-	PHYSICSBORDER3.fixture:setUserData(temptable)
-	-- right border
-	local PHYSICSBORDER4 = {}
-    PHYSICSBORDER4.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH, 0 + (PHYSICS_HEIGHT / 2), "static") --remember, the shape (the rectangle we create next) anchors to the body from its center, so we have to move it to (650/2, 650-50/2)
-    PHYSICSBORDER4.shape = love.physics.newRectangleShape(5, PHYSICS_HEIGHT) --make a rectangle with a width of 650 and a height of 50
-    PHYSICSBORDER4.fixture = love.physics.newFixture(PHYSICSBORDER4.body, PHYSICSBORDER4.shape) --attach shape to body
-	PHYSICSBORDER4.fixture:setRestitution( 1 )
-	local temptable = {}
-	temptable.uid = cf.Getuuid()
-	temptable.objectType = "Border"
-	PHYSICSBORDER4.fixture:setUserData(temptable)
-
-	table.insert(PHYSICS_ENTITIES, PHYSICSBORDER1)
-	table.insert(PHYSICS_ENTITIES, PHYSICSBORDER2)
-	table.insert(PHYSICS_ENTITIES, PHYSICSBORDER3)
-	table.insert(PHYSICS_ENTITIES, PHYSICSBORDER4)
-end
-
-local function establishPhysicsWorld()
-	love.physics.setMeter(1)
-	PHYSICSWORLD = love.physics.newWorld(0,0,false)
-	PHYSICSWORLD:setCallbacks(beginContact,_,_,postSolve)
-
-	establishWorldBorders()
-
-	-- add starbase
-	local starbase = {}
-	starbase.body = love.physics.newBody(PHYSICSWORLD, PHYSICS_WIDTH / 2, (PHYSICS_HEIGHT) - 35, "static")
-	-- physicsEntity.body:setLinearDamping(0)
-	starbase.body:setMass(5000)
-
-	starbase.shape = love.physics.newPolygonShape(-250,-19,250,-19,250,20,-250,20)
-
-	starbase.fixture = love.physics.newFixture(starbase.body, starbase.shape) --attach shape to body
-	starbase.fixture:setRestitution(0)		-- between 0 and 1
-	starbase.fixture:setSensor(false)
-	local temptable = {}
-	temptable.uid = cf.Getuuid()
-	temptable.objectType = "Starbase"
-	starbase.fixture:setUserData(temptable)
-
-	table.insert(PHYSICS_ENTITIES, starbase)
-
-	establishPlayerVessel()
-end
 
 function beginContact(a, b, coll)
 end
@@ -206,6 +75,11 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 				if PLAYER.WEALTH == nil then PLAYER.WEALTH = 0 end
 				PLAYER.WEALTH = PLAYER.WEALTH + profit
 				entity.cargoHold.currentAmount = 0
+
+				local item = {}
+				item.description = "Income"
+				item.amount = profit
+				table.insert(RECEIPT, item)
 			end
 		end
 
@@ -272,15 +146,24 @@ end
 function love.keyreleased( key, scancode )
 	if key == "escape" then
 
-		local physEntity = fun.getPhysEntity(PLAYER.UID)
-		local x1, y1 = physEntity.body:getPosition()
-		if y1 > 915 then
-			physEntity.body:setPosition(x1, 915)
-			x1, y1 = physEntity.body:getPosition()
+		if cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
+			local physEntity = fun.getPhysEntity(PLAYER.UID)
+			local x1, y1 = physEntity.body:getPosition()
+			if y1 > 915 then
+				physEntity.body:setPosition(x1, 915)
+				x1, y1 = physEntity.body:getPosition()
+			end
+			TRANSLATEX = (x1 * BOX2D_SCALE)
+			TRANSLATEY = (y1 * BOX2D_SCALE)
+
+			-- reset the shopping receipt for next time
+			RECEIPT = {}
+			local item = {}
+			item.description = "Opening balance"
+			item.amount = PLAYER.WEALTH
+			table.insert(RECEIPT, item)
 		end
 
-		TRANSLATEX = (x1 * BOX2D_SCALE)
-		TRANSLATEY = (y1 * BOX2D_SCALE)
 		ZOOMFACTOR = 0.4
 
 		cf.RemoveScreen(SCREEN_STACK)
@@ -359,9 +242,15 @@ end
 
 function love.mousepressed( x, y, button, istouch, presses )
 
-	local wx,wy = cam:toWorld(x, y)	-- converts screen x/y to world x/y
+	local wx, wy
+	if cam == nil then
+	else
+		wx,wy = cam:toWorld(x, y)	-- converts screen x/y to world x/y
+	end
+
 	if button == 1 then
-		if cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
+		local currentScreen = cf.currentScreenName(SCREEN_STACK)
+		if currentScreen == enum.sceneShop then
 			-- determine which screen button was clicked
 			for i = 1, #BUTTONS do
 				for j = 1, #BUTTONS[i] do
@@ -379,6 +268,10 @@ function love.mousepressed( x, y, button, istouch, presses )
 									if button.component.currentHP > button.component.maxHP then button.component.currentHP = button.component.maxHP end
 									PLAYER.WEALTH = PLAYER.WEALTH - 1000
 									if PLAYER.WEALTH < 0 then PLAYER.WEALTH = 0 end
+									local item = {}
+									item.description = "Repairs"
+									item.amount = -1000
+									table.insert(RECEIPT, item)
 								end
 							end
 						end
@@ -396,6 +289,7 @@ function love.mousepressed( x, y, button, istouch, presses )
 
 							local purchaseprice = button.component.purchasePrice
 							if entity:has(shopcomponentType) then		-- this is a string
+								-- exchange existing item
 								--! get a refund on old component
 
 								if PLAYER.WEALTH >= purchaseprice then
@@ -405,12 +299,16 @@ function love.mousepressed( x, y, button, istouch, presses )
 									SHOP_ENTITY:remove(shopcomponentType)
 									fun.changeShipPhysicsSize(entity)
 									SOUND.ding = true
+									local item = {}
+									item.description = "Upgrade"
+									item.amount = -1000
+									table.insert(RECEIPT, item)
 								else
 									-- play 'fail' sound
 									SOUND.wrong = true
 								end
 							else
-								--! purchase
+								--! purchase new item
 								--! refactor this and above
 								if PLAYER.WEALTH >= purchaseprice then
 									fun.buyComponent(entity, shopcomponentType, button.component)
@@ -419,6 +317,10 @@ function love.mousepressed( x, y, button, istouch, presses )
 									SHOP_ENTITY:remove(shopcomponentType)
 									fun.changeShipPhysicsSize(entity)
 									SOUND.ding = true
+									local item = {}
+									item.description = "Purchase"
+									item.amount = -1000
+									table.insert(RECEIPT, item)
 								else
 									print("Can't afford purchase")
 									-- play 'fail' sound
@@ -430,24 +332,38 @@ function love.mousepressed( x, y, button, istouch, presses )
 				end
 			end
 
-		elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
+		elseif currentScreen == enum.sceneAsteroid then
 			-- process buttons
-
 			local rx, ry = res.toGame(x,y)		--! does this need to be applied consistently across all mouse clicks?
 			for k, button in pairs(GUI_BUTTONS) do
 				if button.scene == enum.sceneAsteroid and button.visible then
-					local mybuttonID = fun.buttonClicked(rx, ry, button)		-- bounding box stuff
+					local mybuttonID = buttons.buttonClicked(rx, ry, button)		-- bounding box stuff
 					if mybuttonID == enum.buttonAlarmOff then
 						-- turn sounds off for a number of minutes
 						if button.state == "off" then
 							-- Mute alarms
-							ALARM_OFF_TIMER = 10 -- 5 * 60
+							ALARM_OFF_TIMER = DEFAULT_ALARM_TIMER
 							button.state = "on"
 						else
 							-- Unmute alarms (turn button off)
 							ALARM_OFF_TIMER = 0
 							button.state = "off"
 						end
+					end
+				end
+			end
+
+		elseif currentScreen == enum.sceneMainMenu then
+			local rx, ry = res.toGame(x,y)		--! does this need to be applied consistently across all mouse clicks?
+			for k, button in pairs(GUI_BUTTONS) do
+				if button.scene == enum.sceneMainMenu and button.visible then
+					local mybuttonID = buttons.buttonClicked(rx, ry, button)		-- bounding box stuff
+					if mybuttonID == enum.buttonNewGame then
+						--! need to kill all physics objects
+						--! need to kill all ECS objects
+						fun.InitialiseGame()
+						cf.AddScreen(enum.sceneAsteroid, SCREEN_STACK)
+						break
 					end
 				end
 			end
@@ -478,31 +394,15 @@ function love.load()
 	love.window.setTitle("Asteroids " .. GAME_VERSION)
 	love.keyboard.setKeyRepeat(true)
 
-	cf.AddScreen(enum.sceneAsteroid, SCREEN_STACK)
-
-	-- create the world
-	SHOPWORLD = concord.world()
-    ECSWORLD = concord.world()
-	ecsFunctions.init()
 	fun.loadAudio()
 	fun.loadImages()
 	fun.loadFonts()
-	establishPhysicsWorld()
 
+	buttons.loadButtons()			-- the buttons that are displayed on different gui's
 	keymaps.init()
 
-	for i = 1, NUMBER_OF_ASTEROIDS do
-		fun.createAsteroid()
-	end
-
-	fun.loadButtons()			-- the buttons that are displayed on the main
-
-	local x1, y1 = fun.getPhysEntityXY(PLAYER.UID)
-	cam = Camera.new(x1, y1, 1)
-
-	TRANSLATEX = (x1 * BOX2D_SCALE)
-	TRANSLATEY = (y1 * BOX2D_SCALE)
-    ZOOMFACTOR = 0.4
+	-- cf.AddScreen(enum.sceneAsteroid, SCREEN_STACK)
+	cf.AddScreen(enum.sceneMainMenu, SCREEN_STACK)
 end
 
 function love.draw()
@@ -516,6 +416,8 @@ function love.draw()
 		draw.dead()
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
 		draw.shop()
+	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneMainMenu then
+		draw.mainMenu()
 	end
 	lovelyToasts.draw()
     res.stop()
