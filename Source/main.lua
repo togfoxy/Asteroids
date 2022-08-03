@@ -210,7 +210,7 @@ function love.keypressed( key, scancode, isrepeat )
 	else
 		if input:down('rotateleft') then
 			-- rotate ccw
-			physEntity.body:applyTorque(-2500)
+			physEntity.body:applyTorque(PHYSICS_TURNRATE * -1)
 		end
 	end
 
@@ -220,7 +220,7 @@ function love.keypressed( key, scancode, isrepeat )
 		-- offer a very basic and slow rotation
 		if input:down('rotateright') then
 			-- rotate cw
-			physEntity.body:applyTorque(2500)
+			physEntity.body:applyTorque(PHYSICS_TURNRATE)
 		end
 	end
 end
