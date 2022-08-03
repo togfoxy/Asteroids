@@ -58,7 +58,6 @@ local function establishPlayerVessel()
 	print("Ship size is " .. shipsize)
 end
 
-
 function functions.loadImages()
 
 	IMAGES[enum.imagesEngineFlame] = love.graphics.newImage("assets/images/flame.png")
