@@ -537,4 +537,76 @@ function functions.playAmbientMusic()
 	end
 end
 
+function functions.loadButtons()
+	-- load the global GUI_BUTTONS table with buttons
+	local mybutton = {}
+
+	mybutton.x = 50
+	mybutton.y = 200
+	mybutton.width = 20
+	mybutton.height = 20
+	mybutton.label = "O"
+	mybutton.image = nil
+	mybutton.labelcolour = {1,1,1,1}
+	mybutton.bgcolour = {1,0,0,1}
+	mybutton.state = "off"
+	mybutton.visible = true
+	mybutton.scene = enum.sceneAsteroid
+	mybutton.identifier = enum.buttonAlarmOff
+	table.insert(GUI_BUTTONS, mybutton)
+end
+function functions.buttonClicked(mx, my, button)
+	-- the button table is a global table
+	-- check if mouse click is inside any button
+	-- mx, my = mouse click X/Y
+	-- button is from the global table
+	-- returns the identifier of the button (enum) or nil
+	if mx >= button.x and mx <= button.x + button.width and
+		my >= button.y and my <= button.y + button.height then
+			return button.identifier
+	else
+		return nil
+	end
+end
+
+function functions.playSounds()
+	-- called from love.update
+
+	if SOUND.engine then
+		AUDIO[enum.audioEngine]:play()
+	else
+		AUDIO[enum.audioEngine]:stop()
+	end
+	if SOUND.lowFuel and ALARM_OFF_TIMER <= 0 then
+		AUDIO[enum.audioLowFuel]:play()
+	else
+		AUDIO[enum.audioLowFuel]:stop()
+	end
+	if SOUND.warning and ALARM_OFF_TIMER <= 0  then
+		AUDIO[enum.audioWarning]:play()
+	else
+		AUDIO[enum.audioWarning]:stop()
+	end
+	if SOUND.miningLaser then
+		AUDIO[enum.audioMiningLaser]:play()
+	else
+		AUDIO[enum.audioMiningLaser]:stop()
+	end
+	if SOUND.rockExplosion then
+		AUDIO[enum.audioRockExplosion]:play()
+	end
+	if SOUND.scrape1 then
+		AUDIO[enum.audioRockScrape1]:play()
+	end
+	if SOUND.scrape2 then
+		AUDIO[enum.audioRockScrape2]:play()
+	end
+	if SOUND.ding then
+		AUDIO[enum.audioDing]:play()
+	end
+	if SOUND.wrong then
+		AUDIO[enum.audioWrong]:play()
+	end
+end
+
 return functions

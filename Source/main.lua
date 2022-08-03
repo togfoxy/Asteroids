@@ -53,7 +53,7 @@ local function establishPlayerVessel()
 
 	-- :give("leftThruster")
 	-- :give("rightThruster")
-	:give("reverseThruster")
+	-- :give("reverseThruster")
 	-- :give("oxyTank")
 	-- :give("solarPanel")
 	-- :give("spaceSuit")
@@ -67,6 +67,7 @@ local function establishPlayerVessel()
 	-- debug
 	-- PLAYER.WEALTH = 10000
 	-- entity.chassis.currentHP = 0
+	-- entity.battery.capacity = 20
 
 	local shipsize = fun.getEntitySize(entity)
 	-- DEBUG_VESSEL_SIZE = 10
@@ -222,6 +223,9 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 		if temptable.objectType == "Pod" then
 			temptable.objectType = "Player"
 		end
+
+		-- re-activate alarm sounds
+		ALARM_OFF_TIMER = 0
 
 		cf.AddScreen(enum.sceneShop, SCREEN_STACK)
 	else
@@ -425,6 +429,28 @@ function love.mousepressed( x, y, button, istouch, presses )
 					end
 				end
 			end
+
+		elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
+			-- process buttons
+
+			local rx, ry = res.toGame(x,y)		--! does this need to be applied consistently across all mouse clicks?
+			for k, button in pairs(GUI_BUTTONS) do
+				if button.scene == enum.sceneAsteroid and button.visible then
+					local mybuttonID = fun.buttonClicked(rx, ry, button)		-- bounding box stuff
+					if mybuttonID == enum.buttonAlarmOff then
+						-- turn sounds off for a number of minutes
+						if button.state == "off" then
+							-- Mute alarms
+							ALARM_OFF_TIMER = 10 -- 5 * 60
+							button.state = "on"
+						else
+							-- Unmute alarms (turn button off)
+							ALARM_OFF_TIMER = 0
+							button.state = "off"
+						end
+					end
+				end
+			end
 		end
 	end
 end
@@ -469,6 +495,8 @@ function love.load()
 		fun.createAsteroid()
 	end
 
+	fun.loadButtons()			-- the buttons that are displayed on the main
+
 	local x1, y1 = fun.getPhysEntityXY(PLAYER.UID)
 	cam = Camera.new(x1, y1, 1)
 
@@ -510,43 +538,7 @@ function love.update(dt)
 			physEntity.fixture:setSensor(false)
 		end
 
-		--! put this into a sub function
-		if SOUND.engine then
-			AUDIO[enum.audioEngine]:play()
-		else
-			AUDIO[enum.audioEngine]:stop()
-		end
-		if SOUND.lowFuel then
-			AUDIO[enum.audioLowFuel]:play()
-		else
-			AUDIO[enum.audioLowFuel]:stop()
-		end
-		if SOUND.warning then
-			AUDIO[enum.audioWarning]:play()
-		else
-			AUDIO[enum.audioWarning]:stop()
-		end
-		if SOUND.miningLaser then
-			AUDIO[enum.audioMiningLaser]:play()
-		else
-			AUDIO[enum.audioMiningLaser]:stop()
-		end
-		if SOUND.rockExplosion then
-			AUDIO[enum.audioRockExplosion]:play()
-		end
-		if SOUND.scrape1 then
-			AUDIO[enum.audioRockScrape1]:play()
-		end
-		if SOUND.scrape2 then
-			AUDIO[enum.audioRockScrape2]:play()
-		end
-		if SOUND.ding then
-			AUDIO[enum.audioDing]:play()
-		end
-		if SOUND.wrong then
-			AUDIO[enum.audioWrong]:play()
-		end
-
+		fun.playSounds()
 		fun.deductO2(dt)
 
 		-- check for dead chassis
@@ -610,6 +602,17 @@ function love.update(dt)
 	if SHOP_TIMER < 0 then
 		SHOP_TIMER = 0
 		SHOP_ENTITY = nil
+	end
+
+	ALARM_OFF_TIMER = ALARM_OFF_TIMER - dt
+	if ALARM_OFF_TIMER <= 0 then
+		-- turn off the mute button (i.e. make alarms)
+		ALARM_OFF_TIMER = 0
+		for k, button in pairs(GUI_BUTTONS) do
+			if button.identifier == enum.buttonAlarmOff then
+				button.state = "off"
+			end
+		end
 	end
 
 	fun.playAmbientMusic()

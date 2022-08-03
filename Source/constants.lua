@@ -33,7 +33,8 @@ function constants.load()
     AUDIO = {}
     IMAGES = {}
     FONT = {}
-    BUTTONS = {}
+    BUTTONS = {}            -- used in the shop
+    GUI_BUTTONS = {}      -- used on the asteroid hud and main menu
 
     PHYSICS_DENSITY = 4    -- how many kg's each mass weighs
 
@@ -47,6 +48,8 @@ function constants.load()
 
     SHOP_TIMER = 0
     DEFAULT_SHOP_TIMER = 3 * 60     -- seconds
+    ALARM_OFF_TIMER = 0             -- silence alarms for this long
+
     O2_ALARM_ALPHA = 0
     FUEL_ALARM_ALPHA = 0
     BATTERY_ALARM_ALPHA = 0
