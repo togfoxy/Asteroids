@@ -725,6 +725,13 @@ function functions.InitialiseGame()
 	local x1, y1 = fun.getPhysEntityXY(PLAYER.UID)
 	cam = Camera.new(x1, y1, 1)		-- this is a global cam
 
+	RECEIPT = {}
+	local item = {}
+	item.description = "Opening balance"
+	item.amount = 0
+	table.insert(RECEIPT, item)
+
+
 	TRANSLATEX = (x1 * BOX2D_SCALE)
 	TRANSLATEY = (y1 * BOX2D_SCALE)
     ZOOMFACTOR = 0.4

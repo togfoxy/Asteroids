@@ -32,6 +32,8 @@ function buttons.loadButtons()
 	mybutton.identifier = enum.buttonAlarmOff
 	table.insert(GUI_BUTTONS, mybutton)
 
+
+
 	-- main menu
 
 -- start game
@@ -40,6 +42,7 @@ function buttons.loadButtons()
 -- settings
 -- credits
 
+	local mybutton = {}
 	mybutton.x = SCREEN_WIDTH / 2
 	mybutton.y = SCREEN_HEIGHT / 3
 	mybutton.width = 100

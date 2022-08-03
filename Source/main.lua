@@ -75,6 +75,11 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 				if PLAYER.WEALTH == nil then PLAYER.WEALTH = 0 end
 				PLAYER.WEALTH = PLAYER.WEALTH + profit
 				entity.cargoHold.currentAmount = 0
+
+				local item = {}
+				item.description = "Income"
+				item.amount = profit
+				table.insert(RECEIPT, item)
 			end
 		end
 
@@ -141,15 +146,24 @@ end
 function love.keyreleased( key, scancode )
 	if key == "escape" then
 
-		local physEntity = fun.getPhysEntity(PLAYER.UID)
-		local x1, y1 = physEntity.body:getPosition()
-		if y1 > 915 then
-			physEntity.body:setPosition(x1, 915)
-			x1, y1 = physEntity.body:getPosition()
+		if cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
+			local physEntity = fun.getPhysEntity(PLAYER.UID)
+			local x1, y1 = physEntity.body:getPosition()
+			if y1 > 915 then
+				physEntity.body:setPosition(x1, 915)
+				x1, y1 = physEntity.body:getPosition()
+			end
+			TRANSLATEX = (x1 * BOX2D_SCALE)
+			TRANSLATEY = (y1 * BOX2D_SCALE)
+
+			-- reset the shopping receipt for next time
+			RECEIPT = {}
+			local item = {}
+			item.description = "Opening balance"
+			item.amount = PLAYER.WEALTH
+			table.insert(RECEIPT, item)
 		end
 
-		TRANSLATEX = (x1 * BOX2D_SCALE)
-		TRANSLATEY = (y1 * BOX2D_SCALE)
 		ZOOMFACTOR = 0.4
 
 		cf.RemoveScreen(SCREEN_STACK)
@@ -254,6 +268,10 @@ function love.mousepressed( x, y, button, istouch, presses )
 									if button.component.currentHP > button.component.maxHP then button.component.currentHP = button.component.maxHP end
 									PLAYER.WEALTH = PLAYER.WEALTH - 1000
 									if PLAYER.WEALTH < 0 then PLAYER.WEALTH = 0 end
+									local item = {}
+									item.description = "Repairs"
+									item.amount = -1000
+									table.insert(RECEIPT, item)
 								end
 							end
 						end
@@ -271,6 +289,7 @@ function love.mousepressed( x, y, button, istouch, presses )
 
 							local purchaseprice = button.component.purchasePrice
 							if entity:has(shopcomponentType) then		-- this is a string
+								-- exchange existing item
 								--! get a refund on old component
 
 								if PLAYER.WEALTH >= purchaseprice then
@@ -280,12 +299,16 @@ function love.mousepressed( x, y, button, istouch, presses )
 									SHOP_ENTITY:remove(shopcomponentType)
 									fun.changeShipPhysicsSize(entity)
 									SOUND.ding = true
+									local item = {}
+									item.description = "Upgrade"
+									item.amount = -1000
+									table.insert(RECEIPT, item)
 								else
 									-- play 'fail' sound
 									SOUND.wrong = true
 								end
 							else
-								--! purchase
+								--! purchase new item
 								--! refactor this and above
 								if PLAYER.WEALTH >= purchaseprice then
 									fun.buyComponent(entity, shopcomponentType, button.component)
@@ -294,6 +317,10 @@ function love.mousepressed( x, y, button, istouch, presses )
 									SHOP_ENTITY:remove(shopcomponentType)
 									fun.changeShipPhysicsSize(entity)
 									SOUND.ding = true
+									local item = {}
+									item.description = "Purchase"
+									item.amount = -1000
+									table.insert(RECEIPT, item)
 								else
 									print("Can't afford purchase")
 									-- play 'fail' sound
@@ -315,7 +342,7 @@ function love.mousepressed( x, y, button, istouch, presses )
 						-- turn sounds off for a number of minutes
 						if button.state == "off" then
 							-- Mute alarms
-							ALARM_OFF_TIMER = 10 -- 5 * 60
+							ALARM_OFF_TIMER = DEFAULT_ALARM_TIMER
 							button.state = "on"
 						else
 							-- Unmute alarms (turn button off)
@@ -332,6 +359,8 @@ function love.mousepressed( x, y, button, istouch, presses )
 				if button.scene == enum.sceneMainMenu and button.visible then
 					local mybuttonID = buttons.buttonClicked(rx, ry, button)		-- bounding box stuff
 					if mybuttonID == enum.buttonNewGame then
+						--! need to kill all physics objects
+						--! need to kill all ECS objects
 						fun.InitialiseGame()
 						cf.AddScreen(enum.sceneAsteroid, SCREEN_STACK)
 						break

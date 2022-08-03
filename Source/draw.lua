@@ -212,7 +212,6 @@ local function drawHUD()
 		end
 	end
 
-
 	-- draw the 'non-gauge' components that don't have capacity
 	if entity:has("oxyTank") then
 		local drawx = SCREEN_WIDTH - 100
@@ -284,11 +283,12 @@ local function drawHUD()
 	-- love.graphics.setColor(1,1,1,1)
 	-- love.graphics.print("O", drawx + 5, drawy + 5)
 
+	-- draw the buttons in the global table
+
 
 	for k, button in pairs(GUI_BUTTONS) do
 		if button.scene == enum.sceneAsteroid and button.visible then
-			-- draw the button		--! doesn't deal with button.state yet
-
+			-- draw the button
 			love.graphics.setColor(button.bgcolour)
 			if button.state == "on" then
 				love.graphics.rectangle("fill", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
@@ -482,6 +482,18 @@ function draw.shop()
 		BUTTONS[2][compindex].height = panelheight
 		BUTTONS[2][compindex].component = component
 		BUTTONS[2][compindex].type = enum.buttonTypeBuy
+	end
+
+	-- draw the shopping receipt
+	love.graphics.setFont(FONT[enum.fontTech])
+	love.graphics.setColor(1,1,1,1)
+
+	local drawx = panelx[4] + 10
+	local drawy = panely[4] + 60
+	for k, item in pairs(RECEIPT) do
+		love.graphics.print(item.description, drawx, drawy)
+		love.graphics.print(item.amount, drawx + 250, drawy)
+		drawy = drawy + 20
 	end
 
 	-- print wealth and score
