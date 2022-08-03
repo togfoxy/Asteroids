@@ -62,8 +62,20 @@ local function activateMiningLaser(dt)
 				if temptable.objectType == "Asteroid" then			-- make this an enum
 					local hit = fixture:testPoint(bx, by)
 					if hit then
-						local physicsEntity = fun.getPhysEntity(temptable.uid)
+
 						local massMoved = (playerEntity.miningLaser.miningRate * dt)
+						if temptable.oreType == enum.oreTypeBronze then
+							massMoved = massMoved * 2
+
+						elseif temptable.oreType == enum.oreTypeSilver then
+							massMoved = massMoved * 3
+
+						elseif temptable.oreType == enum.oreTypeGold then
+							massMoved = massMoved * 4
+						else
+							-- nothing
+						end
+						local physicsEntity = fun.getPhysEntity(temptable.uid)
 						physicsEntity.currentMass = physicsEntity.currentMass - massMoved
 						-- print(cf.round(asteroid.currentMass))
 						playerEntity.cargoHold.currentAmount = playerEntity.cargoHold.currentAmount + massMoved
@@ -72,7 +84,7 @@ local function activateMiningLaser(dt)
 						DRAW.miningLaser = true
 						DRAW.miningLaserX = bx
 						DRAW.miningLaserY = by
-						if love.math.random(1,100) == 1 then
+						if love.math.random(1,50) == 1 then
 							-- add bubble text
 							local newbubble = {}
 							newbubble.text = cf.round(math.max(massMoved, 1))
@@ -80,10 +92,10 @@ local function activateMiningLaser(dt)
 							newbubble.x = x --  * BOX2D_SCALE
 							newbubble.y = y --  * BOX2D_SCALE
 							table.insert(BUBBLE, newbubble)
-
 						end
 
 						SOUND.miningLaser = true
+						-- remove destroyed rocks
 						if physicsEntity.currentMass <= 0 then
 							fun.killPhysicsEntity(physicsEntity)
 							SOUND.rockExplosion = true

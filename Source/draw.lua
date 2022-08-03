@@ -104,37 +104,36 @@ local function drawAsteroids()
 
 	for k, obj in pairs(PHYSICS_ENTITIES) do
 		local udtable = obj.fixture:getUserData()
-		if udtable.objectType == "Asteroid" then
-			local body = obj.body
-			local mass = cf.round(body:getMass())
-			local x0, y0 = body:getPosition()
-			for _, fixture in pairs(body:getFixtures()) do
-				local shape = fixture:getShape()
-				local points = {body:getWorldPoints(shape:getPoints())}
-				for i = 1, #points do
-					points[i] = points[i] * BOX2D_SCALE
+		udtable.isVisible = true
+		if udtable.objectType == "Asteroid" and udtable.isVisible then
+				local body = obj.body
+				local mass = cf.round(body:getMass())
+				local x0, y0 = body:getPosition()
+				for _, fixture in pairs(body:getFixtures()) do
+					local shape = fixture:getShape()
+					local points = {body:getWorldPoints(shape:getPoints())}
+					for i = 1, #points do
+						points[i] = points[i] * BOX2D_SCALE
+					end
+
+					if udtable.oreType == enum.oreTypeGold then
+						love.graphics.setColor(236/255,164/255,18/255,0.75)
+						love.graphics.polygon("fill", points)
+					elseif udtable.oreType == enum.oreTypeSilver then
+						love.graphics.setColor(192/255,192/255,192/255,1)
+						love.graphics.polygon("fill", points)
+					elseif udtable.oreType == enum.oreTypeBronze then
+						love.graphics.setColor(122/255,84/255,9/255,0.5)
+						love.graphics.polygon("fill", points)
+					else
+						love.graphics.setColor(139/255,139/255,139/255,1)
+						love.graphics.polygon("line", points)
+					end
+					-- -- print the mass for debug reasons
+					-- love.graphics.setColor(1,1,1,1)
+					-- love.graphics.print(cf.round(obj.currentMass), (x0 * BOX2D_SCALE) + 15, (y0 * BOX2D_SCALE) - 15)
 				end
 
-				if udtable.oreType == enum.oreTypeGold then
-					love.graphics.setColor(236/255,164/255,18/255,1)
-					love.graphics.polygon("fill", points)
-				elseif udtable.oreType == enum.oreTypeSilver then
-					love.graphics.setColor(192/255,192/255,192/255,1)
-					love.graphics.polygon("fill", points)
-
-				elseif udtable.oreType == enum.oreTypeBronze then
-					love.graphics.setColor(122/255,84/255,9/255,1)
-					love.graphics.polygon("fill", points)
-				else
-					love.graphics.setColor(139/255,139/255,139/255,1)
-					love.graphics.polygon("line", points)
-				end
-
-				-- -- print the mass for debug reasons
-				-- love.graphics.setColor(1,1,1,1)
-				-- love.graphics.print(cf.round(obj.currentMass), (x0 * BOX2D_SCALE) + 15, (y0 * BOX2D_SCALE) - 15)
-
-			end
 		end
 	end
 end
@@ -273,18 +272,6 @@ local function drawHUD()
 		love.graphics.setColor(1,1,1,1)
 		love.graphics.print("E", drawx + 5, drawy + 5)
 	end
-	-- draw the 'alarm off' button		--! find a position and a label
-	-- local drawx = 50
-	-- local drawy = 200
-	-- love.graphics.setColor(1,0,0,1)
-	-- love.graphics.rectangle("fill", drawx, drawy, 20, 20)			-- drawx/y is the top left corner of the square
-	--
-	-- love.graphics.setFont(FONT[enum.fontDefault])
-	-- love.graphics.setColor(1,1,1,1)
-	-- love.graphics.print("O", drawx + 5, drawy + 5)
-
-	-- draw the buttons in the global table
-
 
 	for k, button in pairs(GUI_BUTTONS) do
 		if button.scene == enum.sceneAsteroid and button.visible then
@@ -302,6 +289,13 @@ local function drawHUD()
 			love.graphics.print(button.label, button.x + 5, button.y + 5)
 		end
 	end
+
+	-- draw the F1 message
+	local drawx = SCREEN_WIDTH / 2 - 50
+	local drawy = 10
+	love.graphics.setColor(1,1,1,1)
+	love.graphics.setFont(FONT[enum.fontDefault])
+	love.graphics.print("Press F1 for help", drawx, drawy)
 end
 
 function draw.asteroids()
