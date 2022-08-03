@@ -488,10 +488,16 @@ function draw.shop()
 	if PLAYER.ROCKSKILLED == nil then PLAYER.ROCKSKILLED = 0 end
 	if PLAYER.WEALTH == nil then PLAYER.WEALTH = 0 end
 
-	love.graphics.setFont(FONT[enum.fontDefault])
+	love.graphics.setFont(FONT[enum.fontTech])
 	love.graphics.setColor(1,1,1,1)
-	love.graphics.print("Wealth: $" .. cf.strFormatThousand(PLAYER.WEALTH) .. " Score: " .. PLAYER.ROCKSKILLED, SCREEN_WIDTH / 2, 30)
 
+	local drawx = SCREEN_WIDTH * 0.33
+	local drawy = 50
+	love.graphics.print("Wealth: $" .. cf.strFormatThousand(PLAYER.WEALTH), drawx, drawy)
+
+	local drawx = SCREEN_WIDTH * 0.66
+	local drawy = 50
+	love.graphics.print("Score: " .. PLAYER.ROCKSKILLED, drawx, drawy)
 end
 
 function draw.dead()
