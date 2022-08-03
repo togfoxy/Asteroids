@@ -273,18 +273,6 @@ local function drawHUD()
 		love.graphics.setColor(1,1,1,1)
 		love.graphics.print("E", drawx + 5, drawy + 5)
 	end
-	-- draw the 'alarm off' button		--! find a position and a label
-	-- local drawx = 50
-	-- local drawy = 200
-	-- love.graphics.setColor(1,0,0,1)
-	-- love.graphics.rectangle("fill", drawx, drawy, 20, 20)			-- drawx/y is the top left corner of the square
-	--
-	-- love.graphics.setFont(FONT[enum.fontDefault])
-	-- love.graphics.setColor(1,1,1,1)
-	-- love.graphics.print("O", drawx + 5, drawy + 5)
-
-	-- draw the buttons in the global table
-
 
 	for k, button in pairs(GUI_BUTTONS) do
 		if button.scene == enum.sceneAsteroid and button.visible then
@@ -302,6 +290,13 @@ local function drawHUD()
 			love.graphics.print(button.label, button.x + 5, button.y + 5)
 		end
 	end
+
+	-- draw the F1 message
+	local drawx = SCREEN_WIDTH / 2 - 50
+	local drawy = 10
+	love.graphics.setColor(1,1,1,1)
+	love.graphics.setFont(FONT[enum.fontDefault])
+	love.graphics.print("Press F1 for help", drawx, drawy)
 end
 
 function draw.asteroids()

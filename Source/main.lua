@@ -174,6 +174,9 @@ function love.keyreleased( key, scancode )
 		TRANSLATEY = (y1 * BOX2D_SCALE)
 	    ZOOMFACTOR = 0.4
 	end
+	if key == "f1" then
+		local success = love.system.openURL("https://github.com/togfoxy/Asteroids/tree/master#readme")
+	end
 	if key == "f6" then
 		fileops.saveGame()
 	end
