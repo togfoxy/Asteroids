@@ -104,6 +104,7 @@ local function drawAsteroids()
 
 	for k, obj in pairs(PHYSICS_ENTITIES) do
 		local udtable = obj.fixture:getUserData()
+		udtable.isVisible = true
 		if udtable.objectType == "Asteroid" and udtable.isVisible then
 				local body = obj.body
 				local mass = cf.round(body:getMass())
@@ -116,14 +117,13 @@ local function drawAsteroids()
 					end
 
 					if udtable.oreType == enum.oreTypeGold then
-						love.graphics.setColor(236/255,164/255,18/255,1)
+						love.graphics.setColor(236/255,164/255,18/255,0.75)
 						love.graphics.polygon("fill", points)
 					elseif udtable.oreType == enum.oreTypeSilver then
 						love.graphics.setColor(192/255,192/255,192/255,1)
 						love.graphics.polygon("fill", points)
-
 					elseif udtable.oreType == enum.oreTypeBronze then
-						love.graphics.setColor(122/255,84/255,9/255,1)
+						love.graphics.setColor(122/255,84/255,9/255,0.5)
 						love.graphics.polygon("fill", points)
 					else
 						love.graphics.setColor(139/255,139/255,139/255,1)
