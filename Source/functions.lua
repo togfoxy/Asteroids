@@ -220,6 +220,7 @@ function functions.createAsteroid()
 	asteroid.originalMass = asteroid.body:getMass()
 	asteroid.currentMass = asteroid.originalMass
 
+
 	local rndnum = love.math.random(1, 100)
 	if rndnum == 1 then
 		temptable.oreType = enum.oreTypeGold	-- gold
@@ -231,6 +232,7 @@ function functions.createAsteroid()
 		-- normal ore
 		temptable.oreType = 0
 	end
+	temptable.isVisible = false
 	asteroid.fixture:setUserData(temptable)
 
     table.insert(PHYSICS_ENTITIES, asteroid)

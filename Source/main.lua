@@ -426,6 +426,14 @@ function love.draw()
     res.stop()
 end
 
+local function raycastCallback(fixture, x, y, xn, yn, fraction)
+
+	local temptable = fixture:getUserData()
+	temptable.isVisible = true
+	fixture:setUserData(temptable)
+	return 1
+end
+
 function love.update(dt)
 
 	if cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
@@ -479,7 +487,6 @@ function love.update(dt)
 
 		-- see if rescued while in escape pod
 		-- there is a chance the vessel is rescued
-
 		local temptable	 = physEntity.fixture:getUserData()
 		if temptable.objectType == "Pod" then
 			if love.math.random(1,2000) == 1 then			-- this is half the chance of an SOS beacon
@@ -489,12 +496,19 @@ function love.update(dt)
 			end
 		end
 
+		-- do raycasting stuff
+
+		local facing = physEntity.body:getAngle()       -- radians
+        facing = cf.convRadToCompass(facing)
+		local vectordistance = VISIBILITY_DISTANCE
+		local x2, y2 = cf.AddVectorToPoint(x, y, facing, vectordistance)
+
+		PHYSICSWORLD:rayCast(x, y, x2, y2, raycastCallback)
+
 		input:update()
 
 		cam:setPos(TRANSLATEX, TRANSLATEY)
 		cam:setZoom(ZOOMFACTOR)
-
-
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
 		local physEntity = fun.getPhysEntity(PLAYER.UID)
 		local x1, y1 = physEntity.body:getPosition()

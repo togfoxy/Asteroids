@@ -104,37 +104,36 @@ local function drawAsteroids()
 
 	for k, obj in pairs(PHYSICS_ENTITIES) do
 		local udtable = obj.fixture:getUserData()
-		if udtable.objectType == "Asteroid" then
-			local body = obj.body
-			local mass = cf.round(body:getMass())
-			local x0, y0 = body:getPosition()
-			for _, fixture in pairs(body:getFixtures()) do
-				local shape = fixture:getShape()
-				local points = {body:getWorldPoints(shape:getPoints())}
-				for i = 1, #points do
-					points[i] = points[i] * BOX2D_SCALE
+		if udtable.objectType == "Asteroid" and udtable.isVisible then
+				local body = obj.body
+				local mass = cf.round(body:getMass())
+				local x0, y0 = body:getPosition()
+				for _, fixture in pairs(body:getFixtures()) do
+					local shape = fixture:getShape()
+					local points = {body:getWorldPoints(shape:getPoints())}
+					for i = 1, #points do
+						points[i] = points[i] * BOX2D_SCALE
+					end
+
+					if udtable.oreType == enum.oreTypeGold then
+						love.graphics.setColor(236/255,164/255,18/255,1)
+						love.graphics.polygon("fill", points)
+					elseif udtable.oreType == enum.oreTypeSilver then
+						love.graphics.setColor(192/255,192/255,192/255,1)
+						love.graphics.polygon("fill", points)
+
+					elseif udtable.oreType == enum.oreTypeBronze then
+						love.graphics.setColor(122/255,84/255,9/255,1)
+						love.graphics.polygon("fill", points)
+					else
+						love.graphics.setColor(139/255,139/255,139/255,1)
+						love.graphics.polygon("line", points)
+					end
+					-- -- print the mass for debug reasons
+					-- love.graphics.setColor(1,1,1,1)
+					-- love.graphics.print(cf.round(obj.currentMass), (x0 * BOX2D_SCALE) + 15, (y0 * BOX2D_SCALE) - 15)
 				end
 
-				if udtable.oreType == enum.oreTypeGold then
-					love.graphics.setColor(236/255,164/255,18/255,1)
-					love.graphics.polygon("fill", points)
-				elseif udtable.oreType == enum.oreTypeSilver then
-					love.graphics.setColor(192/255,192/255,192/255,1)
-					love.graphics.polygon("fill", points)
-
-				elseif udtable.oreType == enum.oreTypeBronze then
-					love.graphics.setColor(122/255,84/255,9/255,1)
-					love.graphics.polygon("fill", points)
-				else
-					love.graphics.setColor(139/255,139/255,139/255,1)
-					love.graphics.polygon("line", points)
-				end
-
-				-- -- print the mass for debug reasons
-				-- love.graphics.setColor(1,1,1,1)
-				-- love.graphics.print(cf.round(obj.currentMass), (x0 * BOX2D_SCALE) + 15, (y0 * BOX2D_SCALE) - 15)
-
-			end
 		end
 	end
 end

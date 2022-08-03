@@ -38,12 +38,11 @@ function constants.load()
     RECEIPT = {}            -- shopping receipt to be showed in the shop
 
     PHYSICS_DENSITY = 4    -- how many kg's each mass weighs
-
     PHYSICS_TURNRATE = 15       -- how fast can objects turn
 
 	NUMBER_OF_ASTEROIDS = 65
-
     FUEL_CONSUMPTION_RATE = 400      -- low numbers = burns more fuel. High numbers = burns less fuel
+    VISIBILITY_DISTANCE = 150       -- in BOX2D scale (metres)
 
     DEAD_ALPHA = 0                  -- used to fade to black when dead
 
