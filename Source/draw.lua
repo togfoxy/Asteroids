@@ -302,10 +302,6 @@ local function drawHUD()
 			love.graphics.print(button.label, button.x + 5, button.y + 5)
 		end
 	end
-
-
-
-
 end
 
 function draw.asteroids()
@@ -517,6 +513,29 @@ function draw.bubbles()
 		local yoffset = (4 - bubble.timeleft) * 10		-- need to scale up the y movement
 		love.graphics.print(bubble.text, bubble.x, drawy - yoffset)
 	end
+end
+
+function draw.mainMenu()
+
+	for k, button in pairs(GUI_BUTTONS) do
+		if button.scene == enum.sceneMainMenu and button.visible then
+			-- draw the button		--! doesn't deal with button.state yet
+
+			love.graphics.setColor(button.bgcolour)
+			if button.state == "on" then
+				love.graphics.rectangle("fill", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+			else
+				love.graphics.rectangle("line", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+			end
+
+			-- draw the label
+			love.graphics.setFont(FONT[enum.fontDefault])
+			love.graphics.setColor(button.labelcolour)
+			love.graphics.print(button.label, button.x + 5, button.y + 5)
+		end
+	end
+
+
 end
 
 return draw

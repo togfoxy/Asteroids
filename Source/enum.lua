@@ -38,6 +38,7 @@ fontTech = 4
 sceneAsteroid = 1
 sceneShop = 2
 sceneDed = 3
+sceneMainMenu = 4
 
 buttonTypeRepair = 1
 buttonTypeBuy = 2
@@ -45,6 +46,7 @@ buttonTypeSell = 3
 
 -- global button table
 buttonAlarmOff = 1
+buttonNewGame = 2
 
 oreTypeGold = 1
 oreTypeSilver = 2
