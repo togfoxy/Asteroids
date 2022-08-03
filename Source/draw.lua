@@ -274,6 +274,38 @@ local function drawHUD()
 		love.graphics.setColor(1,1,1,1)
 		love.graphics.print("E", drawx + 5, drawy + 5)
 	end
+	-- draw the 'alarm off' button		--! find a position and a label
+	-- local drawx = 50
+	-- local drawy = 200
+	-- love.graphics.setColor(1,0,0,1)
+	-- love.graphics.rectangle("fill", drawx, drawy, 20, 20)			-- drawx/y is the top left corner of the square
+	--
+	-- love.graphics.setFont(FONT[enum.fontDefault])
+	-- love.graphics.setColor(1,1,1,1)
+	-- love.graphics.print("O", drawx + 5, drawy + 5)
+
+
+	for k, button in pairs(GUI_BUTTONS) do
+		if button.scene == enum.sceneAsteroid and button.visible then
+			-- draw the button		--! doesn't deal with button.state yet
+
+			love.graphics.setColor(button.bgcolour)
+			if button.state == "on" then
+				love.graphics.rectangle("fill", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+			else
+				love.graphics.rectangle("line", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+			end
+
+			-- draw the label
+			love.graphics.setFont(FONT[enum.fontDefault])
+			love.graphics.setColor(button.labelcolour)
+			love.graphics.print(button.label, button.x + 5, button.y + 5)
+		end
+	end
+
+
+
+
 end
 
 function draw.asteroids()

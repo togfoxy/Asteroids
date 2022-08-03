@@ -43,6 +43,9 @@ buttonTypeRepair = 1
 buttonTypeBuy = 2
 buttonTypeSell = 3
 
+-- global button table
+buttonAlarmOff = 1
+
 oreTypeGold = 1
 oreTypeSilver = 2
 oreTypeBronze = 3
