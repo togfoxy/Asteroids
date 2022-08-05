@@ -397,7 +397,7 @@ function draw.shop()
 						end
 						txt = txt .. cf.round(component.currentHP) .. " / " .. component.maxHP
 					end
-					love.graphics.setFont(FONT[enum.fontTech])
+					love.graphics.setFont(FONT[enum.fontTech36])
 					love.graphics.print(txt, drawx, drawy - 10)		-- colour and alpha is set up above
 
 					-- draw the description
@@ -447,7 +447,7 @@ function draw.shop()
 		compindex = compindex + 1
 		drawy = drawy + panelheight
 		local txt = component.label .. " $" .. component.purchasePrice
-		love.graphics.setFont(FONT[enum.fontTech])
+		love.graphics.setFont(FONT[enum.fontTech36])
 		love.graphics.setColor(1,1,1,1)
 		love.graphics.print(txt, drawx, drawy - 10)
 
@@ -478,7 +478,7 @@ function draw.shop()
 	end
 
 	-- draw the shopping receipt
-	love.graphics.setFont(FONT[enum.fontTech])
+	love.graphics.setFont(FONT[enum.fontTech36])
 	love.graphics.setColor(1,1,1,1)
 
 	local drawx = panelx[4] + 10
@@ -493,16 +493,16 @@ function draw.shop()
 	if PLAYER.ROCKSKILLED == nil then PLAYER.ROCKSKILLED = 0 end
 	if PLAYER.WEALTH == nil then PLAYER.WEALTH = 0 end
 
-	love.graphics.setFont(FONT[enum.fontTech])
+	love.graphics.setFont(FONT[enum.fontTech18])
 	love.graphics.setColor(1,1,1,1)
 
-	local drawx = SCREEN_WIDTH * 0.33
-	local drawy = 50
-	love.graphics.print("Wealth: $" .. cf.strFormatThousand(PLAYER.WEALTH), drawx, drawy)
+	local drawx = SCREEN_WIDTH * 0.33 + 180
+	local drawy = 33
+	love.graphics.print("$" .. cf.strFormatThousand(PLAYER.WEALTH), drawx, drawy)
 
-	local drawx = SCREEN_WIDTH * 0.66
-	local drawy = 50
-	love.graphics.print("Score: " .. PLAYER.ROCKSKILLED, drawx, drawy)
+	local drawx = SCREEN_WIDTH * 0.66 + 70
+	local drawy = 33
+	love.graphics.print(PLAYER.ROCKSKILLED, drawx, drawy)
 end
 
 function draw.dead()
