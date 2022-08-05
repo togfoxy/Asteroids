@@ -32,21 +32,12 @@ function buttons.loadButtons()
 	mybutton.identifier = enum.buttonAlarmOff
 	table.insert(GUI_BUTTONS, mybutton)
 
-
-
 	-- main menu
-
--- start game
--- load game
--- save game
--- settings
--- credits
-
 	local mybutton = {}
 	mybutton.x = SCREEN_WIDTH / 2
 	mybutton.y = SCREEN_HEIGHT / 3
 	mybutton.width = 100
-	mybutton.height = 75
+	mybutton.height = 25
 	mybutton.label = "New game"
 	mybutton.image = nil
 	mybutton.labelcolour = {1,1,1,1}
@@ -56,7 +47,66 @@ function buttons.loadButtons()
 	mybutton.scene = enum.sceneMainMenu
 	mybutton.identifier = enum.buttonNewGame
 	table.insert(GUI_BUTTONS, mybutton)
-
+	-- load game
+	local mybutton = {}
+	mybutton.x = SCREEN_WIDTH / 2
+	mybutton.y = (SCREEN_HEIGHT / 3) + 100
+	mybutton.width = 100
+	mybutton.height = 25
+	mybutton.label = "Load game"
+	mybutton.image = nil
+	mybutton.labelcolour = {1,1,1,1}
+	mybutton.bgcolour = {0,1,0,1}
+	mybutton.state = "off"
+	mybutton.visible = true
+	mybutton.scene = enum.sceneMainMenu
+	mybutton.identifier = enum.buttonLoadGame
+	table.insert(GUI_BUTTONS, mybutton)
+	-- save game
+	local mybutton = {}
+	mybutton.x = SCREEN_WIDTH / 2
+	mybutton.y = (SCREEN_HEIGHT / 3) + 200
+	mybutton.width = 100
+	mybutton.height = 25
+	mybutton.label = "Save game"
+	mybutton.image = nil
+	mybutton.labelcolour = {1,1,1,1}
+	mybutton.bgcolour = {0,1,0,1}
+	mybutton.state = "off"
+	mybutton.visible = true
+	mybutton.scene = enum.sceneMainMenu
+	mybutton.identifier = enum.buttonSaveGame
+	table.insert(GUI_BUTTONS, mybutton)
+	-- settings
+	local mybutton = {}
+	mybutton.x = SCREEN_WIDTH / 2
+	mybutton.y = (SCREEN_HEIGHT / 3) + 300
+	mybutton.width = 100
+	mybutton.height = 25
+	mybutton.label = "Settings"
+	mybutton.image = nil
+	mybutton.labelcolour = {1,1,1,1}
+	mybutton.bgcolour = {0,1,0,1}
+	mybutton.state = "off"
+	mybutton.visible = false
+	mybutton.scene = enum.sceneMainMenu
+	mybutton.identifier = enum.buttonSettings
+	table.insert(GUI_BUTTONS, mybutton)
+	-- credits
+	local mybutton = {}
+	mybutton.x = SCREEN_WIDTH / 2
+	mybutton.y = (SCREEN_HEIGHT / 3) + 300
+	mybutton.width = 100
+	mybutton.height = 25
+	mybutton.label = "Credits"
+	mybutton.image = nil
+	mybutton.labelcolour = {1,1,1,1}
+	mybutton.bgcolour = {0,1,0,1}
+	mybutton.state = "off"
+	mybutton.visible = true
+	mybutton.scene = enum.sceneMainMenu
+	mybutton.identifier = enum.buttonCredits		-- NOTE: ensure you set the identifier
+	table.insert(GUI_BUTTONS, mybutton)
 
 
 

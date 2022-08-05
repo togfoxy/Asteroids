@@ -16,6 +16,7 @@ imagesShop = 13
 imagesPod = 14
 imagesStarbase = 15
 imagesShopPanels = 16
+imagesMenuBackground = 17
 
 audioEngine = 1
 audioLowFuel = 2
@@ -47,6 +48,10 @@ buttonTypeSell = 3
 -- global button table
 buttonAlarmOff = 1
 buttonNewGame = 2
+buttonLoadGame = 3
+buttonSaveGame = 4
+buttonSettings = 5
+buttonCredits = 6
 
 oreTypeGold = 1
 oreTypeSilver = 2

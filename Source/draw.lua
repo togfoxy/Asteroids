@@ -104,7 +104,6 @@ local function drawAsteroids()
 
 	for k, obj in pairs(PHYSICS_ENTITIES) do
 		local udtable = obj.fixture:getUserData()
-		udtable.isVisible = true
 		if udtable.objectType == "Asteroid" and udtable.isVisible then
 				local body = obj.body
 				local mass = cf.round(body:getMass())
@@ -529,15 +528,18 @@ end
 
 function draw.mainMenu()
 
+	love.graphics.setColor(1,1,1,1)
+	love.graphics.draw(IMAGES[enum.imagesMenuBackground], 0,0)
+
 	for k, button in pairs(GUI_BUTTONS) do
 		if button.scene == enum.sceneMainMenu and button.visible then
 			-- draw the button		--! doesn't deal with button.state yet
 
 			love.graphics.setColor(button.bgcolour)
 			if button.state == "on" then
-				love.graphics.rectangle("fill", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+				-- love.graphics.rectangle("fill", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
 			else
-				love.graphics.rectangle("line", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+				-- love.graphics.rectangle("line", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
 			end
 
 			-- draw the label
@@ -546,8 +548,6 @@ function draw.mainMenu()
 			love.graphics.print(button.label, button.x + 5, button.y + 5)
 		end
 	end
-
-
 end
 
 return draw

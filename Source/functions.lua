@@ -16,7 +16,7 @@ local function establishPlayerVessel()
 
 	-- :give("leftThruster")
 	-- :give("rightThruster")
-	:give("reverseThruster")
+	-- :give("reverseThruster")
 	-- :give("oxyTank")
 	-- :give("solarPanel")
 	-- :give("spaceSuit")
@@ -82,6 +82,7 @@ function functions.loadImages()
 	IMAGES[enum.imagesBackgroundStatic] = love.graphics.newImage("assets/images/bg_space_seamless_2.png")
 	IMAGES[enum.imagesDead] = love.graphics.newImage("assets/images/dead.jpg")
 	IMAGES[enum.imagesShop] = love.graphics.newImage("assets/images/shop.jpg")
+	IMAGES[enum.imagesMenuBackground] = love.graphics.newImage("assets/images/menubackground.png")
 end
 
 function functions.loadAudio()
@@ -105,6 +106,8 @@ function functions.loadAudio()
 	AUDIO[enum.audioRockExplosion]:setVolume(0.5)
 	AUDIO[enum.audioRockScrape1]:setVolume(0.5)
 	AUDIO[enum.audioRockScrape2]:setVolume(0.5)
+	-- AUDIO[enum.audioRockScrape2]:setVolume(0.5)
+	-- AUDIO[enum.audioRockScrape2]:setVolume(0.5)
 end
 
 function functions.loadFonts()
@@ -584,13 +587,16 @@ function functions.playAmbientMusic()
 		if cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
 			if love.math.random(1,2000) == 1 then		-- allow for some silence between ambient music
 				AUDIO[enum.audioBGSkismo]:play()
+				print("playing Skismo")
 			end
 		elseif	cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
 			if love.math.random(1,2000) == 1 then		-- allow for some silence between ambient music
 				if love.math.random(1,2) == 1 then
 					AUDIO[enum.audioBGEric1]:play()
+					print("playing Eric1")
 				else
 					AUDIO[enum.audioBGEric2]:play()
+					print("playing Eric2")
 				end
 			end
 		end

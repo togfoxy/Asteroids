@@ -1,7 +1,6 @@
 fileops = {}
 
 function fileops.saveGame()
-    -- local vessel_table = prepVessel()
 
     local entity = fun.getEntity(PLAYER.UID)        -- this has to be before "get size" function
     local physicsEntity = fun.getPhysEntity(PLAYER.UID)
@@ -17,18 +16,25 @@ function fileops.saveGame()
     local savedir = love.filesystem.getSourceBaseDirectory( )
 
     -- vessel entity
-    local savefile = savedir .. "\\savedata\\" .. "vessel.dat"
+    local savefile
+    if love.filesystem.isFused() then
+        savedir = savedir .. "\\savedata\\"
+    else
+        savedir = savedir .. "/Source/savedata/"
+    end
+
+    savefile = savedir .. "vessel.dat"
     local str = entity:serialize()
     local serialisedString = bitser.dumps(str)
     local success, message = nativefs.write(savefile, serialisedString)
 
     -- save the physical object
-    local savefile = savedir .. "\\savedata\\" .. "vessel_physics.dat"
+    local savefile = savedir .. "vessel_physics.dat"
     local serialisedString = bitser.dumps(savetable)
     local success1, message = nativefs.write(savefile, serialisedString)
 
     -- player global table
-    local savefile = savedir .. "\\savedata\\" .. "globals.dat"
+    local savefile = savedir .. "globals.dat"
     local serialisedString = bitser.dumps(PLAYER)
     local success2, message = nativefs.write(savefile, serialisedString)
 
@@ -37,7 +43,7 @@ function fileops.saveGame()
     -- local serialisedString = bitser.dumps(PHYSICS_ENTITIES)
     -- local success2, message = nativefs.write(savefile, serialisedString)
 
-    print(savefile, success, message)
+    -- print(savefile, success, message)
     if success and success1 and success2 then
         lovelyToasts.show("Game saved",5)
     else
@@ -47,9 +53,13 @@ end
 
 function fileops.loadGame()
 
-    local loaderror = false
-    local entity = fun.getEntity(PLAYER.UID)
-    local physEntity = fun.getPhysEntity(PLAYER.UID)
+    local loaderror = false     --! need to fix this
+
+    local entity = concord.entity(ECSWORLD)
+    local physEntity = {}
+
+    -- local entity = fun.getEntity(PLAYER.UID)
+    -- local physEntity = fun.getPhysEntity(PLAYER.UID)
 
     local savedir = love.filesystem.getSourceBaseDirectory( )
     local savefile = savedir .. "\\savedata\\" .. "vessel.dat"

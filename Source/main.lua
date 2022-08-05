@@ -361,12 +361,17 @@ function love.mousepressed( x, y, button, istouch, presses )
 			for k, button in pairs(GUI_BUTTONS) do
 				if button.scene == enum.sceneMainMenu and button.visible then
 					local mybuttonID = buttons.buttonClicked(rx, ry, button)		-- bounding box stuff
+
 					if mybuttonID == enum.buttonNewGame then
 						--! need to kill all physics objects
 						--! need to kill all ECS objects
 						fun.InitialiseGame()
 						cf.AddScreen(enum.sceneAsteroid, SCREEN_STACK)
 						break
+					elseif mybuttonID == enum.buttonSaveGame then
+						fileops.saveGame()
+					elseif mybuttonID == enum.buttonLoadGame then
+						fileops.loadGame()
 					end
 				end
 			end
