@@ -82,6 +82,7 @@ function functions.loadImages()
 	IMAGES[enum.imagesBackgroundStatic] = love.graphics.newImage("assets/images/bg_space_seamless_2.png")
 	IMAGES[enum.imagesDead] = love.graphics.newImage("assets/images/dead.jpg")
 	IMAGES[enum.imagesShop] = love.graphics.newImage("assets/images/shop.jpg")
+	IMAGES[enum.imagesMenuBackground] = love.graphics.newImage("assets/images/menubackground.png")
 end
 
 function functions.loadAudio()
@@ -105,13 +106,16 @@ function functions.loadAudio()
 	AUDIO[enum.audioRockExplosion]:setVolume(0.5)
 	AUDIO[enum.audioRockScrape1]:setVolume(0.5)
 	AUDIO[enum.audioRockScrape2]:setVolume(0.5)
+	-- AUDIO[enum.audioRockScrape2]:setVolume(0.5)
+	-- AUDIO[enum.audioRockScrape2]:setVolume(0.5)
 end
 
 function functions.loadFonts()
     FONT[enum.fontHeavyMetalLarge] = love.graphics.newFont("assets/fonts/Heavy Metal Box.ttf")
     FONT[enum.fontHeavyMetalSmall] = love.graphics.newFont("assets/fonts/Heavy Metal Box.ttf",10)
     FONT[enum.fontDefault] = love.graphics.newFont("assets/fonts/Vera.ttf", 12)
-	FONT[enum.fontTech] = love.graphics.newFont("assets/fonts/CorporateGothicNbpRegular-YJJ2.ttf", 36)
+	FONT[enum.fontTech36] = love.graphics.newFont("assets/fonts/CorporateGothicNbpRegular-YJJ2.ttf", 36)
+	FONT[enum.fontTech18] = love.graphics.newFont("assets/fonts/CorporateGothicNbpRegular-YJJ2.ttf", 24)
 end
 
 function functions.getPhysEntity(uid)
@@ -584,13 +588,16 @@ function functions.playAmbientMusic()
 		if cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
 			if love.math.random(1,2000) == 1 then		-- allow for some silence between ambient music
 				AUDIO[enum.audioBGSkismo]:play()
+				print("playing Skismo")
 			end
 		elseif	cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
 			if love.math.random(1,2000) == 1 then		-- allow for some silence between ambient music
 				if love.math.random(1,2) == 1 then
 					AUDIO[enum.audioBGEric1]:play()
+					print("playing Eric1")
 				else
 					AUDIO[enum.audioBGEric2]:play()
+					print("playing Eric2")
 				end
 			end
 		end

@@ -104,7 +104,6 @@ local function drawAsteroids()
 
 	for k, obj in pairs(PHYSICS_ENTITIES) do
 		local udtable = obj.fixture:getUserData()
-		udtable.isVisible = true
 		if udtable.objectType == "Asteroid" and udtable.isVisible then
 				local body = obj.body
 				local mass = cf.round(body:getMass())
@@ -398,7 +397,7 @@ function draw.shop()
 						end
 						txt = txt .. cf.round(component.currentHP) .. " / " .. component.maxHP
 					end
-					love.graphics.setFont(FONT[enum.fontTech])
+					love.graphics.setFont(FONT[enum.fontTech36])
 					love.graphics.print(txt, drawx, drawy - 10)		-- colour and alpha is set up above
 
 					-- draw the description
@@ -448,7 +447,7 @@ function draw.shop()
 		compindex = compindex + 1
 		drawy = drawy + panelheight
 		local txt = component.label .. " $" .. component.purchasePrice
-		love.graphics.setFont(FONT[enum.fontTech])
+		love.graphics.setFont(FONT[enum.fontTech36])
 		love.graphics.setColor(1,1,1,1)
 		love.graphics.print(txt, drawx, drawy - 10)
 
@@ -479,7 +478,7 @@ function draw.shop()
 	end
 
 	-- draw the shopping receipt
-	love.graphics.setFont(FONT[enum.fontTech])
+	love.graphics.setFont(FONT[enum.fontTech36])
 	love.graphics.setColor(1,1,1,1)
 
 	local drawx = panelx[4] + 10
@@ -494,16 +493,16 @@ function draw.shop()
 	if PLAYER.ROCKSKILLED == nil then PLAYER.ROCKSKILLED = 0 end
 	if PLAYER.WEALTH == nil then PLAYER.WEALTH = 0 end
 
-	love.graphics.setFont(FONT[enum.fontTech])
+	love.graphics.setFont(FONT[enum.fontTech18])
 	love.graphics.setColor(1,1,1,1)
 
-	local drawx = SCREEN_WIDTH * 0.33
-	local drawy = 50
-	love.graphics.print("Wealth: $" .. cf.strFormatThousand(PLAYER.WEALTH), drawx, drawy)
+	local drawx = SCREEN_WIDTH * 0.33 + 180
+	local drawy = 33
+	love.graphics.print("$" .. cf.strFormatThousand(PLAYER.WEALTH), drawx, drawy)
 
-	local drawx = SCREEN_WIDTH * 0.66
-	local drawy = 50
-	love.graphics.print("Score: " .. PLAYER.ROCKSKILLED, drawx, drawy)
+	local drawx = SCREEN_WIDTH * 0.66 + 70
+	local drawy = 33
+	love.graphics.print(PLAYER.ROCKSKILLED, drawx, drawy)
 end
 
 function draw.dead()
@@ -529,15 +528,18 @@ end
 
 function draw.mainMenu()
 
+	love.graphics.setColor(1,1,1,1)
+	love.graphics.draw(IMAGES[enum.imagesMenuBackground], 0,0)
+
 	for k, button in pairs(GUI_BUTTONS) do
 		if button.scene == enum.sceneMainMenu and button.visible then
 			-- draw the button		--! doesn't deal with button.state yet
 
 			love.graphics.setColor(button.bgcolour)
 			if button.state == "on" then
-				love.graphics.rectangle("fill", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+				-- love.graphics.rectangle("fill", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
 			else
-				love.graphics.rectangle("line", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+				-- love.graphics.rectangle("line", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
 			end
 
 			-- draw the label
@@ -546,8 +548,6 @@ function draw.mainMenu()
 			love.graphics.print(button.label, button.x + 5, button.y + 5)
 		end
 	end
-
-
 end
 
 return draw

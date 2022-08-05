@@ -16,6 +16,7 @@ imagesShop = 13
 imagesPod = 14
 imagesStarbase = 15
 imagesShopPanels = 16
+imagesMenuBackground = 17
 
 audioEngine = 1
 audioLowFuel = 2
@@ -33,7 +34,8 @@ audioBGEric2 = 14
 fontDefault = 1
 fontHeavyMetalLarge = 2
 fontHeavyMetalSmall = 3
-fontTech = 4
+fontTech36 = 4
+fontTech18 = 5
 
 sceneAsteroid = 1
 sceneShop = 2
@@ -47,6 +49,10 @@ buttonTypeSell = 3
 -- global button table
 buttonAlarmOff = 1
 buttonNewGame = 2
+buttonLoadGame = 3
+buttonSaveGame = 4
+buttonSettings = 5
+buttonCredits = 6
 
 oreTypeGold = 1
 oreTypeSilver = 2
