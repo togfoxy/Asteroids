@@ -442,10 +442,9 @@ end
 
 function love.update(dt)
 
-	if cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
+	DRAW = {}
 
-		SOUND = {}		-- a global that is updated during update calls and then reset at the start of each dt
-		DRAW = {}
+	if cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
 
 		ECSWORLD:emit("update", dt)
 		PHYSICSWORLD:update(dt) --this puts the world into motion
@@ -457,7 +456,6 @@ function love.update(dt)
 			physEntity.fixture:setSensor(false)
 		end
 
-		fun.playSounds()
 		fun.deductO2(dt)
 
 		-- check for dead chassis
@@ -519,9 +517,11 @@ function love.update(dt)
 		local physEntity = fun.getPhysEntity(PLAYER.UID)
 		local x1, y1 = physEntity.body:getPosition()
 		if y1 > 925 then
-			physEntity.body:setPosition(x1, 925)			--! hack
+			physEntity.body:setPosition(x1, 925)
 		end
 	end
+
+	fun.playSounds()
 
 	SHOP_TIMER = SHOP_TIMER - dt		-- counts down regardless of which screen you on
 	if SHOP_TIMER < 0 then

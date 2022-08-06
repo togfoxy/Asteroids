@@ -609,41 +609,49 @@ function functions.playSounds()
 
 	if SOUND.engine then
 		AUDIO[enum.audioEngine]:play()
+		SOUND.engine = false
 	else
 		AUDIO[enum.audioEngine]:stop()
 	end
 	if SOUND.lowFuel and ALARM_OFF_TIMER <= 0 then
 		AUDIO[enum.audioLowFuel]:play()
+		SOUND.lowFuel = false
 	else
 		AUDIO[enum.audioLowFuel]:stop()
 	end
 	if SOUND.warning and ALARM_OFF_TIMER <= 0  then
 		AUDIO[enum.audioWarning]:play()
+		SOUND.warning = false
 	else
 		AUDIO[enum.audioWarning]:stop()
 	end
 	if SOUND.miningLaser then
 		AUDIO[enum.audioMiningLaser]:play()
+		SOUND.miningLaser = false
 	else
 		AUDIO[enum.audioMiningLaser]:stop()
 	end
 	if SOUND.rockExplosion then
 		AUDIO[enum.audioRockExplosion]:play()
+		SOUND.rockExplosion = false
 	end
 	if SOUND.scrape1 then
 		AUDIO[enum.audioRockScrape1]:play()
+		SOUND.scrape1 = false
 	end
 	if SOUND.scrape2 then
 		AUDIO[enum.audioRockScrape2]:play()
+		SOUND.scrape2 = false
 	end
 	if SOUND.ding then
 		AUDIO[enum.audioDing]:play()
+		SOUND.ding = false
 	end
 	if SOUND.wrong then
 		AUDIO[enum.audioWrong]:play()
+		SOUND.wrong = false
 	end
 end
-
 
 local function establishWorldBorders()
 	-- bottom border
