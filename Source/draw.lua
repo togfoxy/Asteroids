@@ -155,7 +155,7 @@ local function drawHUD()
 	if o2left < 25 then
 		-- draw flashing light
 		love.graphics.setColor(1,0,0, O2_ALARM_ALPHA)
-		love.graphics.circle("fill", drawx - 20, drawy, 5)
+		love.graphics.circle("fill", drawx - 29, drawy, 6)
 	end
 
 	-- fuel left (green)
@@ -171,7 +171,7 @@ local function drawHUD()
 	if fuel < 10 then
 		-- draw flashing light
 		love.graphics.setColor(1,0,0, FUEL_ALARM_ALPHA)
-		love.graphics.circle("fill", drawx - 20, drawy, 5)
+		love.graphics.circle("fill", drawx - 29, drawy, 6)
 	end
 
 	-- hold space (gold)
@@ -189,7 +189,7 @@ local function drawHUD()
 		if cargopercent > 0.98 then
 			-- draw flashing light
 			love.graphics.setColor(1,0,0, 1)
-			love.graphics.circle("fill", drawx - 20, drawy, 5)
+			love.graphics.circle("fill", drawx - 29, drawy, 6)
 		end
 	end
 
@@ -207,7 +207,7 @@ local function drawHUD()
 		if entity.battery.capacity < BATTERY_THRESHOLD_SECONDS then	-- note this is NOT percentage but hard seconds
 			-- draw flashing light
 			love.graphics.setColor(1,0,0, BATTERY_ALARM_ALPHA)
-			love.graphics.circle("fill", drawx - 20, drawy, 5)
+			love.graphics.circle("fill", drawx - 30, drawy, 5)
 		end
 	end
 
@@ -291,6 +291,8 @@ end
 
 function draw.asteroids()
 
+
+print("hi")
     cam:attach()
 
 	-- wallpaper

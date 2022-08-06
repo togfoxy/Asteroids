@@ -255,6 +255,7 @@ function love.mousereleased( x, y, button, istouch, presses )
 
 	if button == 1 then
 		local currentScreen = cf.currentScreenName(SCREEN_STACK)
+
 		if currentScreen == enum.sceneShop then
 			-- determine which screen button was clicked
 			for i = 1, #BUTTONS do
@@ -295,7 +296,12 @@ function love.mousereleased( x, y, button, istouch, presses )
 							local purchaseprice = button.component.purchasePrice
 							if entity:has(shopcomponentType) then		-- this is a string
 								-- exchange existing item
-								PLAYER.WEALTH = PLAYER.WEALTH + love.math.random(400, 600)
+								local refund = love.math.random(400, 600)
+								PLAYER.WEALTH = PLAYER.WEALTH + refund
+								local item = {}
+								item.description = "Refund"
+								item.amount = refund
+								table.insert(RECEIPT, item)
 
 								if PLAYER.WEALTH >= purchaseprice then
 									entity:remove(shopcomponentType)
@@ -382,8 +388,10 @@ function love.mousereleased( x, y, button, istouch, presses )
 						break
 					elseif mybuttonID == enum.buttonSaveGame then
 						fileops.saveGame()
+						break
 					elseif mybuttonID == enum.buttonLoadGame then
 						fileops.loadGame()
+						break
 					end
 				end
 			end
@@ -432,7 +440,6 @@ function love.draw()
 
 	if cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
 		draw.asteroids()
-
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneDed then
 		draw.dead()
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
