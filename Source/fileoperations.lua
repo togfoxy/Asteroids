@@ -8,10 +8,7 @@ function fileops.saveGame()
     local x,y = physicsEntity.body:getPosition()
     local temptable = physicsEntity.fixture:getUserData()
 
-    local savetable = {}
-    savetable.x = x
-    savetable.y = y
-    savetable.objectType = temptable.objectType
+
 
     local savedir = love.filesystem.getSourceBaseDirectory( )
 
@@ -28,7 +25,16 @@ function fileops.saveGame()
     local serialisedString = bitser.dumps(str)
     local success, message = nativefs.write(savefile, serialisedString)
 
-    -- save the physical object
+    -- save the key data for the physical object
+    local savetable = {}
+    savetable.x = x
+    savetable.y = y
+    savetable.uid = entity.uid.value
+
+print("Beta" .. savetable.uid)
+
+    savetable.objectType = temptable.objectType
+
     local savefile = savedir .. "vessel_physics.dat"
     local serialisedString = bitser.dumps(savetable)
     local success1, message = nativefs.write(savefile, serialisedString)
@@ -52,47 +58,60 @@ function fileops.saveGame()
 end
 
 function fileops.loadGame()
+    -- calls InitialiseGame which already establishes a bunch of stuff
 
     local loaderror = false     --! need to fix this
 
-    local entity = concord.entity(ECSWORLD)
-    local physEntity = {}
-
-    -- local entity = fun.getEntity(PLAYER.UID)
-    -- local physEntity = fun.getPhysEntity(PLAYER.UID)
+    fun.InitialiseGame()
 
     local savedir = love.filesystem.getSourceBaseDirectory( )
-    local savefile = savedir .. "\\savedata\\" .. "vessel.dat"
+    local savefile
+    if love.filesystem.isFused() then
+        savedir = savedir .. "\\savedata\\"
+    else
+        savedir = savedir .. "/Source/savedata/"
+    end
+
+    -- local entity = concord.entity(ECSWORLD)
+    local entity = fun.getEntity(PLAYER.UID)
+    local savefile = savedir .. "vessel.dat"
 	if nativefs.getInfo(savefile) then
 		contents, size = nativefs.read(savefile)
 	    local str = bitser.loads(contents)
         entity:deserialize(str)
+        -- table.insert(ECS_ENTITIES, entity)
     else
         loaderror = true
 	end
+    assert(loaderror == false)
+
+
 
     -- load physics object
-    local savefile = savedir .. "\\savedata\\" .. "vessel_physics.dat"
+    local physEntity = fun.getPhysEntity(PLAYER.UID)
+    local savefile = savedir .. "vessel_physics.dat"
 	if nativefs.getInfo(savefile) then
 		contents, size = nativefs.read(savefile)
 	    local savetable = bitser.loads(contents)
 
-        local shipsize = fun.getEntitySize(entity)
         physEntity.body:setPosition(savetable.x, savetable.y)
-    	physEntity.fixture:setSensor(false)
 
+        -- load the whole temp table here so can save the whole temp table later
         local temptable = {}
-    	temptable.uid = entity.uid.value
+        temptable.x = savetable.x
+        temptable.y = savetable.y
+    	temptable.uid = savetable.uid
     	temptable.objectType = savetable.objectType
     	physEntity.fixture:setUserData(temptable)
 
-        fun.changeShipPhysicsSize(entity)
+-- print("alpha" .. savetable.uid, PLAYER.UID)
+
     else
         loaderror = true
 	end
 
     -- load player global table
-    local savefile = savedir .. "\\savedata\\" .. "globals.dat"
+    local savefile = savedir .. "globals.dat"
 	if nativefs.getInfo(savefile) then
 		contents, size = nativefs.read(savefile)
 	    PLAYER = bitser.loads(contents)

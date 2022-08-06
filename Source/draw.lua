@@ -140,11 +140,12 @@ end
 local function drawHUD()
 	-- draw the HUD
 	love.graphics.setColor(1,1,1,1)
+	love.graphics.draw(IMAGES[enum.imagesAsteroidBackground])
 
 	-- o2 left
 	local o2left = fun.getO2left()
 	if o2left > 100 then o2left = 100 end	-- 100 is an arbitrary 100 to make % easy
-	local drawx = 75
+	local drawx = 100
 	local drawy = 50
 	local scalex = 1
 	love.graphics.setColor(0,188/255,1,1)
@@ -160,7 +161,7 @@ local function drawHUD()
 	-- fuel left (green)
 	local fuel = fun.getFuelBurnTime()
 	if fuel > 100 then fuel = 100 end	-- 100 is an arbitrary 100 to make % easy
-	local drawx = 75
+	local drawx = 100
 	local drawy = 75
 	local scalex = 1
 	love.graphics.setColor(0,1,0,1)
@@ -177,7 +178,7 @@ local function drawHUD()
 	local entity = fun.getEntity(PLAYER.UID)
 	if entity:has("cargoHold") then
 		local cargopercent = (entity.cargoHold.currentAmount / entity.cargoHold.maxAmount)		-- decimal
-		local drawx = 75
+		local drawx = 100
 		local drawy = 100
 		local barlength = 100 * cargopercent
 		local scalex = 1
@@ -195,7 +196,7 @@ local function drawHUD()
 	-- battery
 	if entity:has("battery") then
 		local batterypercent = (entity.battery.capacity / entity.battery.maxCapacity)		-- decimal
-		local drawx = 75
+		local drawx = 100
 		local drawy = 125
 		local barlength = 100 * batterypercent
 		local scalex = 1
@@ -212,80 +213,71 @@ local function drawHUD()
 
 	-- draw the 'non-gauge' components that don't have capacity
 	if entity:has("oxyTank") then
-		local drawx = SCREEN_WIDTH - 100
+		local drawx = SCREEN_WIDTH - 190
 		local drawy = 50
-		love.graphics.setColor(1,1,1,1)
+		if entity.oxyTank.currentHP > 0 then
+			love.graphics.setColor(1,1,1,1)
+		else
+			love.graphics.setColor(1,0,0,1)
+		end
 		love.graphics.setFont(FONT[enum.fontDefault])
-		love.graphics.print("O2", drawx, drawy)
+		love.graphics.print("O2 tank", drawx, drawy)
 	end
 	if entity:has("solarPanel") then
-		local drawx = SCREEN_WIDTH - 100 + 50
+		local drawx = SCREEN_WIDTH - 100
 		local drawy = 50
-		love.graphics.setColor(1,1,1,1)
+		if entity.solarPanel.currentHP > 0 then
+			love.graphics.setColor(1,1,1,1)
+		else
+			love.graphics.setColor(1,0,0,1)
+		end
 		love.graphics.setFont(FONT[enum.fontDefault])
-		love.graphics.print("SP", drawx, drawy)
+		love.graphics.print("Solar panel", drawx, drawy)
 	end
 	if entity:has("spaceSuit") then
-		local drawx = SCREEN_WIDTH - 100
-		local drawy = 100
+		local drawx = SCREEN_WIDTH - 200
+		local drawy = 90
 		love.graphics.setColor(1,1,1,1)
 		love.graphics.setFont(FONT[enum.fontDefault])
-		love.graphics.print("SS", drawx, drawy)
+		love.graphics.print("Space suit", drawx, drawy)
 	end
 	if entity:has("Stabiliser") then
-		local drawx = SCREEN_WIDTH - 100 + 50
-		local drawy = 100
-		love.graphics.setColor(1,1,1,1)
+		local drawx = SCREEN_WIDTH - 95
+		local drawy = 90
+		if entity.Stabiliser.currentHP > 0 then
+			love.graphics.setColor(1,1,1,1)
+		else
+			love.graphics.setColor(1,0,0,1)
+		end
 		love.graphics.setFont(FONT[enum.fontDefault])
-		love.graphics.print("St", drawx, drawy)
+		love.graphics.print("Stabiliser", drawx, drawy)
 	end
 
 	-- draw buttons
-	-- SOS Beacan
-	local mode
-	if entity:has("SOSBeacon") and entity.SOSBeacon.currentHP > 0 then
-		if entity:has("battery") and entity.battery.capacity > 0 and entity.battery.currentHP > 0 then
-			if entity.SOSBeacon.activated then
-				mode = "fill"
-			else
-				mode = "line"
-			end
-			local drawx = SCREEN_WIDTH - 100
-			local drawy = 150
-			love.graphics.setColor(1,0,0,1)
-			love.graphics.rectangle(mode, drawx, drawy, 20, 20)			-- drawx/y is the top left corner of the square
-
-			love.graphics.setFont(FONT[enum.fontDefault])
-			love.graphics.setColor(1,1,1,1)
-			love.graphics.print("SOS", drawx + 3, drawy + 5)
-		end
-	end
-	-- draw ejection button
-	if entity:has("ejectionPod") and entity.ejectionPod.currentHP > 0 then
-		local drawx = SCREEN_WIDTH - 100 + 50
-		local drawy = 150
-		love.graphics.setColor(1,0,0,1)
-		love.graphics.rectangle("fill", drawx, drawy, 20, 20)			-- drawx/y is the top left corner of the square
-
-		love.graphics.setFont(FONT[enum.fontDefault])
-		love.graphics.setColor(1,1,1,1)
-		love.graphics.print("E", drawx + 5, drawy + 5)
-	end
-
 	for k, button in pairs(GUI_BUTTONS) do
 		if button.scene == enum.sceneAsteroid and button.visible then
 			-- draw the button
 			love.graphics.setColor(button.bgcolour)
-			if button.state == "on" then
-				love.graphics.rectangle("fill", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+
+			if button.image == nil then
+				if button.state == "on" then
+					love.graphics.rectangle("fill", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+				else
+					love.graphics.rectangle("line", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+				end
 			else
-				love.graphics.rectangle("line", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
+				love.graphics.draw(button.image, button.x, button.y)
 			end
 
 			-- draw the label
+			if button.state == "off" then
+				love.graphics.setColor(button.labeloffcolour)
+			else
+				love.graphics.setColor(button.labeloncolour)
+			end
+			local labelxoffset = button.labelxoffset or 0
 			love.graphics.setFont(FONT[enum.fontDefault])
-			love.graphics.setColor(button.labelcolour)
-			love.graphics.print(button.label, button.x + 5, button.y + 5)
+			love.graphics.print(button.label, button.x + labelxoffset, button.y + 5)
 		end
 	end
 

@@ -17,6 +17,8 @@ imagesPod = 14
 imagesStarbase = 15
 imagesShopPanels = 16
 imagesMenuBackground = 17
+imagesAsteroidBackground = 18
+imagesButton = 19
 
 audioEngine = 1
 audioLowFuel = 2
@@ -53,6 +55,8 @@ buttonLoadGame = 3
 buttonSaveGame = 4
 buttonSettings = 5
 buttonCredits = 6
+buttonSOSBeacon = 7
+buttonEjectionPod = 8
 
 oreTypeGold = 1
 oreTypeSilver = 2

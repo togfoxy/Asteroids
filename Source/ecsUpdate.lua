@@ -119,24 +119,22 @@ function ecsUpdate.init()
             local y1 = physEntity.body:getY()
 
             if input:down('moveforward') then
-				input:down('moveforward')
                 if entity.engine.currentHP <= 0 then
                     SOUND.warning = true
-                    break
                 end
                 if entity:has("fuelTank") then
                     if entity.fuelTank.currentHP <= 0 then
                         SOUND.warning = true
-                        break
                     elseif fun.getFuelBurnTime() <= 10 then
                         SOUND.lowFuel = true
                     end
                 else
                     SOUND.warning = true
-                    break
                 end
 
-				if fun.getFuelBurnTime() > 0 then
+				if entity.engine.currentHP > 0 and entity:has("fuelTank") and entity.fuelTank.currentHP > 0 and
+					fun.getFuelBurnTime() > 0 then
+
 	                local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
 	                facing = cf.convRadToCompass(facing)
 
@@ -167,42 +165,42 @@ function ecsUpdate.init()
 			if input:down('moveright') then
                 if entity.leftThruster.currentHP <= 0 then
                     SOUND.warning = true
-                    break
                 end
                 if entity:has("fuelTank") then
                     if entity.fuelTank.currentHP <= 0 then
                         SOUND.warning = true
-                        break
                     elseif fun.getFuelBurnTime() <= 10 then
                         SOUND.lowFuel = true
-                        break
                     end
                 else
+					-- no fuel tank!
                     SOUND.warning = true
-                    break
                 end
 
-                local physEntity = fun.getPhysEntity(entity.uid.value)
+				if entity.leftThruster.currentHP > 0 and entity:has("fuelTank") and entity.fuelTank.currentHP <= 0 and
+					fun.getFuelBurnTime() > 0 then
 
-                local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
-                facing = cf.convRadToCompass(facing)
-                facing = cf.adjustHeading(facing, 90)
+	                local physEntity = fun.getPhysEntity(entity.uid.value)
 
-                local vectordistance = entity.leftThruster.strength      -- amount of force
-                local x1 = physEntity.body:getX()
-                local y1 = physEntity.body:getY()
+	                local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
+	                facing = cf.convRadToCompass(facing)
+	                facing = cf.adjustHeading(facing, 90)
 
-        		local x2, y2 = cf.AddVectorToPoint(x1, y1, facing, vectordistance)
-        		local xvector = (x2 - x1) * 20 * dt
-        		local yvector = (y2 - y1) * 20 * dt
+	                local vectordistance = entity.leftThruster.strength      -- amount of force
+	                local x1 = physEntity.body:getX()
+	                local y1 = physEntity.body:getY()
 
-        		physEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
+	        		local x2, y2 = cf.AddVectorToPoint(x1, y1, facing, vectordistance)
+	        		local xvector = (x2 - x1) * 20 * dt
+	        		local yvector = (y2 - y1) * 20 * dt
 
-                entity.fuelTank.capacity = entity.fuelTank.capacity - (vectordistance / FUEL_CONSUMPTION_RATE)
+	        		physEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
 
-                SOUND.engine = true
-                DRAW.leftFlame = true
+	                entity.fuelTank.capacity = entity.fuelTank.capacity - (vectordistance / FUEL_CONSUMPTION_RATE)
 
+	                SOUND.engine = true
+	                DRAW.leftFlame = true
+				end
             end
             if input:down('rotateright') and entity:has("fuelTank") and entity.leftThruster.currentHP > 0 then
                 -- rotate clockwise
@@ -221,42 +219,42 @@ function ecsUpdate.init()
 			if input:down('moveleft') then
                 if entity.rightThruster.currentHP <= 0 then
                     SOUND.warning = true
-                    break
                 end
                 if entity:has("fuelTank") then
                     if entity.fuelTank.currentHP <= 0 then
                         SOUND.warning = true
-                        break
                     elseif fun.getFuelBurnTime() <= 10 then
                         SOUND.lowFuel = true
-                        break
                     end
                 else
                     SOUND.warning = true
-                    break
                 end
 
-                local physEntity = fun.getPhysEntity(entity.uid.value)
+				if entity.rightThruster.currentHP > 0 and entity:has("fuelTank") and entity.fuelTank.currentHP > 0 and
+					fun.getFuelBurnTime() > 0 then
 
-                local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
-                facing = cf.convRadToCompass(facing)
+	                local physEntity = fun.getPhysEntity(entity.uid.value)
 
-                facing = cf.adjustHeading(facing, -90)      -- thrust to the left
+	                local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
+	                facing = cf.convRadToCompass(facing)
 
-                local vectordistance = entity.rightThruster.strength      -- amount of force
-                local x1 = physEntity.body:getX()
-                local y1 = physEntity.body:getY()
+	                facing = cf.adjustHeading(facing, -90)      -- thrust to the left
 
-        		local x2, y2 = cf.AddVectorToPoint(x1, y1, facing, vectordistance)
-        		local xvector = (x2 - x1) * 20 * dt
-        		local yvector = (y2 - y1) * 20 * dt
+	                local vectordistance = entity.rightThruster.strength      -- amount of force
+	                local x1 = physEntity.body:getX()
+	                local y1 = physEntity.body:getY()
 
-        		physEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
+	        		local x2, y2 = cf.AddVectorToPoint(x1, y1, facing, vectordistance)
+	        		local xvector = (x2 - x1) * 20 * dt
+	        		local yvector = (y2 - y1) * 20 * dt
 
-                entity.fuelTank.capacity = entity.fuelTank.capacity - (vectordistance / FUEL_CONSUMPTION_RATE)
+	        		physEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
 
-                SOUND.engine = true
-                DRAW.rightFlame = true
+	                entity.fuelTank.capacity = entity.fuelTank.capacity - (vectordistance / FUEL_CONSUMPTION_RATE)
+
+	                SOUND.engine = true
+	                DRAW.rightFlame = true
+				end
             end
             if input:down('rotateleft') and entity:has("fuelTank") and entity.rightThruster.currentHP > 0 then
                 -- rotate anti-clockwise
@@ -276,42 +274,41 @@ function ecsUpdate.init()
             if input:down('movebackwards') then
 				if entity.reverseThruster.currentHP <= 0 then
                     SOUND.warning = true
-                    break
                 end
                 if entity:has("fuelTank") then
                     if entity.fuelTank.currentHP <= 0 then
                         SOUND.warning = true
-                        break
                     elseif fun.getFuelBurnTime() <= 10 then
                         SOUND.lowFuel = true
-                        break
                     end
                 else
                     SOUND.warning = true
-                    break
                 end
 
-                local physEntity = fun.getPhysEntity(entity.uid.value)
+				if entity.reverseThruster.currentHP > 0 and entity:has("fuelTank") and entity.fuelTank.currentHP > 0 and
+					fun.getFuelBurnTime() > 0 then
 
-                local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
-                facing = cf.convRadToCompass(facing)
-                facing = cf.adjustHeading(facing, 180)
+	                local physEntity = fun.getPhysEntity(entity.uid.value)
 
-                local vectordistance = entity.reverseThruster.strength      -- amount of force
-                local x1 = physEntity.body:getX()
-                local y1 = physEntity.body:getY()
+	                local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
+	                facing = cf.convRadToCompass(facing)
+	                facing = cf.adjustHeading(facing, 180)
 
-                local x2, y2 = cf.AddVectorToPoint(x1, y1, facing, vectordistance)
-                local xvector = (x2 - x1) * 20 * dt
-                local yvector = (y2 - y1) * 20 * dt
+	                local vectordistance = entity.reverseThruster.strength      -- amount of force
+	                local x1 = physEntity.body:getX()
+	                local y1 = physEntity.body:getY()
 
-                physEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
+	                local x2, y2 = cf.AddVectorToPoint(x1, y1, facing, vectordistance)
+	                local xvector = (x2 - x1) * 20 * dt
+	                local yvector = (y2 - y1) * 20 * dt
 
-                entity.fuelTank.capacity = entity.fuelTank.capacity - (vectordistance / FUEL_CONSUMPTION_RATE)
+	                physEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
 
-                SOUND.engine = true
-                DRAW.reverseFlame = true
+	                entity.fuelTank.capacity = entity.fuelTank.capacity - (vectordistance / FUEL_CONSUMPTION_RATE)
 
+	                SOUND.engine = true
+	                DRAW.reverseFlame = true
+				end
             end
         end
     end
@@ -398,6 +395,13 @@ function ecsUpdate.init()
     })
     function systemSOSBeacon:update(dt)
         for _, entity in ipairs(self.pool) do
+			-- ensure button is drawn
+			if entity.SOSBeacon.currentHP > 0 then
+				buttons.setButtonVisible(enum.buttonSOSBeacon)
+			else
+				buttons.setButtonInvisible(enum.buttonSOSBeacon)
+			end
+
 			if entity.SOSBeacon.activated and entity.SOSBeacon.currentHP > 0 then
 				if entity:has("battery") and entity.battery.capacity > 0 and entity.battery.currentHP > 0 then
 					entity.battery.capacity = entity.battery.capacity - dt	-- beacon drains the battery
@@ -430,35 +434,31 @@ function ecsUpdate.init()
     })
     function systemejectionPod:update(dt)
         for _, entity in ipairs(self.pool) do
-			if love.mouse.isDown(1) and entity.ejectionPod.currentHP > 0 then
-				x, y = love.mouse.getPosition()
+			-- ensure button is drawn
+			if entity.ejectionPod.currentHP > 0 then
+				buttons.setButtonVisible(enum.buttonEjectionPod)
+			else
+				buttons.setButtonInvisible(enum.buttonEjectionPod)
+			end
 
-				local buttonwidth = 20
-				local buttonx = SCREEN_WIDTH - 100 + 50 - buttonwidth
-				local buttony = 150
+			if entity.ejectionPod.active and entity.ejectionPod.currentHP > 0 then
+				ejectPlayer(entity)
+				entity.ejectionPod.active = false
 
+				-- propel the pod towards the base
+				-- get the players x/y
+				local playerPhysEntity = fun.getPhysEntity(PLAYER.UID)
+				local x1, y1 = playerPhysEntity.body:getPosition()
+				local x2, y2
 
-				if x >= buttonx and x <= buttonx + buttonwidth and
-					y >= buttony and y <= buttony + buttonwidth then
-					ejectPlayer(entity)
-
-					-- propel the pod towards the base
-
-					-- get the players x/y
-					local playerPhysEntity = fun.getPhysEntity(PLAYER.UID)
-					local x1, y1 = playerPhysEntity.body:getPosition()
-					local x2, y2
-
-					-- get the starbase x/y
-					for _, physEntity in pairs(PHYSICS_ENTITIES) do
-						local temptable = physEntity.fixture:getUserData()
-						if temptable.objectType == "Starbase" then
-							x2, y2 = physEntity.body:getPosition()
-							local xvector = (x2 - x1) * 2000
-							local yvector = (y2 - y1) * 2000
-							playerPhysEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
-							print(xvector, yvector)
-						end
+				-- get the starbase x/y
+				for _, physEntity in pairs(PHYSICS_ENTITIES) do
+					local temptable = physEntity.fixture:getUserData()
+					if temptable.objectType == "Starbase" then
+						x2, y2 = physEntity.body:getPosition()
+						local xvector = (x2 - x1) * 2000
+						local yvector = (y2 - y1) * 2000
+						playerPhysEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
 					end
 				end
 			end

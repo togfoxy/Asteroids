@@ -14,15 +14,15 @@ local function establishPlayerVessel()
 	:give("oxyGenerator")
 	:give("cargoHold")
 
-	-- :give("leftThruster")
-	-- :give("rightThruster")
-	-- :give("reverseThruster")
-	-- :give("oxyTank")
-	-- :give("solarPanel")
-	-- :give("spaceSuit")
-	-- :give("SOSBeacon")
-	-- :give("Stabiliser")
-	-- :give("ejectionPod")
+	:give("leftThruster")
+	:give("rightThruster")
+	:give("reverseThruster")
+	:give("oxyTank")
+	:give("solarPanel")
+	:give("spaceSuit")
+	:give("SOSBeacon")
+	:give("Stabiliser")
+	:give("ejectionPod")
 
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
@@ -73,6 +73,8 @@ function functions.loadImages()
 	IMAGES[enum.imagesBlueBarEnd] = love.graphics.newImage("assets/images/bluebarend.png")
 	IMAGES[enum.imagesGreenBar] = love.graphics.newImage("assets/images/greenbar.png")
 	IMAGES[enum.imagesGreenBarEnd] = love.graphics.newImage("assets/images/greenbarend.png")
+	IMAGES[enum.imagesButton] = love.graphics.newImage("assets/images/button.png")
+
 
 	-- shop
 	IMAGES[enum.imagesShopPanel] = love.graphics.newImage("assets/images/shoppanel.png")
@@ -83,6 +85,8 @@ function functions.loadImages()
 	IMAGES[enum.imagesDead] = love.graphics.newImage("assets/images/dead.jpg")
 	IMAGES[enum.imagesShop] = love.graphics.newImage("assets/images/shop.jpg")
 	IMAGES[enum.imagesMenuBackground] = love.graphics.newImage("assets/images/menubackground.png")
+	IMAGES[enum.imagesAsteroidBackground] = love.graphics.newImage("assets/images/asteroidbg.png")
+
 end
 
 function functions.loadAudio()
@@ -435,10 +439,12 @@ function functions.changeShipPhysicsSize(entity)
 	-- receives an ECS entity
 	-- returns nothing
 
+	assert(PLAYER.UID ~= nil)
+
 	local shipsize = fun.getEntitySize(entity)
 	local temptable = {}
-
 	local physicsEntity = fun.getPhysEntity(PLAYER.UID)
+	assert(physicsEntity ~= nil)
 	local x,y = physicsEntity.body:getPosition()
 	temptable = physicsEntity.fixture:getUserData()
 	fun.killPhysicsEntity(physicsEntity)
@@ -749,7 +755,7 @@ function functions.InitialiseGame()
 	SHOPWORLD = concord.world()
 	ECSWORLD = concord.world()
 	ecsFunctions.init()
-	establishPhysicsWorld()
+	establishPhysicsWorld()		-- creates borders, starbase and player vessel and player physics
 	for i = 1, NUMBER_OF_ASTEROIDS do
 		fun.createAsteroid()
 	end
@@ -762,11 +768,9 @@ function functions.InitialiseGame()
 	item.amount = 0
 	table.insert(RECEIPT, item)
 
-
 	TRANSLATEX = (x1 * BOX2D_SCALE)
 	TRANSLATEY = (y1 * BOX2D_SCALE)
     ZOOMFACTOR = 0.4
-
 end
 
 return functions
