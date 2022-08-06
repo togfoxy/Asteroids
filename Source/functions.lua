@@ -113,6 +113,7 @@ function functions.loadAudio()
 	AUDIO[enum.audioRockScrape2]:setVolume(0.5)
 	AUDIO[enum.audioBGSkismo]:setVolume(0.5)
 	AUDIO[enum.audioBGEric1]:setVolume(0.5)
+	AUDIO[enum.audioDing]:setVolume(0.5)
 end
 
 function functions.loadFonts()

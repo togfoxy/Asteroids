@@ -247,6 +247,12 @@ end
 function love.mousereleased( x, y, button, istouch, presses )
 	local entity = fun.getEntity(PLAYER.UID)
 
+	local wx, wy
+	if cam == nil then
+	else
+		wx,wy = cam:toWorld(x, y)	-- converts screen x/y to world x/y
+	end
+
 	if button == 1 then
 		local currentScreen = cf.currentScreenName(SCREEN_STACK)
 		if currentScreen == enum.sceneShop then
@@ -471,6 +477,7 @@ function love.update(dt)
 			DEAD_REASON = deadreason		-- refactor to not use globals
 			DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
 			if DEAD_ALPHA >= 1 then
+				fun.InitialiseGame()
 				cf.SwapScreen(enum.sceneDed, SCREEN_STACK)
 				-- cleanDeadData()		-!
 			end
