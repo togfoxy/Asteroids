@@ -408,6 +408,7 @@ function love.load()
 
 	buttons.loadButtons()			-- the buttons that are displayed on different gui's
 	keymaps.init()
+    cmp.init()
 
 	-- cf.AddScreen(enum.sceneAsteroid, SCREEN_STACK)
 	cf.AddScreen(enum.sceneMainMenu, SCREEN_STACK)

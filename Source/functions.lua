@@ -723,6 +723,20 @@ end
 
 function functions.InitialiseGame()
 	-- do all the stuff that starts the game
+
+	for k, entity in pairs(ECS_ENTITIES) do
+		fun.killECSEntity(entity)
+	end
+
+	for k, physEntity in pairs(PHYSICS_ENTITIES) do
+		fun.killPhysicsEntity(physEntity)
+	end
+
+	ECS_ENTITIES = {}
+	PHYSICS_ENTITIES = {}
+	SHOPWORLD = {}
+	ECSWORLD = {}
+
 	SHOPWORLD = concord.world()
 	ECSWORLD = concord.world()
 	ecsFunctions.init()
