@@ -91,6 +91,7 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 			end
 		end
 		if entity:has("spaceSuit") then entity.spaceSuit.O2capacity = entity.spaceSuit.maxO2Capacity end
+		if entity:has("SOSBeacon") then entity.SOSBeacon.activated = false end
 
 		AUDIO[enum.audioBGSkismo]:stop()
 
