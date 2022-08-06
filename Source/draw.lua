@@ -213,47 +213,47 @@ local function drawHUD()
 
 	-- draw the 'non-gauge' components that don't have capacity
 	if entity:has("oxyTank") then
-		local drawx = SCREEN_WIDTH - 100
+		local drawx = SCREEN_WIDTH - 190
 		local drawy = 50
-		love.graphics.setColor(1,1,1,1)
+		if entity.oxyTank.currentHP > 0 then
+			love.graphics.setColor(1,1,1,1)
+		else
+			love.graphics.setColor(1,0,0,1)
+		end
 		love.graphics.setFont(FONT[enum.fontDefault])
-		love.graphics.print("O2", drawx, drawy)
+		love.graphics.print("O2 tank", drawx, drawy)
 	end
 	if entity:has("solarPanel") then
-		local drawx = SCREEN_WIDTH - 100 + 50
+		local drawx = SCREEN_WIDTH - 100
 		local drawy = 50
-		love.graphics.setColor(1,1,1,1)
+		if entity.solarPanel.currentHP > 0 then
+			love.graphics.setColor(1,1,1,1)
+		else
+			love.graphics.setColor(1,0,0,1)
+		end
 		love.graphics.setFont(FONT[enum.fontDefault])
-		love.graphics.print("SP", drawx, drawy)
+		love.graphics.print("Solar panel", drawx, drawy)
 	end
 	if entity:has("spaceSuit") then
-		local drawx = SCREEN_WIDTH - 100
-		local drawy = 100
+		local drawx = SCREEN_WIDTH - 200
+		local drawy = 90
 		love.graphics.setColor(1,1,1,1)
 		love.graphics.setFont(FONT[enum.fontDefault])
-		love.graphics.print("SS", drawx, drawy)
+		love.graphics.print("Space suit", drawx, drawy)
 	end
 	if entity:has("Stabiliser") then
-		local drawx = SCREEN_WIDTH - 100 + 50
-		local drawy = 100
-		love.graphics.setColor(1,1,1,1)
+		local drawx = SCREEN_WIDTH - 95
+		local drawy = 90
+		if entity.Stabiliser.currentHP > 0 then
+			love.graphics.setColor(1,1,1,1)
+		else
+			love.graphics.setColor(1,0,0,1)
+		end
 		love.graphics.setFont(FONT[enum.fontDefault])
-		love.graphics.print("St", drawx, drawy)
+		love.graphics.print("Stabiliser", drawx, drawy)
 	end
 
 	-- draw buttons
-	-- draw ejection button
-	if entity:has("ejectionPod") and entity.ejectionPod.currentHP > 0 then
-		local drawx = SCREEN_WIDTH - 100 + 50
-		local drawy = 150
-		love.graphics.setColor(1,0,0,1)
-		love.graphics.rectangle("fill", drawx, drawy, 20, 20)			-- drawx/y is the top left corner of the square
-
-		love.graphics.setFont(FONT[enum.fontDefault])
-		love.graphics.setColor(1,1,1,1)
-		love.graphics.print("E", drawx + 5, drawy + 5)
-	end
-
 	for k, button in pairs(GUI_BUTTONS) do
 		if button.scene == enum.sceneAsteroid and button.visible then
 			-- draw the button
