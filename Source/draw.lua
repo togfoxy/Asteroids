@@ -485,7 +485,7 @@ function draw.shop()
 	local drawy = panely[4] + 60
 	for k, item in pairs(RECEIPT) do
 		love.graphics.print(item.description, drawx, drawy)
-		love.graphics.print(item.amount, drawx + 250, drawy)
+		love.graphics.print(item.amount, drawx + 200, drawy)
 		drawy = drawy + 20
 	end
 
