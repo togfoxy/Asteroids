@@ -17,12 +17,12 @@ local function establishPlayerVessel()
 	-- :give("leftThruster")
 	-- :give("rightThruster")
 	-- :give("reverseThruster")
-	:give("oxyTank")
+	-- :give("oxyTank")
 	-- :give("solarPanel")
 	-- :give("spaceSuit")
 	-- :give("SOSBeacon")
 	-- :give("Stabiliser")
-	-- :give("ejectionPod")
+	:give("ejectionPod")
 
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall
@@ -73,6 +73,8 @@ function functions.loadImages()
 	IMAGES[enum.imagesBlueBarEnd] = love.graphics.newImage("assets/images/bluebarend.png")
 	IMAGES[enum.imagesGreenBar] = love.graphics.newImage("assets/images/greenbar.png")
 	IMAGES[enum.imagesGreenBarEnd] = love.graphics.newImage("assets/images/greenbarend.png")
+	IMAGES[enum.imagesButton] = love.graphics.newImage("assets/images/button.png")
+
 
 	-- shop
 	IMAGES[enum.imagesShopPanel] = love.graphics.newImage("assets/images/shoppanel.png")
@@ -769,7 +771,6 @@ function functions.InitialiseGame()
 	TRANSLATEX = (x1 * BOX2D_SCALE)
 	TRANSLATEY = (y1 * BOX2D_SCALE)
     ZOOMFACTOR = 0.4
-
 end
 
 return functions

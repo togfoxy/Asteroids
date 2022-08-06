@@ -166,6 +166,7 @@ function cmp.init()
 
     concord.component("ejectionPod", function(c)
         c.label = "Ejection pod"
+        c.active = false                -- this means an ejection has or is about to happen
         c.size = love.math.random(1,3)
         c.maxHP = love.math.random(1,3) * 3000
         c.currentHP = c.maxHP

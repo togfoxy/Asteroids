@@ -244,13 +244,8 @@ function love.wheelmoved(x, y)
 	BUBBLE = {}
 end
 
-function love.mousepressed( x, y, button, istouch, presses )
-
-	local wx, wy
-	if cam == nil then
-	else
-		wx,wy = cam:toWorld(x, y)	-- converts screen x/y to world x/y
-	end
+function love.mousereleased( x, y, button, istouch, presses )
+	local entity = fun.getEntity(PLAYER.UID)
 
 	if button == 1 then
 		local currentScreen = cf.currentScreenName(SCREEN_STACK)
@@ -353,6 +348,18 @@ function love.mousepressed( x, y, button, istouch, presses )
 							ALARM_OFF_TIMER = 0
 							button.state = "off"
 						end
+					elseif mybuttonID == enum.buttonSOSBeacon then
+						if button.state == "off" then
+							button.state = "on"
+							entity.SOSBeacon.activated = true
+
+						else
+							button.state = "off"
+							entity.SOSBeacon.activated = false
+						end
+						break
+					elseif	mybuttonID == enum.buttonEjectionPod then
+						entity.ejectionPod.active = true
 					end
 				end
 			end
@@ -494,13 +501,11 @@ function love.update(dt)
 		if temptable.objectType == "Pod" then
 			if love.math.random(1,2000) == 1 then			-- this is half the chance of an SOS beacon
 				-- rescued!
-				entity.SOSBeacon.activated = false
 				cf.AddScreen(enum.sceneShop, SCREEN_STACK)		--! should probably go to a screen with an explanation
 			end
 		end
 
 		-- do raycasting stuff
-
 		local facing = physEntity.body:getAngle()       -- radians
         facing = cf.convRadToCompass(facing)
 		local vectordistance = VISIBILITY_DISTANCE
