@@ -140,6 +140,7 @@ end
 local function drawHUD()
 	-- draw the HUD
 	love.graphics.setColor(1,1,1,1)
+	love.graphics.draw(IMAGES[enum.imagesAsteroidBackground])
 
 	-- o2 left
 	local o2left = fun.getO2left()

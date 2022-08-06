@@ -14,10 +14,10 @@ local function establishPlayerVessel()
 	:give("oxyGenerator")
 	:give("cargoHold")
 
-	:give("leftThruster")
-	:give("rightThruster")
-	:give("reverseThruster")
-	-- :give("oxyTank")
+	-- :give("leftThruster")
+	-- :give("rightThruster")
+	-- :give("reverseThruster")
+	:give("oxyTank")
 	-- :give("solarPanel")
 	-- :give("spaceSuit")
 	-- :give("SOSBeacon")
@@ -83,6 +83,8 @@ function functions.loadImages()
 	IMAGES[enum.imagesDead] = love.graphics.newImage("assets/images/dead.jpg")
 	IMAGES[enum.imagesShop] = love.graphics.newImage("assets/images/shop.jpg")
 	IMAGES[enum.imagesMenuBackground] = love.graphics.newImage("assets/images/menubackground.png")
+	IMAGES[enum.imagesAsteroidBackground] = love.graphics.newImage("assets/images/asteroidbg.png")
+
 end
 
 function functions.loadAudio()
@@ -435,10 +437,12 @@ function functions.changeShipPhysicsSize(entity)
 	-- receives an ECS entity
 	-- returns nothing
 
+	assert(PLAYER.UID ~= nil)
+
 	local shipsize = fun.getEntitySize(entity)
 	local temptable = {}
-
 	local physicsEntity = fun.getPhysEntity(PLAYER.UID)
+	assert(physicsEntity ~= nil)
 	local x,y = physicsEntity.body:getPosition()
 	temptable = physicsEntity.fixture:getUserData()
 	fun.killPhysicsEntity(physicsEntity)
@@ -749,7 +753,7 @@ function functions.InitialiseGame()
 	SHOPWORLD = concord.world()
 	ECSWORLD = concord.world()
 	ecsFunctions.init()
-	establishPhysicsWorld()
+	establishPhysicsWorld()		-- creates borders, starbase and player vessel and player physics
 	for i = 1, NUMBER_OF_ASTEROIDS do
 		fun.createAsteroid()
 	end
@@ -761,7 +765,6 @@ function functions.InitialiseGame()
 	item.description = "Opening balance"
 	item.amount = 0
 	table.insert(RECEIPT, item)
-
 
 	TRANSLATEX = (x1 * BOX2D_SCALE)
 	TRANSLATEY = (y1 * BOX2D_SCALE)

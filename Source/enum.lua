@@ -17,6 +17,7 @@ imagesPod = 14
 imagesStarbase = 15
 imagesShopPanels = 16
 imagesMenuBackground = 17
+imagesAsteroidBackground = 18
 
 audioEngine = 1
 audioLowFuel = 2
