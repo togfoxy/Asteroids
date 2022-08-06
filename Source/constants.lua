@@ -36,6 +36,7 @@ function constants.load()
     BUTTONS = {}            -- used in the shop
     GUI_BUTTONS = {}      -- used on the asteroid hud and main menu
     RECEIPT = {}            -- shopping receipt to be showed in the shop
+    SOUND = {}		-- a global that is updated during update calls and then reset at the start of each dt
 
     PHYSICS_DENSITY = 4    -- how many kg's each mass weighs
     PHYSICS_TURNRATE = 3000       -- how fast can objects turn

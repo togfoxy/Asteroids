@@ -16,7 +16,7 @@ local function establishPlayerVessel()
 
 	-- :give("leftThruster")
 	-- :give("rightThruster")
-	:give("reverseThruster")
+	-- :give("reverseThruster")
 	-- :give("oxyTank")
 	-- :give("solarPanel")
 	-- :give("spaceSuit")
@@ -97,17 +97,18 @@ function functions.loadAudio()
 	AUDIO[enum.audioWrong] = love.audio.newSource("assets/audio/wrong.mp3", "static")
 
 
-	-- bground music
+	-- bground music - asteroids
 	AUDIO[enum.audioBGSkismo] = love.audio.newSource("assets/music/Reflekt.mp3", "stream")
+
+	-- bground music - shop
 	AUDIO[enum.audioBGEric1] = love.audio.newSource("assets/music/Urban-Jungle-2061.mp3", "stream")
 	AUDIO[enum.audioBGEric2] = love.audio.newSource("assets/music/World-of-Automatons.mp3", "stream")
-
 
 	AUDIO[enum.audioRockExplosion]:setVolume(0.5)
 	AUDIO[enum.audioRockScrape1]:setVolume(0.5)
 	AUDIO[enum.audioRockScrape2]:setVolume(0.5)
-	-- AUDIO[enum.audioRockScrape2]:setVolume(0.5)
-	-- AUDIO[enum.audioRockScrape2]:setVolume(0.5)
+	AUDIO[enum.audioBGSkismo]:setVolume(0.5)
+	AUDIO[enum.audioBGEric1]:setVolume(0.5)
 end
 
 function functions.loadFonts()
@@ -609,41 +610,49 @@ function functions.playSounds()
 
 	if SOUND.engine then
 		AUDIO[enum.audioEngine]:play()
+		SOUND.engine = false
 	else
 		AUDIO[enum.audioEngine]:stop()
 	end
 	if SOUND.lowFuel and ALARM_OFF_TIMER <= 0 then
 		AUDIO[enum.audioLowFuel]:play()
+		SOUND.lowFuel = false
 	else
 		AUDIO[enum.audioLowFuel]:stop()
 	end
 	if SOUND.warning and ALARM_OFF_TIMER <= 0  then
 		AUDIO[enum.audioWarning]:play()
+		SOUND.warning = false
 	else
 		AUDIO[enum.audioWarning]:stop()
 	end
 	if SOUND.miningLaser then
 		AUDIO[enum.audioMiningLaser]:play()
+		SOUND.miningLaser = false
 	else
 		AUDIO[enum.audioMiningLaser]:stop()
 	end
 	if SOUND.rockExplosion then
 		AUDIO[enum.audioRockExplosion]:play()
+		SOUND.rockExplosion = false
 	end
 	if SOUND.scrape1 then
 		AUDIO[enum.audioRockScrape1]:play()
+		SOUND.scrape1 = false
 	end
 	if SOUND.scrape2 then
 		AUDIO[enum.audioRockScrape2]:play()
+		SOUND.scrape2 = false
 	end
 	if SOUND.ding then
 		AUDIO[enum.audioDing]:play()
+		SOUND.ding = false
 	end
 	if SOUND.wrong then
 		AUDIO[enum.audioWrong]:play()
+		SOUND.wrong = false
 	end
 end
-
 
 local function establishWorldBorders()
 	-- bottom border
@@ -723,6 +732,20 @@ end
 
 function functions.InitialiseGame()
 	-- do all the stuff that starts the game
+
+	for k, entity in pairs(ECS_ENTITIES) do
+		fun.killECSEntity(entity)
+	end
+
+	for k, physEntity in pairs(PHYSICS_ENTITIES) do
+		fun.killPhysicsEntity(physEntity)
+	end
+
+	ECS_ENTITIES = {}
+	PHYSICS_ENTITIES = {}
+	SHOPWORLD = {}
+	ECSWORLD = {}
+
 	SHOPWORLD = concord.world()
 	ECSWORLD = concord.world()
 	ecsFunctions.init()

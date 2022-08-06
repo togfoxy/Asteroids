@@ -41,14 +41,13 @@ local function ejectPlayer(entity)
 
 end
 
-local function activateMiningLaser(dt)
+local function activateMiningLaser(playerEntity, dt)
 
 	x, y = love.mouse.getPosition()
 	local wx,wy = cam:toWorld(x, y)		-- converts screen x/y to world x/y
 	local bx = wx / BOX2D_SCALE			-- converts world x/y to BOX2D x/y
 	local by = wy / BOX2D_SCALE
 
-	local playerEntity = fun.getEntity(PLAYER.UID)		--! need to start passing ENTITY as a parameter more often
 	local playerPE = fun.getPhysEntity(PLAYER.UID)
 
 	-- get distance between player and mouse click
@@ -330,7 +329,7 @@ function ecsUpdate.init()
 							if entity:has("cargoHold") then
 								if entity.cargoHold.currentAmount < entity.cargoHold.maxAmount then
 									if entity.cargoHold.currentHP > 0 then
-			                            activateMiningLaser(dt)
+			                            activateMiningLaser(entity, dt)
 			                            entity.battery.capacity = entity.battery.capacity - dt
 			                            if  entity.battery.capacity <= 0 then  entity.battery.capacity = 0 end
 									end
@@ -443,18 +442,7 @@ function ecsUpdate.init()
 					y >= buttony and y <= buttony + buttonwidth then
 					ejectPlayer(entity)
 
-					--! Propel the pod towards the base
-					-- local facing = physEntity.body:getAngle()       -- radians. 0 = "right"
-	                -- facing = cf.convRadToCompass(facing)
-					--
-	                -- local vectordistance = entity.engine.strength      -- amount of force
-					--
-	        		-- local x2, y2 = cf.AddVectorToPoint(x1, y1, facing, vectordistance)
-	        		-- local xvector = (x2 - x1) * 20 * dt
-	        		-- local yvector = (y2 - y1) * 20 * dt
-					--
-	        		-- physEntity.body:applyForce(xvector, yvector)		-- the amount of force = vector distance
-
+					-- propel the pod towards the base
 
 					-- get the players x/y
 					local playerPhysEntity = fun.getPhysEntity(PLAYER.UID)
