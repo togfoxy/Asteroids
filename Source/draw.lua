@@ -67,7 +67,7 @@ local function drawStarbase()
 					x4 = x4 * BOX2D_SCALE
 					y4 = y4 * BOX2D_SCALE
 					-- love.graphics.setColor(1, 0, 0, 1)
-					love.graphics.polygon("line", x1, y1, x2, y2, x3, y3, x4, y4)
+					-- love.graphics.polygon("line", x1, y1, x2, y2, x3, y3, x4, y4)
 
 					local drawx = x4
 					local drawy = y4
