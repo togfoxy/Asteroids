@@ -76,8 +76,8 @@ function ecsDraw.init()
                 local offset = cf.round((vesselsize - 11) / 2)      -- 11 is the 'baseline' for the flames
                 if offset < 0 then offset = 0 end
 
-                if DRAW.engineFlame then		--! these are globals but probably shouldn't be
-                    love.graphics.setColor(1,1,1,1)  --! the scale factor shouldn't be hard coded but move as the ship grows
+                if DRAW.engineFlame then		-- these are globals but probably shouldn't be
+                    love.graphics.setColor(1,1,1,1)
                     love.graphics.draw(IMAGES[enum.imagesEngineFlame], x1, y1, facing, 10, 10, 2, -3 - (offset / 2))        --  r, sx, sy, ox, oy, kx, ky)
                 end
                 if DRAW.leftFlame then

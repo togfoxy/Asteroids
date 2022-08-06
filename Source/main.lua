@@ -87,11 +87,12 @@ function postSolve(a, b, coll, normalimpulse, tangentimpulse)
 		local allComponents = entity:getComponents()
 		for _, component in pairs(allComponents) do
 			if component.capacity ~= nil then
-				component.capacity = component.maxCapacity		--! check this includes space suit
+				component.capacity = component.maxCapacity
 			end
 		end
+		if entity:has("spaceSuit") then entity.spaceSuit.O2capacity = entity.spaceSuit.maxO2Capacity end
 
-		AUDIO[enum.audioBGSkismo]:stop()		--!  need to stop other tracks if there are any.
+		AUDIO[enum.audioBGSkismo]:stop()
 
 		local temptable = physEntity.fixture:getUserData()
 		if temptable.objectType == "Pod" then
@@ -293,7 +294,7 @@ function love.mousepressed( x, y, button, istouch, presses )
 							local purchaseprice = button.component.purchasePrice
 							if entity:has(shopcomponentType) then		-- this is a string
 								-- exchange existing item
-								--! get a refund on old component
+								PLAYER.WEALTH = PLAYER.WEALTH + love.math.random(400, 600)
 
 								if PLAYER.WEALTH >= purchaseprice then
 									entity:remove(shopcomponentType)
@@ -311,8 +312,8 @@ function love.mousepressed( x, y, button, istouch, presses )
 									SOUND.wrong = true
 								end
 							else
-								--! purchase new item
-								--! refactor this and above
+								-- purchase new item
+								-- refactor this and above
 								if PLAYER.WEALTH >= purchaseprice then
 									fun.buyComponent(entity, shopcomponentType, button.component)
 
@@ -337,7 +338,7 @@ function love.mousepressed( x, y, button, istouch, presses )
 
 		elseif currentScreen == enum.sceneAsteroid then
 			-- process buttons
-			local rx, ry = res.toGame(x,y)		--! does this need to be applied consistently across all mouse clicks?
+			local rx, ry = res.toGame(x,y)		-- does this need to be applied consistently across all mouse clicks?
 			for k, button in pairs(GUI_BUTTONS) do
 				if button.scene == enum.sceneAsteroid and button.visible then
 					local mybuttonID = buttons.buttonClicked(rx, ry, button)		-- bounding box stuff
@@ -357,14 +358,12 @@ function love.mousepressed( x, y, button, istouch, presses )
 			end
 
 		elseif currentScreen == enum.sceneMainMenu then
-			local rx, ry = res.toGame(x,y)		--! does this need to be applied consistently across all mouse clicks?
+			local rx, ry = res.toGame(x,y)		-- does this need to be applied consistently across all mouse clicks?
 			for k, button in pairs(GUI_BUTTONS) do
 				if button.scene == enum.sceneMainMenu and button.visible then
 					local mybuttonID = buttons.buttonClicked(rx, ry, button)		-- bounding box stuff
 
 					if mybuttonID == enum.buttonNewGame then
-						--! need to kill all physics objects
-						--! need to kill all ECS objects
 						fun.InitialiseGame()
 						cf.AddScreen(enum.sceneAsteroid, SCREEN_STACK)
 						break
@@ -462,7 +461,7 @@ function love.update(dt)
 		-- check for dead or empty o2 tank
 		local deadreason = fun.checkIfDead(dt)
 		if deadreason ~= "" then
-			DEAD_REASON = deadreason		--! refactor to not use globals
+			DEAD_REASON = deadreason		-- refactor to not use globals
 			DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
 			if DEAD_ALPHA >= 1 then
 				cf.SwapScreen(enum.sceneDed, SCREEN_STACK)

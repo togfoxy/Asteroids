@@ -16,7 +16,7 @@ local function establishPlayerVessel()
 
 	-- :give("leftThruster")
 	-- :give("rightThruster")
-	:give("reverseThruster")
+	-- :give("reverseThruster")
 	-- :give("oxyTank")
 	-- :give("solarPanel")
 	-- :give("spaceSuit")
@@ -97,11 +97,12 @@ function functions.loadAudio()
 	AUDIO[enum.audioWrong] = love.audio.newSource("assets/audio/wrong.mp3", "static")
 
 
-	-- bground music
+	-- bground music - asteroids
 	AUDIO[enum.audioBGSkismo] = love.audio.newSource("assets/music/Reflekt.mp3", "stream")
+
+	-- bground music - shop
 	AUDIO[enum.audioBGEric1] = love.audio.newSource("assets/music/Urban-Jungle-2061.mp3", "stream")
 	AUDIO[enum.audioBGEric2] = love.audio.newSource("assets/music/World-of-Automatons.mp3", "stream")
-
 
 	AUDIO[enum.audioRockExplosion]:setVolume(0.5)
 	AUDIO[enum.audioRockScrape1]:setVolume(0.5)
