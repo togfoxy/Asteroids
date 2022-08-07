@@ -16,7 +16,7 @@ local function establishPlayerVessel()
 
 	-- :give("leftThruster")
 	-- :give("rightThruster")
-	:give("reverseThruster")
+	-- :give("reverseThruster")
 	-- :give("oxyTank")
 	-- :give("solarPanel")
 	-- :give("spaceSuit")
@@ -30,7 +30,8 @@ local function establishPlayerVessel()
 	-- debug
 	-- PLAYER.WEALTH = 10000
 	-- entity.chassis.currentHP = 0
-	-- entity.battery.capacity = 20
+	-- entity.battery.capacity = 10
+
 
 	local shipsize = fun.getEntitySize(entity)
 	-- DEBUG_VESSEL_SIZE = 10

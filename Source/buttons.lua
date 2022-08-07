@@ -15,6 +15,7 @@ function buttons.setButtonInvisible(enumvalue)
 	for k, button in pairs(GUI_BUTTONS) do
 		if button.identifier == enumvalue then
 			button.visible = false
+print("setting button to invis")
 			break
 		end
 	end
@@ -45,7 +46,7 @@ function buttons.loadButtons()
 	mybutton.width = 65
 	mybutton.height = 20
 	mybutton.drawOutline = false
-	mybutton.label = ""
+	mybutton.label = ""		-- alarm off
 	mybutton.image = nil
 	-- mybutton.labelcolour = {1,1,1,1}
 	mybutton.labeloffcolour = {1,1,1,1}
@@ -62,6 +63,7 @@ function buttons.loadButtons()
 	mybutton.y = 150
 	mybutton.width = 60
 	mybutton.height = 20
+	mybutton.drawOutline = false
 	mybutton.label = "SOS"
 	mybutton.labelxoffset = 20
 	mybutton.image = IMAGES[enum.imagesButton]
@@ -79,6 +81,7 @@ function buttons.loadButtons()
 	mybutton.y = 225
 	mybutton.width = 60
 	mybutton.height = 20
+	mybutton.drawOutline = false
 	mybutton.label = "Eject!"
 	mybutton.labelxoffset = 20
 	mybutton.image = IMAGES[enum.imagesButton]
@@ -164,7 +167,7 @@ function buttons.loadButtons()
 	mybutton.labelcolour = {1,1,1,1}
 	mybutton.bgcolour = {0,1,0,1}
 	mybutton.state = "off"
-	mybutton.visible = true
+	mybutton.visible = false
 	mybutton.scene = enum.sceneMainMenu
 	mybutton.identifier = enum.buttonCredits		-- NOTE: ensure you set the identifier
 	table.insert(GUI_BUTTONS, mybutton)
