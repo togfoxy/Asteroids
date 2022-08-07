@@ -1,6 +1,7 @@
 draw = {}
 
-local function fillShop()
+local function fillShop(entity)
+	-- entity = player entity
 
 	local chance = 25		-- percent
 	SHOP_ENTITY = nil
@@ -29,6 +30,11 @@ local function fillShop()
 		else
 			SHOP_ENTITY:remove(componentClass)
 		end
+	end
+
+	-- let player buy cargo if there is none
+	if not entity:has("cargoHold") then
+		SHOP_ENTITY:give("cargoHold")
 	end
 end
 
@@ -315,12 +321,12 @@ function draw.asteroids()
 
 	-- debug
 	-- draw ship mass and size
-	local entity = fun.getEntity(PLAYER.UID)
-	local physicsEntity = fun.getPhysEntity(PLAYER.UID)
-	love.graphics.setColor(1,1,1,1)
-	love.graphics.setFont(FONT[enum.fontDefault])
-	love.graphics.print("Mass: " .. physicsEntity.body:getMass(), 30, SCREEN_HEIGHT - 100)
-	love.graphics.print("Size: " .. fun.getEntitySize(entity), 30, SCREEN_HEIGHT - 80)
+	-- local entity = fun.getEntity(PLAYER.UID)
+	-- local physicsEntity = fun.getPhysEntity(PLAYER.UID)
+	-- love.graphics.setColor(1,1,1,1)
+	-- love.graphics.setFont(FONT[enum.fontDefault])
+	-- love.graphics.print("Mass: " .. physicsEntity.body:getMass(), 30, SCREEN_HEIGHT - 100)
+	-- love.graphics.print("Size: " .. fun.getEntitySize(entity), 30, SCREEN_HEIGHT - 80)
 end
 
 function draw.shop()
@@ -427,7 +433,7 @@ function draw.shop()
 
 	-- draw shop components that can be bought
 	if SHOP_TIMER <= 0 then
-		fillShop()
+		fillShop(entity)
 		SHOP_TIMER = DEFAULT_SHOP_TIMER
 	end
 	BUTTONS[2] = {}
@@ -478,7 +484,9 @@ function draw.shop()
 	local drawy = panely[4] + 60
 	for k, item in pairs(RECEIPT) do
 		love.graphics.print(item.description, drawx, drawy)
-		love.graphics.print(item.amount, drawx + 200, drawy)
+		-- love.graphics.print(item.amount, drawx + 200, drawy)
+		love.graphics.printf(item.amount, drawx, drawy, 275, "right")
+
 		drawy = drawy + 20
 	end
 
