@@ -15,7 +15,6 @@ function buttons.setButtonInvisible(enumvalue)
 	for k, button in pairs(GUI_BUTTONS) do
 		if button.identifier == enumvalue then
 			button.visible = false
-print("setting button to invis")
 			break
 		end
 	end

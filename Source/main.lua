@@ -425,7 +425,7 @@ function love.load()
         void = love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT,{fullscreen=false,display=1,resizable=true, borderless=false})	-- display = monitor number (1 or 2)
     end
 
-	love.window.setTitle("Asteroids " .. GAME_VERSION)
+	love.window.setTitle("Asteroid hunter " .. GAME_VERSION)
 	love.keyboard.setKeyRepeat(true)
 
 	fun.loadAudio()
