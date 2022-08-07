@@ -63,6 +63,7 @@ function buttons.loadButtons()
 	mybutton.y = 150
 	mybutton.width = 60
 	mybutton.height = 20
+	mybutton.drawOutline = false
 	mybutton.label = "SOS"
 	mybutton.labelxoffset = 20
 	mybutton.image = IMAGES[enum.imagesButton]

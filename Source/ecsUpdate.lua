@@ -177,7 +177,7 @@ function ecsUpdate.init()
                     SOUND.warning = true
                 end
 
-				if entity.leftThruster.currentHP > 0 and entity:has("fuelTank") and entity.fuelTank.currentHP <= 0 and
+				if entity.leftThruster.currentHP > 0 and entity:has("fuelTank") and entity.fuelTank.currentHP > 0 and
 					fun.getFuelBurnTime() > 0 then
 
 	                local physEntity = fun.getPhysEntity(entity.uid.value)

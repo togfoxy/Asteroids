@@ -14,14 +14,14 @@ local function establishPlayerVessel()
 	:give("oxyGenerator")
 	:give("cargoHold")
 
-	-- :give("leftThruster")
-	-- :give("rightThruster")
+	:give("leftThruster")
+	:give("rightThruster")
 	:give("reverseThruster")
-	-- :give("oxyTank")
-	-- :give("solarPanel")
-	-- :give("spaceSuit")
-	-- :give("SOSBeacon")
-	-- :give("Stabiliser")
+	:give("oxyTank")
+	:give("solarPanel")
+	:give("spaceSuit")
+	:give("SOSBeacon")
+	:give("Stabiliser")
 	:give("ejectionPod")
 
     table.insert(ECS_ENTITIES, entity)
@@ -30,7 +30,8 @@ local function establishPlayerVessel()
 	-- debug
 	-- PLAYER.WEALTH = 10000
 	-- entity.chassis.currentHP = 0
-	-- entity.battery.capacity = 20
+	-- entity.battery.capacity = 10
+
 
 	local shipsize = fun.getEntitySize(entity)
 	-- DEBUG_VESSEL_SIZE = 10
