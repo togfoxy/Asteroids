@@ -297,14 +297,13 @@ function love.mousereleased( x, y, button, istouch, presses )
 							local purchaseprice = button.component.purchasePrice
 							if entity:has(shopcomponentType) then		-- this is a string
 								-- exchange existing item
-								local refund = love.math.random(400, 600)
-								PLAYER.WEALTH = PLAYER.WEALTH + refund
-								local item = {}
-								item.description = "Refund"
-								item.amount = refund
-								table.insert(RECEIPT, item)
-
-								if PLAYER.WEALTH >= purchaseprice then
+								local refund = love.math.random(400, 600)		-- should bake the refund into the component so it doesn't change on multiple clicks
+								if PLAYER.WEALTH + refund >= purchaseprice then
+									PLAYER.WEALTH = PLAYER.WEALTH + refund
+									local item = {}
+									item.description = "Refund"
+									item.amount = refund
+									table.insert(RECEIPT, item)
 									entity:remove(shopcomponentType)
 									fun.buyComponent(entity, shopcomponentType, button.component)
 									PLAYER.WEALTH = PLAYER.WEALTH - purchaseprice

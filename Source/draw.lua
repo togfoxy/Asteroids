@@ -321,12 +321,12 @@ function draw.asteroids()
 
 	-- debug
 	-- draw ship mass and size
-	local entity = fun.getEntity(PLAYER.UID)
-	local physicsEntity = fun.getPhysEntity(PLAYER.UID)
-	love.graphics.setColor(1,1,1,1)
-	love.graphics.setFont(FONT[enum.fontDefault])
-	love.graphics.print("Mass: " .. physicsEntity.body:getMass(), 30, SCREEN_HEIGHT - 100)
-	love.graphics.print("Size: " .. fun.getEntitySize(entity), 30, SCREEN_HEIGHT - 80)
+	-- local entity = fun.getEntity(PLAYER.UID)
+	-- local physicsEntity = fun.getPhysEntity(PLAYER.UID)
+	-- love.graphics.setColor(1,1,1,1)
+	-- love.graphics.setFont(FONT[enum.fontDefault])
+	-- love.graphics.print("Mass: " .. physicsEntity.body:getMass(), 30, SCREEN_HEIGHT - 100)
+	-- love.graphics.print("Size: " .. fun.getEntitySize(entity), 30, SCREEN_HEIGHT - 80)
 end
 
 function draw.shop()
