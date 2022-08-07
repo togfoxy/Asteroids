@@ -12,7 +12,7 @@ local function establishPlayerVessel()
 	:give("miningLaser")
 	:give("battery")
 	:give("oxyGenerator")
-	:give("cargoHold")
+	-- :give("cargoHold")
 
 	-- :give("leftThruster")
 	-- :give("rightThruster")

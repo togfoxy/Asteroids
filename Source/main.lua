@@ -322,7 +322,9 @@ function love.mousereleased( x, y, button, istouch, presses )
 							else
 								-- purchase new item
 								-- refactor this and above
-								if PLAYER.WEALTH >= purchaseprice then
+								-- can always buy a cargohold, even if no money
+								if PLAYER.WEALTH >= purchaseprice or shopcomponentType == "cargoHold" then
+
 									fun.buyComponent(entity, shopcomponentType, button.component)
 
 									PLAYER.WEALTH = PLAYER.WEALTH - purchaseprice

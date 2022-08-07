@@ -1,6 +1,7 @@
 draw = {}
 
-local function fillShop()
+local function fillShop(entity)
+	-- entity = player entity
 
 	local chance = 25		-- percent
 	SHOP_ENTITY = nil
@@ -29,6 +30,11 @@ local function fillShop()
 		else
 			SHOP_ENTITY:remove(componentClass)
 		end
+	end
+
+	-- let player buy cargo if there is none
+	if not entity:has("cargoHold") then
+		SHOP_ENTITY:give("cargoHold")
 	end
 end
 
@@ -427,7 +433,7 @@ function draw.shop()
 
 	-- draw shop components that can be bought
 	if SHOP_TIMER <= 0 then
-		fillShop()
+		fillShop(entity)
 		SHOP_TIMER = DEFAULT_SHOP_TIMER
 	end
 	BUTTONS[2] = {}
