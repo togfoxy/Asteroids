@@ -167,7 +167,7 @@ function buttons.loadButtons()
 	mybutton.labelcolour = {1,1,1,1}
 	mybutton.bgcolour = {0,1,0,1}
 	mybutton.state = "off"
-	mybutton.visible = true
+	mybutton.visible = false
 	mybutton.scene = enum.sceneMainMenu
 	mybutton.identifier = enum.buttonCredits		-- NOTE: ensure you set the identifier
 	table.insert(GUI_BUTTONS, mybutton)
