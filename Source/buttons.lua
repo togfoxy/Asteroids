@@ -39,20 +39,25 @@ function buttons.loadButtons()
 	local mybutton = {}
 
 	-- alarms off
-	mybutton.x = 50
-	mybutton.y = 200
-	mybutton.width = 20
+	local mybutton = {}
+	mybutton.x = 12
+	mybutton.y = 151
+	mybutton.width = 65
 	mybutton.height = 20
-	mybutton.label = "O"
+	mybutton.drawOutline = false
+	mybutton.label = ""
 	mybutton.image = nil
-	mybutton.labelcolour = {1,1,1,1}
+	-- mybutton.labelcolour = {1,1,1,1}
+	mybutton.labeloffcolour = {1,1,1,1}
+	mybutton.labeloncolour = {1,1,1,1}
 	mybutton.bgcolour = {1,0,0,1}
-	mybutton.state = "off"
+	mybutton.state = "on"
 	mybutton.visible = true
 	mybutton.scene = enum.sceneAsteroid
 	mybutton.identifier = enum.buttonAlarmOff
 	table.insert(GUI_BUTTONS, mybutton)
 	-- SOS Beacon
+	local mybutton = {}
 	mybutton.x = 115
 	mybutton.y = 150
 	mybutton.width = 60
@@ -69,6 +74,7 @@ function buttons.loadButtons()
 	mybutton.identifier = enum.buttonSOSBeacon
 	table.insert(GUI_BUTTONS, mybutton)
 	-- Eject!
+	local mybutton = {}
 	mybutton.x = 115
 	mybutton.y = 225
 	mybutton.width = 60
