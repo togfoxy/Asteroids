@@ -259,13 +259,15 @@ local function drawHUD()
 			-- draw the button
 			love.graphics.setColor(button.bgcolour)
 
-			if button.image == nil then
+			if button.drawOutline == nil or button.drawOutline == true then
 				if button.state == "on" then
 					love.graphics.rectangle("fill", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
 				else
 					love.graphics.rectangle("line", button.x, button.y, button.width, button.height)			-- drawx/y is the top left corner of the square
 				end
-			else
+			end
+
+			if button.image ~= nil then
 				love.graphics.draw(button.image, button.x, button.y)
 			end
 
@@ -290,9 +292,6 @@ local function drawHUD()
 end
 
 function draw.asteroids()
-
-
-print("hi")
     cam:attach()
 
 	-- wallpaper

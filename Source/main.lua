@@ -347,9 +347,18 @@ function love.mousereleased( x, y, button, istouch, presses )
 		elseif currentScreen == enum.sceneAsteroid then
 			-- process buttons
 			local rx, ry = res.toGame(x,y)		-- does this need to be applied consistently across all mouse clicks?
+
+-- print(x, y)
+-- print(wx, wy)
+-- print(rx,ry)
+-- print(res.toGame(wx,wy))
+-- print(cam:toWorld(rx,ry))
+
+print("***")
 			for k, button in pairs(GUI_BUTTONS) do
 				if button.scene == enum.sceneAsteroid and button.visible then
 					local mybuttonID = buttons.buttonClicked(rx, ry, button)		-- bounding box stuff
+print(mybuttonID)
 					if mybuttonID == enum.buttonAlarmOff then
 						-- turn sounds off for a number of minutes
 						if button.state == "off" then
@@ -361,6 +370,9 @@ function love.mousereleased( x, y, button, istouch, presses )
 							ALARM_OFF_TIMER = 0
 							button.state = "off"
 						end
+
+print(button.state)
+
 					elseif mybuttonID == enum.buttonSOSBeacon then
 						if button.state == "off" then
 							button.state = "on"
