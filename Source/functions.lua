@@ -22,7 +22,7 @@ local function establishPlayerVessel()
 	-- :give("spaceSuit")
 	-- :give("SOSBeacon")
 	-- :give("Stabiliser")
-	-- :give("ejectionPod")
+	:give("ejectionPod")
 
     table.insert(ECS_ENTITIES, entity)
 	PLAYER.UID = entity.uid.value 		-- store this for easy recall

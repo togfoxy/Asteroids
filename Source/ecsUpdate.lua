@@ -18,6 +18,7 @@ local function ejectPlayer(entity)
 	:give("chassis")
 	:give("oxyTank")
 	:give("SOSBeacon")
+	:remove("ejectionPod")
 
 	table.insert(ECS_ENTITIES, newentity)
 	PLAYER.UID = newentity.uid.value 		-- store this for easy recall
@@ -38,7 +39,6 @@ local function ejectPlayer(entity)
 	physicsEntity.fixture:setUserData(temptable)		-- links the physics object to the ECS entity
 
     table.insert(PHYSICS_ENTITIES, physicsEntity)
-
 end
 
 local function activateMiningLaser(playerEntity, dt)
@@ -444,13 +444,14 @@ function ecsUpdate.init()
 			if entity.ejectionPod.active and entity.ejectionPod.currentHP > 0 then
 				ejectPlayer(entity)
 				entity.ejectionPod.active = false
+				-- ensure the ejection button is hidden and not clickable
+				buttons.setButtonInvisible(enum.buttonEjectionPod)
 
 				-- propel the pod towards the base
 				-- get the players x/y
 				local playerPhysEntity = fun.getPhysEntity(PLAYER.UID)
 				local x1, y1 = playerPhysEntity.body:getPosition()
 				local x2, y2
-
 				-- get the starbase x/y
 				for _, physEntity in pairs(PHYSICS_ENTITIES) do
 					local temptable = physEntity.fixture:getUserData()
