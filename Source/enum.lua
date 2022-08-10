@@ -43,6 +43,7 @@ sceneAsteroid = 1
 sceneShop = 2
 sceneDed = 3
 sceneMainMenu = 4
+sceneCredits = 5
 
 buttonTypeRepair = 1
 buttonTypeBuy = 2
@@ -57,6 +58,7 @@ buttonSettings = 5
 buttonCredits = 6
 buttonSOSBeacon = 7
 buttonEjectionPod = 8
+
 
 oreTypeGold = 1
 oreTypeSilver = 2

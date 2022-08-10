@@ -1,4 +1,4 @@
-GAME_VERSION = "0.01"
+GAME_VERSION = "0.02"
 
 inspect = require 'lib.inspect'
 -- https://github.com/kikito/inspect.lua
@@ -151,6 +151,10 @@ function love.keyreleased( key, scancode )
 		if cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
 			local physEntity = fun.getPhysEntity(PLAYER.UID)
 			local x1, y1 = physEntity.body:getPosition()
+
+			-- ensure there is no rotation
+			physEntity.body:setAngularVelocity(0)
+
 			if y1 > 915 then
 				physEntity.body:setPosition(x1, 915)
 				x1, y1 = physEntity.body:getPosition()
@@ -397,7 +401,10 @@ function love.mousereleased( x, y, button, istouch, presses )
 						break
 					elseif mybuttonID == enum.buttonLoadGame then
 						fileops.loadGame()
+						cf.AddScreen(enum.sceneAsteroid, SCREEN_STACK)
 						break
+					elseif mybuttonID == enum.buttonCredits then
+						cf.AddScreen(enum.sceneCredits, SCREEN_STACK)
 					end
 				end
 			end
@@ -418,14 +425,13 @@ function love.load()
 
 	res.setGame(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-    if love.filesystem.isFused( ) then
-        void = love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT,{fullscreen=false,display=1,resizable=true, borderless=false})	-- display = monitor number (1 or 2)
-        gbolDebug = false
+	if love.filesystem.isFused( ) then
+        void = love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT,{fullscreen=true,display=1,resizable=false, borderless=true})	-- display = monitor number (1 or 2)
     else
-        void = love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT,{fullscreen=false,display=1,resizable=true, borderless=false})	-- display = monitor number (1 or 2)
+        void = love.window.setMode(SCREEN_WIDTH, SCREEN_HEIGHT,{fullscreen=true,display=1,resizable=false, borderless=true})	-- display = monitor number (1 or 2)
     end
 
-	love.window.setTitle("Asteroids " .. GAME_VERSION)
+	love.window.setTitle("Asteroid hunter " .. GAME_VERSION)
 	love.keyboard.setKeyRepeat(true)
 
 	fun.loadAudio()
@@ -452,6 +458,8 @@ function love.draw()
 		draw.shop()
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneMainMenu then
 		draw.mainMenu()
+	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneCredits then
+		draw.credits()
 	end
 	lovelyToasts.draw()
     res.stop()

@@ -30,9 +30,6 @@ function fileops.saveGame()
     savetable.x = x
     savetable.y = y
     savetable.uid = entity.uid.value
-
-print("Beta" .. savetable.uid)
-
     savetable.objectType = temptable.objectType
 
     local savefile = savedir .. "vessel_physics.dat"
@@ -103,9 +100,6 @@ function fileops.loadGame()
     	temptable.uid = savetable.uid
     	temptable.objectType = savetable.objectType
     	physEntity.fixture:setUserData(temptable)
-
--- print("alpha" .. savetable.uid, PLAYER.UID)
-
     else
         loaderror = true
 	end
