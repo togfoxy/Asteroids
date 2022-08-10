@@ -183,9 +183,6 @@ function love.keyreleased( key, scancode )
 	if key == "f1" then
 		-- local success = love.system.openURL("https://github.com/togfoxy/Asteroids/tree/master#readme")
 		local success = love.system.openURL("https://docs.google.com/document/d/1X8Js3dxZ6TfYfF1FJ9Vdy2ck_zvzMC0CzXN_egpEFPY/edit?usp=sharing")
-
-
-
 	end
 	if key == "f6" then
 		fileops.saveGame()

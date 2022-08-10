@@ -39,7 +39,7 @@ function constants.load()
     SOUND = {}		-- a global that is updated during update calls and then reset at the start of each dt
 
     PHYSICS_DENSITY = 4    -- how many kg's each mass weighs
-    PHYSICS_TURNRATE = 3000       -- how fast can objects turn
+    PHYSICS_TURNRATE = 5000       -- how fast can objects turn
 
 	NUMBER_OF_ASTEROIDS = 65
     FUEL_CONSUMPTION_RATE = 400      -- low numbers = burns more fuel. High numbers = burns less fuel
