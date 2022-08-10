@@ -42,7 +42,7 @@ function cmp.init()
     concord.component("leftThruster", function(c)
 		c.label = "Left thruster"
         c.size = love.math.random(1,3)
-        c.strength = 3000 + love.math.random(1,6) * 500      -- thrust
+        c.strength = PHYSICS_TURNRATE + love.math.random(1,6) * 500      -- thrust
 		c.maxHP = love.math.random(1,3) * 1000
 		c.currentHP = c.maxHP
         c.purchasePrice = 1000
@@ -53,7 +53,7 @@ function cmp.init()
     concord.component("rightThruster", function(c)
 		c.label = "Right thruster"
         c.size = love.math.random(1,3)
-        c.strength = 3000 + love.math.random(1,6) * 500      -- thrust
+        c.strength = PHYSICS_TURNRATE + love.math.random(1,6) * 500      -- thrust
 		c.maxHP = love.math.random(1,3) * 1000
 		c.currentHP = c.maxHP
         c.purchasePrice = 1000
