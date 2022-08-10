@@ -551,4 +551,38 @@ function draw.mainMenu()
 	end
 end
 
+function draw.credits()
+
+	local txt = ""
+
+	txt = txt .. "Music/sound credits:" .. "\n"
+
+    txt = txt .. "Urban jungle - Eric Matyas" .. "\n"
+    txt = txt .. "World of Automatons - Eric Matyas" .. "\n"
+    txt = txt .. "www.soundimage.org" .. "\n"
+
+    txt = txt .. "Reflekt - Skismo. Used with permission" .. "\n"
+
+    txt = txt .. "Other sound effects - freesound.org" .. "\n"
+
+txt = txt .. "Code libraries:" .. "\n"
+
+    txt = txt .. "cam11 - (c) Pedro Gimeno Fortea" .. "\n"
+    txt = txt .. "Concord - (c) Justin van der Leij" .. "\n"
+    txt = txt .. "Baton - (c) Andrew Minnich" .. "\n"
+    txt = txt .. "Bitser - (c) Jasmijn Wellner" .. "\n"
+    txt = txt .. "inspect - (c) Enrique Garcia Cota" .. "\n"
+    txt = txt .. "Lovely Toasts - (c) Lucy van Sandwijk" .. "\n"
+    txt = txt .. "nativefs - (c) megagrump" .. "\n"
+    txt = txt .. "Resolution Solution - (c) Vovkiv" .. "\n"
+
+txt = txt .. "Images:" .. "\n"
+
+    txt = txt .. "Golden UI - (c) Michele 'Buch' Bucelli" .. "\n"
+    txt = txt .. "Gunroar:Cannon()" .. "\n"
+
+	love.graphics.setColor(1,1,1,1)
+	love.graphics.print(txt, 100, 100)
+
+end
 return draw
