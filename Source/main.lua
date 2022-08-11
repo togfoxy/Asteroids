@@ -153,8 +153,9 @@ function love.keyreleased( key, scancode )
 			-- ensure there is no rotation
 			physEntity.body:setAngularVelocity(0)
 
-			if y1 > 915 then
-				physEntity.body:setPosition(x1, 915)
+			-- spawn a reasonable distance from the shop
+			if y1 > 900 then
+				physEntity.body:setPosition(x1, 900)
 				x1, y1 = physEntity.body:getPosition()
 			end
 			TRANSLATEX = (x1 * BOX2D_SCALE)
