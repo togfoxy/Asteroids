@@ -1,4 +1,4 @@
-GAME_VERSION = "0.02"
+GAME_VERSION = "0.03"
 
 inspect = require 'lib.inspect'
 -- https://github.com/kikito/inspect.lua
@@ -37,8 +37,6 @@ ecsUpdate = require 'ecsUpdate'
 fileops = require 'fileoperations'
 keymaps = require 'keymaps'
 buttons = require 'buttons'
-
-
 
 function beginContact(a, b, coll)
 end
@@ -155,8 +153,9 @@ function love.keyreleased( key, scancode )
 			-- ensure there is no rotation
 			physEntity.body:setAngularVelocity(0)
 
-			if y1 > 915 then
-				physEntity.body:setPosition(x1, 915)
+			-- spawn a reasonable distance from the shop
+			if y1 > 900 then
+				physEntity.body:setPosition(x1, 900)
 				x1, y1 = physEntity.body:getPosition()
 			end
 			TRANSLATEX = (x1 * BOX2D_SCALE)
@@ -182,13 +181,27 @@ function love.keyreleased( key, scancode )
 	end
 	if key == "f1" then
 		-- local success = love.system.openURL("https://github.com/togfoxy/Asteroids/tree/master#readme")
-		local success = love.system.openURL("https://docs.google.com/document/d/1X8Js3dxZ6TfYfF1FJ9Vdy2ck_zvzMC0CzXN_egpEFPY/edit?usp=sharing")
+		-- local success = love.system.openURL("https://docs.google.com/document/d/1X8Js3dxZ6TfYfF1FJ9Vdy2ck_zvzMC0CzXN_egpEFPY/edit?usp=sharing")
+
+		local savedir = love.filesystem.getSourceBaseDirectory()
+		local helpfile
+		if love.filesystem.isFused() then
+			savedir = savedir .. "\\assets\\"
+		else
+			savedir = savedir .. "/Source/assets/"
+		end
+		helpfile = savedir .. "AsteroidHunter.html"
+		local success = love.system.openURL(helpfile)
+		if success then PAUSED = true end
 	end
 	if key == "f6" then
 		fileops.saveGame()
 	end
 	if key == "f7" then
 		fileops.loadGame()
+	end
+	if key == "p" then
+		PAUSED = not PAUSED
 	end
 end
 
@@ -449,6 +462,13 @@ function love.draw()
 
 	if cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
 		draw.asteroids()
+		if PAUSED then
+			-- print PAUSED
+			love.graphics.setColor(1,1,1,1)
+			local drawx = (SCREEN_WIDTH / 2) - 30
+			local drawy = (SCREEN_HEIGHT / 3)
+			love.graphics.print("PAUSED", drawx, drawy)
+		end
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneDed then
 		draw.dead()
 	elseif cf.currentScreenName(SCREEN_STACK) == enum.sceneShop then
@@ -476,69 +496,73 @@ function love.update(dt)
 
 	if cf.currentScreenName(SCREEN_STACK) == enum.sceneAsteroid then
 
-		ECSWORLD:emit("update", dt)
-		PHYSICSWORLD:update(dt) --this puts the world into motion
+		if not PAUSED then
 
-		-- turn senser back on after leaving dock
-		local physEntity = fun.getPhysEntity(PLAYER.UID)
-		local x,y = physEntity.body:getPosition()
-		if y <= (PHYSICS_HEIGHT - PHYSICS_SAFEZONE) then
-			physEntity.fixture:setSensor(false)
-		end
+			ECSWORLD:emit("update", dt)
+			PHYSICSWORLD:update(dt) --this puts the world into motion
 
-		fun.deductO2(dt)
-
-		-- check for dead chassis
-		-- check for dead or empty o2 tank
-		local deadreason = fun.checkIfDead(dt)
-		if deadreason ~= "" then
-			DEAD_REASON = deadreason		-- refactor to not use globals
-			DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
-			if DEAD_ALPHA >= 1 then
-				fun.InitialiseGame()
-				cf.SwapScreen(enum.sceneDed, SCREEN_STACK)
-				-- cleanDeadData()		-!
+			-- turn senser back on after leaving dock
+			local physEntity = fun.getPhysEntity(PLAYER.UID)
+			local x,y = physEntity.body:getPosition()
+			if y <= (PHYSICS_HEIGHT - PHYSICS_SAFEZONE) then
+				physEntity.fixture:setSensor(false)
 			end
-		end
 
-		-- decrease bubble text timers
-		for i = #BUBBLE, 1, -1 do
-			BUBBLE[i].timeleft = BUBBLE[i].timeleft - dt
-			if BUBBLE[i].timeleft <= 0 then table.remove(BUBBLE, i) end
-		end
+			fun.deductO2(dt)
 
-		-- alarm lights
-		O2_ALARM_ALPHA = O2_ALARM_ALPHA + dt
-		if O2_ALARM_ALPHA > 1 then O2_ALARM_ALPHA = 0 end
-
-		FUEL_ALARM_ALPHA = FUEL_ALARM_ALPHA + dt
-		if FUEL_ALARM_ALPHA > 1 then FUEL_ALARM_ALPHA = 0 end
-
-		BATTERY_ALARM_ALPHA = BATTERY_ALARM_ALPHA + dt
-		if BATTERY_ALARM_ALPHA > 1 then BATTERY_ALARM_ALPHA = 0 end
-
-		SOSBEACON_ALARM_ALPHA = SOSBEACON_ALARM_ALPHA + dt
-		if SOSBEACON_ALARM_ALPHA > 1 then SOSBEACON_ALARM_ALPHA = 0 end
-
-		-- see if rescued while in escape pod
-		-- there is a chance the vessel is rescued
-		local temptable	 = physEntity.fixture:getUserData()
-		if temptable.objectType == "Pod" then
-			if love.math.random(1,2000) == 1 then			-- this is half the chance of an SOS beacon
-				-- rescued!
-				cf.AddScreen(enum.sceneShop, SCREEN_STACK)		--! should probably go to a screen with an explanation
+			-- check for dead chassis
+			-- check for dead or empty o2 tank
+			local deadreason = fun.checkIfDead(dt)
+			if deadreason ~= "" then
+				DEAD_REASON = deadreason		-- refactor to not use globals
+				DEAD_ALPHA = DEAD_ALPHA + (dt * 0.25)
+				if DEAD_ALPHA >= 1 then
+					fun.InitialiseGame()
+					cf.SwapScreen(enum.sceneDed, SCREEN_STACK)
+					-- cleanDeadData()		-!
+				end
 			end
+
+			-- decrease bubble text timers
+			for i = #BUBBLE, 1, -1 do
+				BUBBLE[i].timeleft = BUBBLE[i].timeleft - dt
+				if BUBBLE[i].timeleft <= 0 then table.remove(BUBBLE, i) end
+			end
+
+			-- alarm lights
+			O2_ALARM_ALPHA = O2_ALARM_ALPHA + dt
+			if O2_ALARM_ALPHA > 1 then O2_ALARM_ALPHA = 0 end
+
+			FUEL_ALARM_ALPHA = FUEL_ALARM_ALPHA + dt
+			if FUEL_ALARM_ALPHA > 1 then FUEL_ALARM_ALPHA = 0 end
+
+			BATTERY_ALARM_ALPHA = BATTERY_ALARM_ALPHA + dt
+			if BATTERY_ALARM_ALPHA > 1 then BATTERY_ALARM_ALPHA = 0 end
+
+			SOSBEACON_ALARM_ALPHA = SOSBEACON_ALARM_ALPHA + dt
+			if SOSBEACON_ALARM_ALPHA > 1 then SOSBEACON_ALARM_ALPHA = 0 end
+
+			-- see if rescued while in escape pod
+			-- there is a chance the vessel is rescued
+			local temptable	 = physEntity.fixture:getUserData()
+			if temptable.objectType == "Pod" then
+				if love.math.random(1,2000) == 1 then			-- this is half the chance of an SOS beacon
+					-- rescued!
+					cf.AddScreen(enum.sceneShop, SCREEN_STACK)		--! should probably go to a screen with an explanation
+				end
+			end
+
+			-- do raycasting stuff
+			local facing = physEntity.body:getAngle()       -- radians
+	        facing = cf.convRadToCompass(facing)
+			local vectordistance = VISIBILITY_DISTANCE
+			local x2, y2 = cf.AddVectorToPoint(x, y, facing, vectordistance)
+
+			PHYSICSWORLD:rayCast(x, y, x2, y2, raycastCallback)
+
+			input:update()
+		else
 		end
-
-		-- do raycasting stuff
-		local facing = physEntity.body:getAngle()       -- radians
-        facing = cf.convRadToCompass(facing)
-		local vectordistance = VISIBILITY_DISTANCE
-		local x2, y2 = cf.AddVectorToPoint(x, y, facing, vectordistance)
-
-		PHYSICSWORLD:rayCast(x, y, x2, y2, raycastCallback)
-
-		input:update()
 
 		cam:setPos(TRANSLATEX, TRANSLATEY)
 		cam:setZoom(ZOOMFACTOR)

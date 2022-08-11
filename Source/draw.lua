@@ -555,34 +555,34 @@ function draw.credits()
 
 	local txt = ""
 
-	txt = txt .. "Music/sound credits:" .. "\n"
+	txt = txt .. "Music/sound credits:" .. "\n\n"
 
-    txt = txt .. "Urban jungle - Eric Matyas" .. "\n"
-    txt = txt .. "World of Automatons - Eric Matyas" .. "\n"
-    txt = txt .. "www.soundimage.org" .. "\n"
+    txt = txt .. "Urban jungle - Eric Matyas" .. "\n\n"
+    txt = txt .. "World of Automatons - Eric Matyas" .. "\n\n"
+    txt = txt .. "www.soundimage.org" .. "\n\n"
 
-    txt = txt .. "Reflekt - Skismo. Used with permission" .. "\n"
+    txt = txt .. "Reflekt - Skismo. Used with permission" .. "\n\n"
 
-    txt = txt .. "Other sound effects - freesound.org" .. "\n"
+    txt = txt .. "Other sound effects - freesound.org" .. "\n\n"
 
-txt = txt .. "Code libraries:" .. "\n"
+	txt = txt .. "Code libraries:" .. "\n\n"
 
-    txt = txt .. "cam11 - (c) Pedro Gimeno Fortea" .. "\n"
-    txt = txt .. "Concord - (c) Justin van der Leij" .. "\n"
-    txt = txt .. "Baton - (c) Andrew Minnich" .. "\n"
-    txt = txt .. "Bitser - (c) Jasmijn Wellner" .. "\n"
-    txt = txt .. "inspect - (c) Enrique Garcia Cota" .. "\n"
-    txt = txt .. "Lovely Toasts - (c) Lucy van Sandwijk" .. "\n"
-    txt = txt .. "nativefs - (c) megagrump" .. "\n"
-    txt = txt .. "Resolution Solution - (c) Vovkiv" .. "\n"
+    txt = txt .. "cam11 - (c) Pedro Gimeno Fortea" .. "\n\n"
+    txt = txt .. "Concord - (c) Justin van der Leij" .. "\n\n"
+    txt = txt .. "Baton - (c) Andrew Minnich" .. "\n\n"
+    txt = txt .. "Bitser - (c) Jasmijn Wellner" .. "\n\n"
+    txt = txt .. "inspect - (c) Enrique Garcia Cota" .. "\n\n"
+    txt = txt .. "Lovely Toasts - (c) Lucy van Sandwijk" .. "\n\n"
+    txt = txt .. "nativefs - (c) megagrump" .. "\n\n"
+    txt = txt .. "Resolution Solution - (c) Vovkiv" .. "\n\n"
 
-txt = txt .. "Images:" .. "\n"
+txt = txt .. "Images:" .. "\n\n"
 
-    txt = txt .. "Golden UI - (c) Michele 'Buch' Bucelli" .. "\n"
-    txt = txt .. "Gunroar:Cannon()" .. "\n"
+    txt = txt .. "Golden UI - (c) Michele 'Buch' Bucelli" .. "\n\n"
+    txt = txt .. "Gunroar:Cannon()" .. "\n\n"
 
 	love.graphics.setColor(1,1,1,1)
-	love.graphics.print(txt, 100, 100)
+	love.graphics.print(txt, 800, 250)
 
 end
 return draw

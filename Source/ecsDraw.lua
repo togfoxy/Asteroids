@@ -120,8 +120,6 @@ function ecsDraw.init()
     				if entity:has("battery") and entity.battery.capacity > 0 and entity.battery.currentHP > 0 then
                         love.graphics.setColor(1,0,0,SOSBEACON_ALARM_ALPHA)
                         love.graphics.circle("fill", x1, y1, vesselsize)
-
-
                     end
                 end
             end

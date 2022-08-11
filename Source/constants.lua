@@ -22,6 +22,7 @@ function constants.load()
     ECS_ENTITIES = {}
     PHYSICS_ENTITIES = {}
     SHOP_ENTITY = nil
+    PAUSED = false
 
 
     PLAYER = {}
