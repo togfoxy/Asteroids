@@ -1,4 +1,4 @@
-GAME_VERSION = "0.03"
+GAME_VERSION = "0.04"
 
 inspect = require 'lib.inspect'
 -- https://github.com/kikito/inspect.lua
